@@ -13,9 +13,9 @@
 
 ----
   
-This repository contains [[PROJECT DESCRIPTION HERE]]
+This repository contains PROJECT DESCRIPTION HERE
 
-Below the main project folder structure is provided and described. The project is organized into several folders, each containing specific types of files related to the analysis.
+Below, the main project folder structure is provided and described. The project is organized into several folders, each containing specific types of files related to the analysis.
 
 ## 🗃️ Folder Structure
 
