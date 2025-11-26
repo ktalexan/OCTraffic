@@ -1,7 +1,15 @@
-<h1 align = "center">🗄️ OC Traffic</h1>
+---
+project_title: "OC Traffic"
+project_subtitle: "Orange County SWITRS Traffic Collision Analysis Project"
+author: "Kostas Alexandridis, PhD, GISP"
+version: "v.1.0"
+date: "Month 2025"
+---
+
+<h1 align = "center">🗄️ {{ page_title }}</h1>
 <div align = "center">
 
-🏷️ Orange County SWITRS Traffic Collision Analysis Project
+🏷️ {{ project_subtitle }}
 
 **👤 Kostas Alexandridis, PhD, GISP** | *:label: v.1.0, Month 2025*
 
