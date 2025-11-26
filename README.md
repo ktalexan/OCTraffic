@@ -1,7 +1,7 @@
 <h1 align = "center">🗄️ OC Traffic</h1>
 <div align = "center">
 
-🏷️ Orange County SWITRS Traffic Collision Analysis Project
+<h3>🏷️ Orange County SWITRS Traffic Collision Analysis Project</h3>
 
 **👤 Kostas Alexandridis, PhD, GISP** | *:label: v. 2025.3, November 2025*
 
