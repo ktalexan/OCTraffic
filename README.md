@@ -37,4 +37,3 @@ Below the main project folder structure is provided and described. The project i
 ## 🔰 Getting Started
 
 If you are creating a project from scratch, and need to setup the project structure for the non-synced folders, please follow the following instructions.
-
