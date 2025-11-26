@@ -8,7 +8,7 @@
 
 ![Static Badge](https://img.shields.io/badge/OCTraffic-GitHub?style=plastic&logo=github&logoSize=auto&label=GitHub&labelColor=navy) 
 ![GitHub License](https://img.shields.io/github/license/ktalexan/octraffic?style=plastic&labelColor=black) 
-![Shield Badge: Language-Julia](https://img.shields.io/static/v1?style=plastic&label=language&message=Julia&logo=julia&color=forestgreen&logoColor=blue&labelColor=black)
+![Shield Badge: Language-Julia](https://img.shields.io/static/v1?style=plastic&label=language&message=Julia&logo=julia&color=purple&labelColor=black)
 
 </div>
 
