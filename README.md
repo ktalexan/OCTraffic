@@ -1,17 +1,9 @@
----
-project_title: "OC Traffic"
-project_subtitle: "Orange County SWITRS Traffic Collision Analysis Project"
-author: "Kostas Alexandridis, PhD, GISP"
-version: "v.1.0"
-date: "Month 2025"
----
-
-<h1 align = "center">🗄️ {{ page_title }}</h1>
+<h1 align = "center">🗄️ OC Traffic</h1>
 <div align = "center">
 
-🏷️ {{ project_subtitle }}
+🏷️ Orange County SWITRS Traffic Collision Analysis Project
 
-**👤 Kostas Alexandridis, PhD, GISP** | *:label: v.1.0, Month 2025*
+**👤 Kostas Alexandridis, PhD, GISP** | *:label: v.2025.3, November 2025*
 
 ![Static Badge](https://img.shields.io/badge/OCTraffic-GitHub?style=plastic&logo=github&logoSize=auto&labe=GitHub&labelColor=navy) 
 ![GitHub License](https://img.shields.io/github/license/ktalexan/octraffic?style=plastic&labelcolor=black) 
