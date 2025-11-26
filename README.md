@@ -1,14 +1,11 @@
-<div align="center">
+<h1 align = "center">🗄️ OC Traffic</h1>
+<div align = "center">
 
-# 🗄️ **OC Traffic**
 🏷️ Orange County SWITRS Traffic Collision Analysis Project
-
 
 **👤 Kostas Alexandridis, PhD, GISP** | *:label: v.1.0, Month 2025*
 
-![Static Badge](https://img.shields.io/badge/OCTraffic-GitHub?style=plastic&logo=github&logoSize=auto&label=GitHub&labelColor=navy) 
-![GitHub License](https://img.shields.io/github/license/ktalexan/octraffic?style=plastic&labelColor=black) 
-![Shield Badge: Language-Julia](https://img.shields.io/static/v1?style=plastic&label=language&message=Julia&logo=julia&color=purple&labelColor=black)
+![Static Badge](https://img.shields.io/badge/OCTraffic-GitHub?style=plastic&logo=github&logoSize=auto&label=GitHub&labelColor=navy) | ![GitHub License](https://img.shields.io/github/license/ktalexan/octraffic?style=plastic&labelcolor=black) | ![Shield Badge: Language-Julia](https://img.shields.io/static/v1?style=plastic&label=language&message=Julia&logo=julia&color=purple&labelColor=black)
 
 </div>
 
@@ -18,7 +15,7 @@ This repository contains [[PROJECT DESCRIPTION HERE]]
 
 Below the main project folder structure is provided and described. The project is organized into several folders, each containing specific types of files related to the analysis.
 
-## 🗃️ Folder Structure 
+## 🗃️ Folder Structure
 
 - 📁 [**admin**](admin): Contains the administrative files, notes and settings for the project.
 - 📁 [**analysis**](analysis): Contains the analysis files, including documents, notes and analysis presentation content.
@@ -32,7 +29,6 @@ Below the main project folder structure is provided and described. The project i
 - 📁 [**notebooks**](notebooks): Contains the Jupyter notebooks used in the analysis.
 - 📁 [**scripts**](scripts): Contains the scripts used in the analysis including Python, and other scripts.
   - 📂 [**archived**](scripts/archived): Archived project scripts.
-
 
 ## 🔰 Getting Started
 
