@@ -1,4 +1,4 @@
-#1 Case ID
+# 1 Case ID
 [caseid]
 varorder = 1
 rawdata = true
@@ -17,7 +17,7 @@ tsinclude = {crashes = false, parties = false, victims = false, collisions = fal
 tsstats = {sum = false, mean = false, median = false}
 tokeep = true
 
-#2 Crash ID
+# 2 Crash ID
 [cid]
 varorder = 2
 rawdata = false
@@ -35,7 +35,7 @@ tsinclude = {crashes = false, parties = false, victims = false, collisions = fal
 tsstats = {sum = false, mean = false, median = false}
 tokeep = true
 
-#3 Party ID
+# 3 Party ID
 [pid]
 varorder = 3
 rawdata = false
@@ -55,7 +55,7 @@ tsinclude = {crashes = false, parties = false, victims = false, collisions = fal
 tsstats = {sum = false, mean = false, median = false}
 tokeep = true
 
-#4 Victim ID
+# 4 Victim ID
 [vid]
 varorder = 4
 rawdata = false
@@ -73,7 +73,7 @@ tsinclude = {crashes = false, parties = false, victims = false, collisions = fal
 tsstats = {sum = false, mean = false, median = false}
 tokeep = true
 
-#5 Crash Tag
+# 5 Crash Tag
 [crashtag]
 varorder = 5
 rawdata = false
@@ -91,7 +91,7 @@ tsinclude = {crashes = true, parties = false, victims = false, collisions = true
 tsstats = {sum = true, mean = false, median = false}
 tokeep = true
 
-#6 Party Tag
+# 6 Party Tag
 [partytag]
 varorder = 6
 rawdata = false
@@ -109,7 +109,7 @@ tsinclude = {crashes = false, parties = true, victims = false, collisions = true
 tsstats = {sum = true, mean = false, median = false}
 tokeep = true
 
-#7 Victim Tag
+# 7 Victim Tag
 [victimtag]
 varorder = 7
 rawdata = false
@@ -127,7 +127,7 @@ tsinclude = {crashes = false, parties = false, victims = true, collisions = true
 tsstats = {sum = true, mean = false, median = false}
 tokeep = true
 
-#8 Party Number
+# 8 Party Number
 [partynumber]
 varorder = 8
 rawdata = true
@@ -146,7 +146,7 @@ tsinclude = {crashes = false, parties = true, victims = true, collisions = true}
 tsstats = {sum = false, mean = true, median = false}
 tokeep = true
 
-#9 Victim Number
+# 9 Victim Number
 [victimnumber]
 varorder = 9
 rawdata = true
@@ -165,7 +165,7 @@ tsinclude = {crashes = false, parties = false, victims = true, collisions = true
 tsstats = {sum = false, mean = true, median = false}
 tokeep = true
 
-#10 Crashes Case Tag
+# 10 Crashes Case Tag
 [crashescasetag]
 varorder = 10
 rawdata = false
@@ -183,7 +183,7 @@ tsinclude = {crashes = false, parties = false, victims = false, collisions = fal
 tsstats = {sum = false, mean = false, median = false}
 tokeep = true
 
-#11 Parties Case Tag
+# 11 Parties Case Tag
 [partiescasetag]
 varorder = 11
 rawdata = false
@@ -201,7 +201,7 @@ tsinclude = {crashes = false, parties = false, victims = false, collisions = fal
 tsstats = {sum = false, mean = false, median = false}
 tokeep = true
 
-#12 Victims Case Tag
+# 12 Victims Case Tag
 [victimscasetag]
 varorder = 12
 rawdata = false
@@ -219,7 +219,7 @@ tsinclude = {crashes = false, parties = false, victims = false, collisions = fal
 tsstats = {sum = false, mean = false, median = false}
 tokeep = true
 
-#13 Crashes Indicator
+# 13 Crashes Indicator
 [crashesind]
 varorder = 13
 rawdata = false
@@ -240,7 +240,7 @@ tsinclude = {crashes = false, parties = false, victims = false, collisions = fal
 tsstats = {sum = true, mean = false, median = false}
 tokeep = true
 
-#14 Parties Indicator
+# 14 Parties Indicator
 [partiesind]
 varorder = 14
 rawdata = false
@@ -261,7 +261,7 @@ tsinclude = {crashes = false, parties = false, victims = false, collisions = fal
 tsstats = {sum = true, mean = false, median = false}
 tokeep = true
 
-#15 Victims Indicator
+# 15 Victims Indicator
 [victimsind]
 varorder = 15
 rawdata = false
@@ -282,7 +282,7 @@ tsinclude = {crashes = false, parties = false, victims = false, collisions = fal
 tsstats = {sum = true, mean = false, median = false}
 tokeep = true
 
-#16 Combined Indicator
+# 16 Combined Indicator
 [combinedind]
 varorder = 16
 rawdata = false
@@ -303,7 +303,7 @@ tsinclude = {crashes = false, parties = false, victims = false, collisions = fal
 tsstats = {sum = false, mean = false, median = false}
 tokeep = true
 
-#17 Total Collisions in Crashes Dataset
+# 17 Total Collisions in Crashes Dataset
 [crashescidcount]
 varorder = 17
 rawdata = false
@@ -321,7 +321,7 @@ tsinclude = {crashes = false, parties = false, victims = false, collisions = fal
 tsstats = {sum = false, mean = false, median = false}
 tokeep = true
 
-#18 Total Collisions in Parties Dataset
+# 18 Total Collisions in Parties Dataset
 [partiescidcount]
 varorder = 18
 rawdata = false
@@ -339,7 +339,7 @@ tsinclude = {crashes = false, parties = false, victims = false, collisions = fal
 tsstats = {sum = false, mean = false, median = false}
 tokeep = true
 
-#19 Total Collisions in Victims Dataset
+# 19 Total Collisions in Victims Dataset
 [victimscidcount]
 varorder = 19
 rawdata = false
@@ -357,7 +357,7 @@ tsinclude = {crashes = false, parties = false, victims = false, collisions = fal
 tsstats = {sum = false, mean = false, median = false}
 tokeep = true
 
-#20 Total Parties in Parties Dataset
+# 20 Total Parties in Parties Dataset
 [partiespidcount]
 varorder = 20
 rawdata = false
@@ -375,7 +375,7 @@ tsinclude = {crashes = false, parties = false, victims = false, collisions = fal
 tsstats = {sum = false, mean = false, median = false}
 tokeep = true
 
-#21 Total Parties in Victims Dataset
+# 21 Total Parties in Victims Dataset
 [victimspidcount]
 varorder = 21
 rawdata = false
@@ -393,7 +393,7 @@ tsinclude = {crashes = false, parties = false, victims = false, collisions = fal
 tsstats = {sum = false, mean = false, median = false}
 tokeep = true
 
-#22 Total Victims in Victims Dataset
+# 22 Total Victims in Victims Dataset
 [victimsvidcount]
 varorder = 22
 rawdata = false
@@ -411,7 +411,7 @@ tsinclude = {crashes = false, parties = false, victims = false, collisions = fal
 tsstats = {sum = false, mean = false, median = false}
 tokeep = true
 
-#23 City Name
+# 23 City Name
 [city]
 varorder = 23
 rawdata = true
@@ -430,7 +430,7 @@ tsinclude = {crashes = false, parties = false, victims = false, collisions = fal
 tsstats = {sum = false, mean = false, median = false}
 tokeep = true
 
-#24 Place Type
+# 24 Place Type
 [placetype]
 varorder = 24
 rawdata = true
@@ -452,7 +452,7 @@ tsinclude = {crashes = false, parties = false, victims = false, collisions = fal
 tsstats = {sum = false, mean = false, median = false}
 tokeep = true
 
-#25 Crash Date and Time
+# 25 Crash Date and Time
 [datedatetime]
 varorder = 25
 rawdata = false
@@ -471,7 +471,7 @@ tsstats = {sum = false, mean = false, median = false}
 tokeep = true
 varnotes = "Generated by lubridate: as.POSIXlt(paste(crashes$coll_date, crashes$coll_time_temp}, format: '%Y-%m-%d %H:%M', tz: 'America/Los_Angeles')"
 
-#26 Crash Year
+# 26 Crash Year
 [dateyear]
 varorder = 26
 rawdata = false
@@ -490,7 +490,7 @@ tsstats = {sum = false, mean = false, median = false}
 tokeep = true
 varnotes = "Generated by lubridate: floor_date(crashes$coll_date, unit: `year`)"
 
-#27 Crash Quarter
+# 27 Crash Quarter
 [datequarter]
 varorder = 27
 rawdata = false
@@ -509,7 +509,7 @@ tsstats = {sum = false, mean = false, median = false}
 tokeep = true
 varnotes = "Generated by lubridate: floor_date(crashes$coll_date, unit: `quarter`)"
 
-#28 Crash Month
+# 28 Crash Month
 [datemonth]
 varorder = 28
 rawdata = false
@@ -528,7 +528,7 @@ tsstats = {sum = false, mean = false, median = false}
 tokeep = true
 varnotes = "Generated by lubridate: floor_date(crashes$coll_date, unit: `month`)"
 
-#29 Crash Week
+# 29 Crash Week
 [dateweek]
 varorder = 29
 rawdata = false
@@ -547,7 +547,7 @@ tsstats = {sum = false, mean = false, median = false}
 tokeep = true
 varnotes = "Generated by lubridate: floor_date(crashes$coll_date, unit: `week`, week_start: 1)"
 
-#30 Crash Day
+# 30 Crash Day
 [dateday]
 varorder = 30
 rawdata = false
@@ -566,7 +566,7 @@ tsstats = {sum = false, mean = false, median = false}
 tokeep = true
 varnotes = "Generated by lubridate: floor_date(crashes$coll_date, unit: `day`)"
 
-#31 Process Date
+# 31 Process Date
 [dateprocess]
 varorder = 31
 rawdata = false
@@ -585,7 +585,7 @@ tsstats = {sum = false, mean = false, median = false}
 tokeep = true
 varnotes = "Generated by lubridate: as.POSIXlt(crashes$process_date, format: '%Y-%m-%d', tz: 'America/Los_Angeles')"
 
-#32 Crash Year
+# 32 Crash Year
 [dtyear]
 varorder = 32
 rawdata = false
@@ -603,7 +603,7 @@ tsinclude = {crashes = true, parties = true, victims = true, collisions = true}
 tsstats = {sum = false, mean = false, median = false}
 tokeep = true
 
-#33 Crash Quarter
+# 33 Crash Quarter
 [dtquarter]
 varorder = 33
 rawdata = false
@@ -624,7 +624,7 @@ tsinclude = {crashes = true, parties = true, victims = true, collisions = true}
 tsstats = {sum = false, mean = false, median = false}
 tokeep = true
 
-#34 Crash Month
+# 34 Crash Month
 [dtmonth]
 varorder = 34
 rawdata = false
@@ -644,7 +644,7 @@ tsinclude = {crashes = true, parties = true, victims = true, collisions = true}
 tsstats = {sum = false, mean = false, median = false}
 tokeep = true
 
-#35 Crash Year Week
+# 35 Crash Year Week
 [dtyearweek]
 varorder = 35
 rawdata = false
@@ -662,7 +662,7 @@ tsinclude = {crashes = true, parties = true, victims = true, collisions = true}
 tsstats = {sum = false, mean = false, median = false}
 tokeep = true
 
-#36 Crash Weekday
+# 36 Crash Weekday
 [dtweekday]
 varorder = 36
 rawdata = false
@@ -682,7 +682,7 @@ tsinclude = {crashes = true, parties = true, victims = true, collisions = true}
 tsstats = {sum = false, mean = false, median = false}
 tokeep = true
 
-#37 Crash Month Day
+# 37 Crash Month Day
 [dtmonthday]
 varorder = 37
 rawdata = false
@@ -700,7 +700,7 @@ tsinclude = {crashes = true, parties = true, victims = true, collisions = true}
 tsstats = {sum = false, mean = false, median = false}
 tokeep = true
 
-#38 Crash Year Day
+# 38 Crash Year Day
 [dtyearday]
 varorder = 38
 rawdata = false
@@ -718,7 +718,7 @@ tsinclude = {crashes = true, parties = true, victims = true, collisions = true}
 tsstats = {sum = false, mean = false, median = false}
 tokeep = true
 
-#39 Crash Hour
+# 39 Crash Hour
 [dthour]
 varorder = 39
 rawdata = false
@@ -736,7 +736,7 @@ tsinclude = {crashes = true, parties = true, victims = true, collisions = true}
 tsstats = {sum = false, mean = false, median = false}
 tokeep = true
 
-#40 Crash Minute
+# 40 Crash Minute
 [dtminute]
 varorder = 40
 rawdata = false
@@ -754,7 +754,7 @@ tsinclude = {crashes = true, parties = true, victims = true, collisions = true}
 tsstats = {sum = false, mean = false, median = false}
 tokeep = true
 
-#41 Crash Daylight Saving Time
+# 41 Crash Daylight Saving Time
 [dtdst]
 varorder = 41
 rawdata = false
@@ -775,7 +775,7 @@ tsinclude = {crashes = true, parties = true, victims = true, collisions = true}
 tsstats = {sum = false, mean = false, median = false}
 tokeep = true
 
-#42 Crash Timezone
+# 42 Crash Timezone
 [dtzone]
 varorder = 42
 rawdata = false
@@ -796,7 +796,7 @@ tsinclude = {crashes = true, parties = true, victims = true, collisions = true}
 tsstats = {sum = false, mean = false, median = false}
 tokeep = true
 
-#43 Collision Date
+# 43 Collision Date
 [colldate]
 varorder = 43
 rawdata = true
@@ -815,7 +815,7 @@ tsinclude = {crashes = false, parties = false, victims = false, collisions = fal
 tsstats = {sum = false, mean = false, median = false}
 tokeep = true
 
-#44 Collision Time
+# 44 Collision Time
 [colltime]
 varorder = 44
 rawdata = true
@@ -834,7 +834,7 @@ tsinclude = {crashes = false, parties = false, victims = false, collisions = fal
 tsstats = {sum = false, mean = false, median = false}
 tokeep = true
 
-#45 Accident Year
+# 45 Accident Year
 [accidentyear]
 varorder = 45
 rawdata = true
@@ -853,7 +853,7 @@ tsinclude = {crashes = false, parties = false, victims = false, collisions = fal
 tsstats = {sum = false, mean = false, median = false}
 tokeep = true
 
-#46 Process Date
+# 46 Process Date
 [processdate]
 varorder = 46
 rawdata = true
@@ -872,7 +872,7 @@ tsinclude = {crashes = false, parties = false, victims = false, collisions = fal
 tsstats = {sum = false, mean = false, median = false}
 tokeep = true
 
-#47 Crash Time Intervals
+# 47 Crash Time Intervals
 [colltimeintervals]
 varorder = 47
 rawdata = false
@@ -892,7 +892,7 @@ tsinclude = {crashes = false, parties = false, victims = false, collisions = fal
 tsstats = {sum = false, mean = false, median = false}
 tokeep = true
 
-#48 Rush Hours
+# 48 Rush Hours
 [rushhours]
 varorder = 48
 rawdata = false
@@ -912,7 +912,7 @@ tsinclude = {crashes = false, parties = false, victims = false, collisions = fal
 tsstats = {sum = false, mean = false, median = false}
 tokeep = true
 
-#49 Rush Hours Binary
+# 49 Rush Hours Binary
 [rushhoursbin]
 varorder = 49
 rawdata = false
@@ -932,7 +932,7 @@ tsinclude = {crashes = true, parties = false, victims = false, collisions = true
 tsstats = {sum = true, mean = false, median = false}
 tokeep = true
 
-#50 Collision Severity
+# 50 Collision Severity
 [collseverity]
 varorder = 50
 rawdata = true
@@ -954,7 +954,7 @@ tsinclude = {crashes = false, parties = false, victims = false, collisions = fal
 tsstats = {sum = false, mean = false, median = false}
 tokeep = true
 
-#51 Collision Severity Numeric
+# 51 Collision Severity Numeric
 [collseveritynum]
 varorder = 51
 rawdata = false
@@ -972,7 +972,7 @@ tsinclude = {crashes = true, parties = false, victims = false, collisions = true
 tsstats = {sum = false, mean = true, median = false}
 tokeep = true
 
-#52 Collision Severity Hotspots
+# 52 Collision Severity Hotspots
 [collseverityhs]
 varorder = 52
 rawdata = false
@@ -992,7 +992,7 @@ tsinclude = {crashes = true, parties = false, victims = false, collisions = true
 tsstats = {sum = false, mean = false, median = false}
 tokeep = true
 
-#53 Collision Severity Binary
+# 53 Collision Severity Binary
 [collseveritybin]
 varorder = 53
 rawdata = false
@@ -1012,7 +1012,7 @@ tsinclude = {crashes = true, parties = false, victims = false, collisions = true
 tsstats = {sum = true, mean = false, median = false}
 tokeep = true
 
-#54 Collision Severity Rank
+# 54 Collision Severity Rank
 [collseverityrank]
 varorder = 54
 rawdata = false
@@ -1032,7 +1032,7 @@ tsinclude = {crashes = false, parties = false, victims = false, collisions = fal
 tsstats = {sum = false, mean = false, median = false}
 tokeep = true
 
-#55 Collision Severity Rank Numeric
+# 55 Collision Severity Rank Numeric
 [collseverityranknum]
 varorder = 55
 rawdata = false
@@ -1050,7 +1050,7 @@ tsinclude = {crashes = true, parties = false, victims = false, collisions = true
 tsstats = {sum = false, mean = true, median = false}
 tokeep = true
 
-#56 Severe Injury Indicator
+# 56 Severe Injury Indicator
 [indsevere]
 varorder = 56
 rawdata = false
@@ -1070,7 +1070,7 @@ tsinclude = {crashes = true, parties = false, victims = false, collisions = true
 tsstats = {sum = true, mean = false, median = false}
 tokeep = true
 
-#57 Fatal Injury Indicator
+# 57 Fatal Injury Indicator
 [indfatal]
 varorder = 57
 rawdata = false
@@ -1090,7 +1090,7 @@ tsinclude = {crashes = true, parties = false, victims = false, collisions = true
 tsstats = {sum = true, mean = false, median = false}
 tokeep = true
 
-#58 Multiple Injury Indicator
+# 58 Multiple Injury Indicator
 [indmulti]
 varorder = 58
 rawdata = false
@@ -1110,7 +1110,7 @@ tsinclude = {crashes = true, parties = false, victims = false, collisions = true
 tsstats = {sum = true, mean = false, median = false}
 tokeep = true
 
-#59 Party Count
+# 59 Party Count
 [partycount]
 varorder = 59
 rawdata = true
@@ -1129,7 +1129,7 @@ tsinclude = {crashes = true, parties = false, victims = false, collisions = true
 tsstats = {sum = true, mean = false, median = false}
 tokeep = true
 
-#60 Victim Count
+# 60 Victim Count
 [victimcount]
 varorder = 60
 rawdata = false
@@ -1147,7 +1147,7 @@ tsinclude = {crashes = true, parties = false, victims = false, collisions = true
 tsstats = {sum = true, mean = false, median = false}
 tokeep = true
 
-#61 Killed Victims
+# 61 Killed Victims
 [numberkilled]
 varorder = 61
 rawdata = true
@@ -1166,7 +1166,7 @@ tsinclude = {crashes = true, parties = false, victims = false, collisions = true
 tsstats = {sum = true, mean = false, median = false}
 tokeep = true
 
-#62 Injured Victims
+# 62 Injured Victims
 [numberinj]
 varorder = 62
 rawdata = true
@@ -1185,7 +1185,7 @@ tsinclude = {crashes = true, parties = false, victims = false, collisions = true
 tsstats = {sum = true, mean = false, median = false}
 tokeep = true
 
-#63 Severe Injury Count
+# 63 Severe Injury Count
 [countsevereinj]
 varorder = 63
 rawdata = true
@@ -1204,7 +1204,7 @@ tsinclude = {crashes = true, parties = false, victims = false, collisions = true
 tsstats = {sum = true, mean = false, median = false}
 tokeep = true
 
-#64 Visible Injury Count
+# 64 Visible Injury Count
 [countvisibleinj]
 varorder = 64
 rawdata = true
@@ -1223,7 +1223,7 @@ tsinclude = {crashes = true, parties = false, victims = false, collisions = true
 tsstats = {sum = true, mean = false, median = false}
 tokeep = true
 
-#65 Complaint of Pain Injury Count
+# 65 Complaint of Pain Injury Count
 [countcomplaintpain]
 varorder = 65
 rawdata = true
@@ -1242,7 +1242,7 @@ tsinclude = {crashes = true, parties = false, victims = false, collisions = true
 tsstats = {sum = true, mean = false, median = false}
 tokeep = true
 
-#66 Fatal or Severe Injury Count
+# 66 Fatal or Severe Injury Count
 [countfatalsevere]
 varorder = 66
 rawdata = false
@@ -1260,7 +1260,7 @@ tsinclude = {crashes = true, parties = false, victims = false, collisions = true
 tsstats = {sum = true, mean = false, median = false}
 tokeep = true
 
-#67 Minor or Pain Injury Count
+# 67 Minor or Pain Injury Count
 [countminorpain]
 varorder = 67
 rawdata = false
@@ -1278,7 +1278,7 @@ tsinclude = {crashes = true, parties = false, victims = false, collisions = true
 tsstats = {sum = true, mean = false, median = false}
 tokeep = true
 
-#68 Number of Killed Car Victims
+# 68 Number of Killed Car Victims
 [countcarkilled]
 varorder = 68
 rawdata = false
@@ -1296,7 +1296,7 @@ tsinclude = {crashes = true, parties = false, victims = false, collisions = true
 tsstats = {sum = true, mean = false, median = false}
 tokeep = true
 
-#69 Number of Injured Car Victims
+# 69 Number of Injured Car Victims
 [countcarinj]
 varorder = 69
 rawdata = false
@@ -1314,7 +1314,7 @@ tsinclude = {crashes = true, parties = false, victims = false, collisions = true
 tsstats = {sum = true, mean = false, median = false}
 tokeep = true
 
-#70 Pedestrian Killed Count
+# 70 Pedestrian Killed Count
 [countpedkilled]
 varorder = 70
 rawdata = true
@@ -1333,7 +1333,7 @@ tsinclude = {crashes = true, parties = false, victims = false, collisions = true
 tsstats = {sum = true, mean = false, median = false}
 tokeep = true
 
-#71 Pedestrian Injured Count
+# 71 Pedestrian Injured Count
 [countpedinj]
 varorder = 71
 rawdata = true
@@ -1352,7 +1352,7 @@ tsinclude = {crashes = true, parties = false, victims = false, collisions = true
 tsstats = {sum = true, mean = false, median = false}
 tokeep = true
 
-#72 Bicyclist Killed Count
+# 72 Bicyclist Killed Count
 [countbickilled]
 varorder = 72
 rawdata = true
@@ -1371,7 +1371,7 @@ tsinclude = {crashes = true, parties = false, victims = false, collisions = true
 tsstats = {sum = true, mean = false, median = false}
 tokeep = true
 
-#73 Bicyclist Injured Count
+# 73 Bicyclist Injured Count
 [countbicinj]
 varorder = 73
 rawdata = true
@@ -1390,7 +1390,7 @@ tsinclude = {crashes = true, parties = false, victims = false, collisions = true
 tsstats = {sum = true, mean = false, median = false}
 tokeep = true
 
-#74 Motorcyclist Killed Count
+# 74 Motorcyclist Killed Count
 [countmckilled]
 varorder = 74
 rawdata = true
@@ -1409,7 +1409,7 @@ tsinclude = {crashes = true, parties = false, victims = false, collisions = true
 tsstats = {sum = true, mean = false, median = false}
 tokeep = true
 
-#75 Motorcyclist Injured Count
+# 75 Motorcyclist Injured Count
 [countmcinj]
 varorder = 75
 rawdata = true
@@ -1428,7 +1428,7 @@ tsinclude = {crashes = true, parties = false, victims = false, collisions = true
 tsstats = {sum = true, mean = false, median = false}
 tokeep = true
 
-#76 Primary Collision Factor
+# 76 Primary Collision Factor
 [primarycollfactor]
 varorder = 76
 rawdata = true
@@ -1450,7 +1450,7 @@ tsinclude = {crashes = false, parties = false, victims = false, collisions = fal
 tsstats = {sum = false, mean = false, median = false}
 tokeep = true
 
-#77 Type of Collision
+# 77 Type of Collision
 [typeofcoll]
 varorder = 77
 rawdata = true
@@ -1472,7 +1472,7 @@ tsinclude = {crashes = false, parties = false, victims = false, collisions = fal
 tsstats = {sum = false, mean = false, median = false}
 tokeep = true
 
-#78 Pedestrian Crash
+# 78 Pedestrian Crash
 [pedaccident]
 varorder = 78
 rawdata = true
@@ -1494,7 +1494,7 @@ tsinclude = {crashes = true, parties = false, victims = false, collisions = true
 tsstats = {sum = true, mean = false, median = false}
 tokeep = true
 
-#79 Bicycle Crash
+# 79 Bicycle Crash
 [bicaccident]
 varorder = 79
 rawdata = true
@@ -1516,7 +1516,7 @@ tsinclude = {crashes = true, parties = false, victims = false, collisions = true
 tsstats = {sum = true, mean = false, median = false}
 tokeep = true
 
-#80 Motorcycle Crash
+# 80 Motorcycle Crash
 [mccaccident]
 varorder = 80
 rawdata = true
@@ -1538,7 +1538,7 @@ tsinclude = {crashes = true, parties = false, victims = false, collisions = true
 tsstats = {sum = true, mean = false, median = false}
 tokeep = true
 
-#81 Truck Crash
+# 81 Truck Crash
 [truckaccident]
 varorder = 81
 rawdata = true
@@ -1560,7 +1560,7 @@ tsinclude = {crashes = true, parties = false, victims = false, collisions = true
 tsstats = {sum = true, mean = false, median = false}
 tokeep = true
 
-#82 Hit and Run
+# 82 Hit and Run
 [hitandrun]
 varorder = 82
 rawdata = true
@@ -1581,4 +1581,618 @@ fcinclude = {crashes = true, parties = false, victims = false, collisions = true
 tsinclude = {crashes = true, parties = false, victims = false, collisions = true}
 tsstats = {sum = false, mean = true, median = false}
 tokeep = 1
+
+# 83 Hit and Run Binary
+[hitandrunbin]
+varorder = 83
+rawdata = false
+modvar = "hitandrunbin"
+name = "Hit and Run Binary"
+desc = "Whether the accident involved hit and run (recoded)"
+varclass = "Boolean"
+vartype = "Indicator"
+varcat = "Type or Category"
+source = "derived"
+isrecoded = true
+recodeinfo = {"" = 0, Y = 1}
+islabeled = true
+labeltype = "Boolean"
+labels = {0 = "No", 1 = "Yes"}
+fcinclude = {crashes = true, parties = false, victims = false, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = true, parties = false, victims = false, collisions = true}
+tsstats = {sum = true, mean = false, median = false}
+tokeep = true
+
+# 84 Alcohol Involved
+[alcoholinvolved]
+varorder = 84
+rawdata = true
+rawvar = "ALCOHOL_INVOLVED"
+modvar = "alcoholinvolved"
+name = "Alcohol Involved"
+desc = "Indicator for whether the crash involved a party that had been drinking. Note - A passenger does not count as a party for this variable"
+varclass = "Boolean"
+vartype = "Indicator"
+varcat = "Type or Category"
+source = "crashes"
+isrecoded = true
+recodeinfo = {"" = 0, Y = 1}
+islabeled = true
+labeltype = "Boolean"
+labels = {0 = "No", 1 = "Yes"}
+fcinclude = {crashes = true, parties = false, victims = false, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = true, parties = false, victims = false, collisions = true}
+tsstats = {sum = true, mean = false, median = false}
+tokeep = true
+
+# 85 Jurisdiction
+[juris]
+varorder = 85
+rawdata = true
+rawvar = "JURIS"
+modvar = "juris"
+name = "Jurisdiction"
+desc = "Law enforcement agency that has jurisdiction over the crash location"
+varclass = "String"
+vartype = "Categorical"
+varcat = "Type or Category"
+source = "crashes"
+isrecoded = false
+islabeled = false
+fcinclude = {crashes = true, parties = false, victims = false, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = false}
+tsstats = {sum = false, mean = false, median = false}
+tokeep = true
+
+# 86 Officer ID
+[officerid]
+varorder = 86
+rawdata = true
+rawvar = "OFFICER_ID"
+modvar = "officerid"
+name = "Officer ID"
+desc = "The badgee number of the officer who wrote the crash report"
+varclass = "String"
+vartype = "Identifier"
+varcat = "Unique Identifier"
+source = "crashes"
+isrecoded = false
+islabeled = false
+fcinclude = {crashes = true, parties = false, victims = false, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = false}
+tsstats = {sum = false, mean = false, median = false}
+tokeep = false
+
+# 87 Reporting District
+[reportingdistrict]
+varorder = 87
+rawdata = true
+rawvar = "REPORTING_DISTRICT"
+modvar = "reportingdistrict"
+name = "Reporting District"
+desc = "The police reporting district where the crash was reported"
+varclass = "String"
+vartype = "Categorical"
+varcat = "Location or Place"
+source = "crashes"
+isrecoded = false
+islabeled = false
+fcinclude = {crashes = true, parties = false, victims = false, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = false}
+tsstats = {sum = false, mean = false, median = false}
+tokeep = true
+
+# 88 CHP Shift
+[chpshift]
+varorder = 88
+rawdata = true
+rawvar = "CHP_SHIFT"
+modvar = "chpshift"
+name = "CHP Shift"
+desc = "The California Highway Patrol shift that responded to the crash"
+varclass = "Int"
+vartype = "Categorical"
+varcat = "Type or Category"
+source = "crashes"
+isrecoded = false
+islabeled = true
+labeltype = "Nominal"
+labels = {1 = "06:00 AM thru 13:59 PM", 2 = "14:00 PM thru 21:59 PM", 3 = "22:00 PM thru 05:59 AM", 4 = "CHP Not Stated", 5 = "Not CHP"}
+fcinclude = {crashes = true, parties = false, victims = false, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = false}
+tsstats = {sum = false, mean = false, median = false}
+tokeep = true
+
+# 89 County City Location
+[cntycityloc]
+varorder = 89
+rawdata = true
+rawvar = "CNTY_CITY_LOC"
+modvar = "cntycityloc"
+name = "County City Location"
+desc = "The city or unincorporated county where the crash occurred"
+varclass = "String"
+vartype = "Categorical"
+varcat = "Location or Place"
+source = "crashes"
+isrecoded = false
+islabeled = false
+fcinclude = {crashes = true, parties = false, victims = false, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = false}
+tsstats = {sum = false, mean = false, median = false}
+tokeep = true
+
+# 90 Special Condition
+[specialcond]
+varorder = 90
+rawdata = true
+rawvar = "SPECIAL_COND"
+modvar = "specialcond"
+name = "Special Condition"
+desc = "A computed value. 0 means not private property"
+varclass = "Int"
+vartype = "Categorical"
+varcat = "Type or Category"
+source = "crashes"
+isrecoded = true
+recodeinfo = {0 = 0, 1 = 1, 2 = 2, 3 = 3, 4 = 4, 5 = 5, 6 = 6, "_" = 9}
+islabeled = true
+labeltype = "Nominal"
+labels = {1 = "Schoolbus on Public Roadway", 2 = "State University (also SFIA)", 3 = "Schoolbus Not on Public Roadway", 4 = "Offroad (Unimproved)", 5 = "Vista Point or Rest Area or Sales or Inspection Facility", 6 = "Other Public Access (Improved)", 0 = "Not Above", 9 = "Not Stated"}
+fcinclude = {crashes = true, parties = false, victims = false, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = false}
+tsstats = {sum = false, mean = false, median = false}
+tokeep = true
+
+# 91 Beat Type
+[beattype]
+varorder = 91
+rawdata = true
+rawvar = "BEAT_TYPE"
+modvar = "beattype"
+name = "Beat Type"
+desc = "The type of police beat that responded to the crash"
+varclass = "Int"
+vartype = "Categorical"
+varcat = "Type or Category"
+source = "crashes"
+isrecoded = false
+islabeled = true
+labeltype = "Nominal"
+labels = {1 = "CHP State Highway", 2 = "CHP County RoadLine", 3 = "CHP County RoadArea", 4 = "Schoolbus on City Roadway", 5 = "Schoolbus not on Public Roadway", 6 = "Offroad (Unimproved)", 7 = "Vista Point or Rest Area or Sales or Inspection Facility", 8 = "Other Public Access (Improved)", 9 = "City Roadway", 0 = "Not CHP"}
+fcinclude = {crashes = true, parties = false, victims = false, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = false}
+tsstats = {sum = false, mean = false, median = false}
+tokeep = true
+
+# 92 CHP Beat Type
+[chpbeattype]
+varorder = 92
+rawdata = true
+rawvar = "CHP_BEAT_TYPE"
+modvar = "chpbeattype"
+name = "CHP Beat Type"
+desc = "Location of crash based on CHP beat"
+varclass = "Int"
+vartype = "Categorical"
+varcat = "Type or Category"
+source = "crashes"
+isrecoded = true
+recodeinfo = {1 = 1, 2 = 2, 3 = 3, 4 = 4, 5 = 5, A = 6, S = 7, 6 = 8, 7 = 9, 8 = 10, 9 = 11, 0 = 0}
+islabeled = true
+labeltype = "Nominal"
+labels = {1 = "Interstate", 2 = "US Highway", 3 = "State Route", 4 = "County RoadLine", 5 = "County RoadArea", 6 = "Safety Services Program Beats", 7 = "Administrative Beats (900's)", 8 = "Contract City: US Highway", 9 = "Contract City: State Route", 10 = "Contract City: County RoadLine", 11 = "Contract City: County RoadArea", 0 = "Not CHP"}
+fcinclude = {crashes = true, parties = false, victims = false, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = false}
+tsstats = {sum = false, mean = false, median = false}
+tokeep = true
+
+# 93 CHP Beat Class
+[chpbeatclass]
+varorder = 93
+rawdata = true
+rawvar = "CHP_BEAT_CLASS"
+modvar = "chpbeatclass"
+name = "CHP Beat Class"
+desc = "Location of crash based on CHP beat class"
+varclass = "Int"
+vartype = "Categorical"
+varcat = "Type or Category"
+source = "crashes"
+isrecoded = false
+islabeled = true
+labeltype = "Nominal"
+labels = {1 = "CHP Primary", 2 = "CHP Other", 0 = "Not CHP"}
+fcinclude = {crashes = true, parties = false, victims = false, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = false}
+tsstats = {sum = false, mean = false, median = false}
+tokeep = true
+
+# 94 Beat Number
+[beatnumber]
+varorder = 94
+rawdata = true
+rawvar = "BEAT_NUMBER"
+modvar = "beatnumber"
+name = "Beat Number"
+desc = "Beat of the officer who responded to the crash"
+varclass = "String"
+vartype = "Categorical"
+varcat = "Type or Category"
+source = "crashes"
+isrecoded = false
+islabeled = false
+fcinclude = {crashes = true, parties = false, victims = false, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = false}
+tsstats = {sum = false, mean = false, median = false}
+tokeep = true
+
+# 95 Primary Road
+[primaryrd]
+varorder = 95
+rawdata = true
+rawvar = "PRIMARY_RD"
+modvar = "primaryrd"
+name = "Primary Road"
+desc = "The name of the roadway on which the crash occurred"
+varclass = "String"
+vartype = "Categorical"
+varcat = "Location or Place"
+source = "crashes"
+isrecoded = false
+islabeled = false
+fcinclude = {crashes = true, parties = false, victims = false, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = false}
+tsstats = {sum = false, mean = false, median = false}
+tokeep = true
+
+# 96 Secondary Road
+[secondaryrd]
+varorder = 96
+rawdata = true
+rawvar = "SECONDARY_RD"
+modvar = "secondaryrd"
+name = "Secondary Road"
+desc = "The name of the roadway that intersects with the primary road at the crash location"
+varclass = "String"
+vartype = "Categorical"
+varcat = "Location or Place"
+source = "crashes"
+isrecoded = false
+islabeled = false
+fcinclude = {crashes = true, parties = false, victims = false, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = false}
+tsstats = {sum = false, mean = false, median = false}
+tokeep = true
+
+# 97 Distance
+[distance]
+varorder = 97
+rawdata = true
+rawvar = "DISTANCE"
+modvar = "distance"
+name = "Distance"
+desc = "Distance of the crash from the intersection with the secondary roadway in ft"
+varclass = "Float"
+vartype = "Numeric"
+varcat = "Distance or Length"
+source = "crashes"
+isrecoded = false
+islabeled = false
+fcinclude = {crashes = true, parties = false, victims = false, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = true, parties = false, victims = false, collisions = true}
+tsstats = {sum = false, mean = true, median = false}
+tokeep = true
+
+# 98 Direction
+[direction]
+varorder = 98
+rawdata = true
+rawvar = "DIRECTION"
+modvar = "direction"
+name = "Direction"
+desc = "Direction of travel of the primary party at the time of the crash"
+varclass = "Int"
+vartype = "Categorical"
+varcat = "Type or Category"
+source = "crashes"
+isrecoded = true
+recodeinfo = {N = 1, S = 2, E = 3, W = 4, "_" = 0}
+islabeled = true
+labeltype = "Nominal"
+labels = {1 = "North", 2 = "South", 3 = "East", 4 = "West", 0 = "Not Stated"}
+fcinclude = {crashes = true, parties = false, victims = false, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = false}
+tsstats = {sum = false, mean = false, median = false}
+tokeep = true
+
+# 99 Intersection
+[intersection]
+varorder = 99
+rawdata = true
+rawvar = "INTERSECTION"
+modvar = "intersection"
+name = "Intersection"
+desc = "A flag that denotes if the crash occurred at the intersection with the secondary roadway"
+varclass = "Boolean"
+vartype = "Indicator"
+varcat = "Type or Category"
+source = "crashes"
+isrecoded = true
+recodeinfo = {N = 0, Y = 1, "" = 0}
+islabeled = true
+labeltype = "Boolean"
+labels = {0 = "No", 1 = "Yes"}
+fcinclude = {crashes = true, parties = false, victims = false, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = true, parties = false, victims = false, collisions = true}
+tsstats = {sum = true, mean = false, median = false}
+tokeep = true
+varnotes = "Aggregation only if the intersection i 1 (Yes)"
+
+# 100 Weather 1
+[weather1]
+varorder = 100
+rawdata = true
+rawvar = "WEATHER_1"
+modvar = "weather1"
+name = "Weather 1"
+desc = "Weather condition at the time of the crash"
+varclass = "Int"
+vartype = "Categorical"
+varcat = "Type or Category"
+source = "crashes"
+isrecoded = true
+recodeinfo = {A = 1, B = 2, C = 3, D = 4, E = 5, G = 6, F = 7, "_" = 0}
+islabeled = true
+labeltype = "Nominal"
+labels = {1 = "Clear", 2 = "Cloudy", 3 = "Raining", 4 = "Snowing", 5 = "Fog", 6 = "Wind", 7 = "Other", 0 = "Not Stated"}
+fcinclude = {crashes = true, parties = false, victims = false, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = false}
+tsstats = {sum = false, mean = false, median = false}
+tokeep = true
+
+# 101 Weather 2
+[weather2]
+varorder = 101
+rawdata = true
+rawvar = "WEATHER_2"
+modvar = "weather2"
+name = "Weather 2"
+desc = "Additional weather condition at the time of the crash"
+varclass = "Int"
+vartype = "Categorical"
+varcat = "Type or Category"
+source = "crashes"
+isrecoded = true
+recodeinfo = {A = 1, B = 2, G = 3, C = 4, E = 5, D = 6, F = 7, "_" = 0}
+islabeled = true
+labeltype = "Nominal"
+labels = {1 = "Clear", 2 = "Cloudy", 3 = "Wind", 4 = "Raining", 5 = "Fog", 6 = "Snowing", 7 = "Other", 0 = "Not Stated"}
+fcinclude = {crashes = true, parties = false, victims = false, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = false}
+tsstats = {sum = false, mean = false, median = false}
+tokeep = true
+
+# 102 Combined Weather
+[weathercomb]
+varorder = 102
+rawdata = false
+modvar = "weathercomb"
+name = "Combined Weather"
+desc = "Combined Weather Conditions from WEATHER_1 and WEATHER_2 fields in numeric codes by weather conditions severity"
+varclass = "Int"
+vartype = "Categorical"
+varcat = "Type or Category"
+source = "derived"
+isrecoded = true
+recodeinfo = {10 = 10, 11 = 10, 12 = 12, 13 = 13, 14 = 45, 15 = 15, 16 = 16, 17 = 17, 20 = 20, 21 = 21, 22 = 20, 23 = 23, 24 = 24, 25 = 25, 26 = 26, 27 = 27, 30 = 30, 31 = 31, 32 = 32, 33 = 30, 34 = 34, 35 = 35, 36 = 36, 37 = 37, 40 = 40, 45 = 45, 46 = 46, 47 = 47, 50 = 50, 51 = 51, 52 = 52, 53 = 53, 54 = 54, 55 = 50, 56 = 56, 57 = 57, 60 = 60, 61 = 61, 62 = 62, 63 = 63, 64 = 64, 65 = 65, 66 = 60, 67 = 67, 70 = 70, 71 = 70, 72 = 72, 73 = 73, 74 = 74, 75 = 75, 76 = 76, 77 = 70, 0 = 0}
+islabeled = true
+labeltype = "Nominal"
+labels = {10 = "Clear", 12 = "Clear and Cloudy", 13 = "Clear and Wind", 14 = "Clear and Raining", 15 = "Clear and Fog", 16 = "Clear and Snowing", 17 = "Clear and Other", 20 = "Cloudy", 21 = "Cloudy and Clear", 23 = "Cloudy and Wind", 24 = "Cloudy and Raining", 25 = "Cloudy and Fog", 26 = "Cloudy and Snowing", 27 = "Cloudy and Other", 30 = "Wind", 31 = "Wind and Clear", 32 = "Wind and Cloudy", 34 = "Wind and Raining", 35 = "Wind and Fog", 36 = "Wind and Snowing", 37 = "Wind and Other", 40 = "Raining", 41 = "Raining and Clear", 42 = "Raining and Cloudy", 43 = "Raining and Wind", 45 = "Raining and Fog", 46 = "Raining and Snowing", 47 = "Raining and Other", 50 = "Fog", 51 = "Fog and Clear", 52 = "Fog and Cloudy", 53 = "Fog and Wind", 54 = "Fog and Raining", 56 = "Fog and Snowing", 57 = "Fog and Other", 60 = "Snowing", 61 = "Snowing and Clear", 62 = "Snowing and Cloudy", 63 = "Snowing and Wind", 64 = "Snowing and Raining", 65 = "Snowing and Fog", 67 = "Snowing and Other", 70 = "Other", 72 = "Other and Wind", 73 = "Other and Raining", 74 = "Other and Fog", 75 = "Other and Snowing", 0 = "Not Stated"}
+fcinclude = {crashes = true, parties = false, victims = false, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = false}
+tsstats = {sum = false, mean = false, median = false}
+tokeep = true
+
+
+# 103 Road Surface
+[roadsurface]
+varorder = 103
+rawdata = true
+rawvar = "ROAD_SURFACE"
+modvar = "roadsurface"
+name = "Road Surface"
+desc = "Roadway surface condition at the time of the crash in the traffic lane(s) involved"
+varclass = "Int"
+vartype = "Categorical"
+varcat = "Type or Category"
+source = "crashes"
+isrecoded = true
+recodeinfo = {A = 1, B = 2, C = 3, D = 4, H = 5, "_" = 0}
+islabeled = true
+labeltype = "Nominal"
+labels = {1 = "Dry", 2 = "Wet", 3 = "Snowy or Icy", 4 = "Slippery (Muddy, Oily, etc)", 5 = "Unknown", 0 = "Not Stated"}
+fcinclude = {crashes = true, parties = false, victims = false, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = false}
+tsstats = {sum = false, mean = false, median = false}
+tokeep = true
+
+# 104 Road Condition 1
+[roadcond1]
+varorder = 104
+rawdata = true
+rawvar = "ROAD_COND_1"
+modvar = "roadcond1"
+name = "Road Condition 1"
+desc = "Roadway condition at the time of the crash in the traffic lane(s) involved"
+varclass = "Int"
+vartype = "Categorical"
+varcat = "Type or Category"
+source = "crashes"
+isrecoded = true
+recodeinfo = {A = 1, B = 2, C = 3, D = 4, E = 5, F = 6, G = 7, H = 8, "_" = 0}
+islabeled = true
+labeltype = "Nominal"
+labels = {1 = "Holes, Deep Ruts", 2 = "Loose Material on Roadway", 3 = "Obstruction on Roadway", 4 = "Construction or Repair Zone", 5 = "Reduced Roadway Width", 6 = "Flooded", 7 = "Other", 8 = "No Unusual Condition", 0 = "Not Stated"}
+fcinclude = {crashes = true, parties = false, victims = false, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = false}
+tsstats = {sum = false, mean = false, median = false}
+tokeep = true
+
+# 105 Road Condition 2
+[roadcond2]
+varorder = 105
+rawdata = true
+rawvar = "ROAD_COND_2"
+modvar = "roadcond2"
+name = "Road Condition 2"
+desc = "Second roadway condition at the time of the crash in the traffic lane(s) involved"
+varclass = "Int"
+vartype = "Categorical"
+varcat = "Type or Category"
+source = "crashes"
+isrecoded = true
+recodeinfo = {A = 1, B = 2, C = 3, D = 4, E = 5, F = 6, G = 7, H = 8, "_" = 0}
+islabeled = true
+labeltype = "Nominal"
+labels = {1 = "Holes, Deep Ruts", 2 = "Loose Material on Roadway", 3 = "Obstruction on Roadway", 4 = "Construction or Repair Zone", 5 = "Reduced Roadway Width", 6 = "Flooded", 7 = "Other", 8 = "No Unusual Condition", 0 = "Not Stated"}
+fcinclude = {crashes = true, parties = false, victims = false, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = false}
+tsstats = {sum = false, mean = false, median = false}
+tokeep = true
+
+# 106 Lighting
+[lighting]
+varorder = 106
+rawdata = true
+rawvar = "LIGHTING"
+modvar = "lighting"
+name = "Lighting"
+desc = "Lighting conditions at the crash location and the time of the crash"
+varclass = "Int"
+vartype = "Categorical"
+varcat = "Type or Category"
+source = "crashes"
+isrecoded = true
+recodeinfo = {A = 1, B = 2, C = 3, D = 4, E = 5, "_" = 0}
+islabeled = true
+labeltype = "Nominal"
+labels = {0 = "Not Stated", 1 = "Daylight", 2 = "Dusk - Dawn", 3 = "Dark - Street Lights", 4 = "Dark - No Street Lights", 5 = "Dark - Street Lights Not Functioning"}
+fcinclude = {crashes = true, parties = false, victims = false, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = true, parties = false, victims = false, collisions = true}
+tsstats = {sum = false, mean = true, median = false}
+tokeep = true
+
+# Control Device
+[controldevice]
+varorder = 107
+rawdata = true
+rawvar = "CONTROL_DEVICE"
+modvar = "controldevice"
+name = "Control Device"
+desc = "Presence and condition of crash related traffic control devices at the time of the crash. Control devices include regulatory, warning, and construction sings. This excludes striping and officers or other persons directing traffic"
+varclass = "Int"
+vartype = "Categorical"
+varcat = "Type or Category"
+source = "crashes"
+isrecoded = true
+recodeinfo = {A = 1, B = 2, C = 3, D = 4, "_" = 0}
+islabeled = true
+labeltype = "Nominal"
+labels = {1 = "Functioning", 2 = "Not Functioning", 3 = "Obscured", 4 = "None", 0 = "Not Stated"}
+fcinclude = {crashes = true, parties = false, victims = false, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = false}
+tsstats = {sum = false, mean = false, median = false}
+tokeep = true
+
+# 108 State Highway Indicator
+[statehwyind]
+varorder = 108
+rawdata = true
+rawvar = "STATE_HWY_IND"
+modvar = "statehwyind"
+name = "State Highway Indicator"
+desc = "A flag to indicate whether the crash is on or near a state highway"
+varclass = "Boolean"
+vartype = "Indicator"
+varcat = "Type or Category"
+source = "crashes"
+isrecoded = true
+recodeinfo = {N = 0, Y = 1, "" = 0}
+islabeled = true
+labeltype = "Boolean"
+labels = {0 = "Not State Highway", 1 = "State Highway"}
+fcinclude = {crashes = true, parties = false, victims = false, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = true, parties = false, victims = false, collisions = true}
+tsstats = {sum = true, mean = false, median = false}
+tokeep = true
+varnotes = "Aggregate if the state highway indicator is 1 (State Highway)"
+
+# 109 Side of Highway
+[sideofhwy]
+varorder = 109
+rawdata = true
+rawvar = "SIDE_OF_HWY"
+modvar = "sideofhwy"
+name = "Side of Highway"
+desc = "Code provided by Caltrans Coders, applies to divided highway, based on nominal direction of route, for single vehicle is same as nominal direction of travel, overruled by impact with second vehicle after crossing median"
+varclass = "Int"
+vartype = "Categorical"
+varcat = "Type or Category"
+source = "crashes"
+isrecoded = true
+recodeinfo = {N = 1, S = 2, E = 3, W = 4, L = 5, R = 6, "" = 0}
+islabeled = true
+labeltype = "Nominal"
+labels = {1 = "Northbound", 2 = "Southbound", 3 = "Eastbound", 4 = "Westbound", 5 = "Left Side", 6 = "Right Side", 0 = "Not Stated"}
+fcinclude = {crashes = true, parties = false, victims = false, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = false}
+tsstats = {sum = false, mean = false, median = false}
+tokeep = true
+
+# 110 Tow Away
+[towaway]
+varorder = 110
+rawdata = true
+rawvar = "TOW_AWAY"
+modvar = "towaway"
+name = "Tow Away"
+desc = "A flag to indicate whether the vehicle was towed away from the crash scene"
+varclass = "Boolean"
+vartype = "Indicator"
+varcat = "Type or Category"
+source = "crashes"
+isrecoded = true
+recodeinfo = {N = 0, Y = 1, "" = 0}
+islabeled = true
+labeltype = "Boolean"
+labels = {0 = "No", 1 = "Yes"}
+fcinclude = {crashes = true, parties = false, victims = false, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = true, parties = false, victims = false, collisions = true}
+tsstats = {sum = true, mean = false, median = false}
+tokeep = true
+
+# 111 PCF Violation Code
+[pcfcodeofviol]
+varorder = 111
+rawdata = true
+rawvar = "PCF_CODE_OF_VIOL"
+modvar = "pcfcodeofviol"
+name = "PCF Violation Code"
+desc = "The law code that was violated and was the primary cause of the crash"
+varclass = "Int"
+vartype = "Categorical"
+varcat = "Type or Category"
+source = "crashes"
+isrecoded = true
+recodeinfo = {B = 1, C = 2, H = 3, I = 4, O = 5, P = 6, S = 7, W = 8, "_" = 0}
+islabeled = true
+labeltype = "Nominal"
+labels = {1 = "Business and Professions", 2 = "Vehicle", 3 = "City Health and Safety", 4 = "City Ordinance", 5 = "County Ordinance", 6 = "Penal", 7 = "Streets and Highways", 8 = "Welfare and Institutions", 0 = "Not Stated"}
+fcinclude = {crashes = true, parties = false, victims = false, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = false}
+tsstats = {sum = false, mean = false, median = false}
+tokeep = true
+
+
 
