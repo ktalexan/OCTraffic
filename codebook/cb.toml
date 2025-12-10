@@ -3311,5 +3311,806 @@ tsinclude = {crashes = false, parties = false, victims = false, collisions = fal
 tsstats = {sum = false, mean = false, median = false}
 tokeep = true
 
+# 164 Victim Safety Equipment 1
+[victimsafetyeq1]
+varorder = 164
+rawdata = true
+rawvar = "VICTIM_SAFETY_EQUIP_1"
+modvar = "victimsafetyeq1"
+name = "Victim Safety Equipment 1"
+desc = "The primary safety equipment used by the victim in the crash"
+varclass = "Int"
+vartype = "Categorical"
+varcat = "Type or Category"
+source = "victims"
+isrecoded = true
+recode = {"A" = 1, "B" = 2, "C" = 3, "D" = 4, "E" = 5, "F" = 6, "G" = 7, "H" = 8, "J" = 9, "K" = 10, "L" = 11, "M" = 12, "N" = 13, "P" = 14, "Q" = 15, "R" = 16, "S" = 17, "T" = 18, "U" = 19, "V" = 20, "W" = 21, "X" = 22, "Y" = 23, "-" = 0}
+islabeled = true
+labeltype = "Nominal"
+labels = {"1" = "None in Vehicle", "2" = "Unknown", "3" = "Lap Belt Used", "4" = "Lap Belt Not Used", "5" = "Shoulder Harness Used", "6" = "Shoulder Harness Not Used", "7" = "Lap/Shoulder Harness Used", "8" = "Lap/Shoulder Harness Not Used", "9" = "Passive Restraint Used", "10" = "Passive Restraint Not Used", "11" = "Air Bag Deployed", "12" = "Air Bag Not Deployed", "13" = "Other", "14" = "Not Required", "15" = "Child Restraint in Vehicle Used", "16" = "Child Restraint in Vehicle Not Used", "17" = "Child Restraint in Vehicle, Use Unknown", "18" = "Child Restraint in Vehicle, Improper Use", "19" = "No Child Restraint in Vehicle", "20" = "Driver, Motorcycle Helmet Not Used", "21" = "Driver, Motorcycle Helmet Used", "22" = "Passenger, Motorcycle Helmet Not Used", "23" = "Passenger, Motorcycle Helmet Used", "0" = "Not Stated"}
+fcinclude = {crashes = false, parties = false, victims = true, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = false}
+tsstats = {sum = false, mean = false, median = false}
+tokeep = true
 
+# 165 Victim Safety Equipment 2
+[victimsafetyeq2]
+varorder = 165
+rawdata = true
+rawvar = "VICTIM_SAFETY_EQUIP_2"
+modvar = "victimsafetyeq2"
+name = "Victim Safety Equipment 2"
+desc = "The secondary safety equipment used by the victim in the crash"
+varclass = "Int"
+vartype = "Categorical"
+varcat = "Type or Category"
+source = "victims"
+isrecoded = true
+recode = {"A" = 1, "B" = 2, "C" = 3, "D" = 4, "E" = 5, "F" = 6, "G" = 7, "H" = 8, "J" = 9, "K" = 10, "L" = 11, "M" = 12, "N" = 13, "P" = 14, "Q" = 15, "R" = 16, "S" = 17, "T" = 18, "U" = 19, "V" = 20, "W" = 21, "X" = 22, "Y" = 23, "-" = 0}
+islabeled = true
+labeltype = "Nominal"
+labels = {"1" = "None in Vehicle", "2" = "Unknown", "3" = "Lap Belt Used", "4" = "Lap Belt Not Used", "5" = "Shoulder Harness Used", "6" = "Shoulder Harness Not Used", "7" = "Lap/Shoulder Harness Used", "8" = "Lap/Shoulder Harness Not Used", "9" = "Passive Restraint Used", "10" = "Passive Restraint Not Used", "11" = "Air Bag Deployed", "12" = "Air Bag Not Deployed", "13" = "Other", "14" = "Not Required", "15" = "Child Restraint in Vehicle Used", "16" = "Child Restraint in Vehicle Not Used", "17" = "Child Restraint in Vehicle, Use Unknown", "18" = "Child Restraint in Vehicle, Improper Use", "19" = "No Child Restraint in Vehicle", "20" = "Driver, Motorcycle Helmet Not Used", "21" = "Driver, Motorcycle Helmet Used", "22" = "Passenger, Motorcycle Helmet Not Used", "23" = "Passenger, Motorcycle Helmet Used", "0" = "Not Stated"}
+fcinclude = {crashes = false, parties = false, victims = true, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = false}
+tsstats = {sum = false, mean = false, median = false}
+tokeep = true
 
+# 166 Victim Ejected
+[victimejected]
+varorder = 166
+rawdata = true
+rawvar = "VICTIM_EJECTED"
+modvar = "victimejected"
+name = "Victim Ejected"
+desc = "Indicates whether the victim was ejected from the vehicle during the crash"
+varclass = "Int"
+vartype = "Categorical"
+varcat = "Type or Category"
+source = "victims"
+isrecoded = true
+recode = {"0" = 0, "1" = 1, "2" = 2, "3" = 3, "_" = 9}
+islabeled = true
+labeltype = "Nominal"
+labels = {"0" = "Not Ejected", "1" = "Fully Ejected", "2" = "Partially Ejected", "3" = "Unknown", "9" = "Not Stated"}
+fcinclude = {crashes = false, parties = false, victims = true, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = false}
+tsstats = {sum = false, mean = false, median = false}
+tokeep = true
+
+# 167 City Area
+[cityareasqmi]
+varorder = 167
+rawdata = true
+rawvar = "AREASQMI"
+modvar = "cityareasqmi"
+name = "City Area"
+desc = "City area (in square miles) calculated geographically"
+varclass = "Float"
+vartype = "Numeric"
+varcat = "Count or Amount"
+source = "cities"
+isrecoded = false
+islabeled = false
+fcinclude = {crashes = false, parties = false, victims = false, collisions = true, cities = true, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = true}
+tsstats = {sum = false, mean = true, median = false}
+tokeep = true
+
+# 168 City Population Density
+[citypopdens]
+varorder = 168
+rawdata = true
+rawvar = "POPDENS"
+modvar = "citypopdens"
+name = "City Population Density"
+desc = "City population density (in persons per square mile) calculated geographically"
+varclass = "Float"
+vartype = "Numeric"
+varcat = "Count or Amount"
+source = "cities"
+isrecoded = false
+islabeled = false
+fcinclude = {crashes = false, parties = false, victims = false, collisions = true, cities = true, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = true}
+tsstats = {sum = false, mean = true, median = false}
+tokeep = true
+
+# 169 City Housing Density
+[cityhoudens]
+varorder = 169
+rawdata = true
+rawvar = "HUDENS"
+modvar = "cityhoudens"
+name = "City Housing Density"
+desc = "City housing density (in housing units per square mile) calculated geographically"
+varclass = "Float"
+vartype = "Numeric"
+varcat = "Count or Amount"
+source = "cities"
+isrecoded = false
+islabeled = false
+fcinclude = {crashes = false, parties = false, victims = false, collisions = true, cities = true, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = true}
+tsstats = {sum = false, mean = true, median = false}
+tokeep = true
+
+# 170 Total Population in City
+[citypoptotal]
+varorder = 170
+rawdata = true
+rawvar = "POPT"
+modvar = "citypoptotal"
+name = "Total Population in City"
+desc = "Total population in the city"
+varclass = "Int"
+vartype = "Numeric"
+varcat = "Count or Amount"
+source = "cities"
+isrecoded = false
+islabeled = false
+fcinclude = {crashes = false, parties = false, victims = false, collisions = true, cities = true, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = true}
+tsstats = {sum = false, mean = true, median = false}
+tokeep = true
+
+# 171 Total Housing Units in City
+[cityhoutotal]
+varorder = 171
+rawdata = true
+rawvar = "HUT"
+modvar = "cityhoutotal"
+name = "Total Housing Units in City"
+desc = "Total housing units in the city"
+varclass = "Int"
+vartype = "Numeric"
+varcat = "Count or Amount"
+source = "cities"
+isrecoded = false
+islabeled = false
+fcinclude = {crashes = false, parties = false, victims = false, collisions = true, cities = true, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = true}
+tsstats = {sum = false, mean = true, median = false}
+tokeep = true
+
+# 172 City Asian Population
+[citypopasian]
+varorder = 172
+rawdata = true
+rawvar = "POPA"
+modvar = "citypopasian"
+name = "City Asian Population"
+desc = "Total Asian population in the city"
+varclass = "Int"
+vartype = "Numeric"
+varcat = "Count or Amount"
+source = "cities"
+isrecoded = false
+islabeled = false
+fcinclude = {crashes = false, parties = false, victims = false, collisions = true, cities = true, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = true}
+tsstats = {sum = false, mean = true, median = false}
+tokeep = true
+
+# 173 City Black Population
+[citypopblack]
+varorder = 173
+rawdata = true
+rawvar = "POPB"
+modvar = "citypopblack"
+name = "City Black Population"
+desc = "Total Black or African American population in the city"
+varclass = "Int"
+vartype = "Numeric"
+varcat = "Count or Amount"
+source = "cities"
+isrecoded = false
+islabeled = false
+fcinclude = {crashes = false, parties = false, victims = false, collisions = true, cities = true, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = true}
+tsstats = {sum = false, mean = true, median = false}
+tokeep = true
+
+# 174 City Hispanic Population
+[citypophispanic]
+varorder = 174
+rawdata = true
+rawvar = "POPH"
+modvar = "citypophispanic"
+name = "City Hispanic Population"
+desc = "Total Hispanic or Latino population in the city"
+varclass = "Int"
+vartype = "Numeric"
+varcat = "Count or Amount"
+source = "cities"
+isrecoded = false
+islabeled = false
+fcinclude = {crashes = false, parties = false, victims = false, collisions = true, cities = true, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = true}
+tsstats = {sum = false, mean = true, median = false}
+tokeep = true
+
+# 175 City White Population
+[citypopwhite]
+varorder = 175
+rawdata = true
+rawvar = "POPW"
+modvar = "citypopwhite"
+name = "City White Population"
+desc = "Total White population in the city"
+varclass = "Int"
+vartype = "Numeric"
+varcat = "Count or Amount"
+source = "cities"
+isrecoded = false
+islabeled = false
+fcinclude = {crashes = false, parties = false, victims = false, collisions = true, cities = true, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = true}
+tsstats = {sum = false, mean = true, median = false}
+tokeep = true
+
+# 176 Number of Commuting Vehicles
+[cityvehicles]
+varorder = 176
+rawdata = true
+rawvar = "VEHICLES_COMMUTING"
+modvar = "cityvehicles"
+name = "Number of Commuting Vehicles"
+desc = "The number of vehicles that commute into the city for work"
+varclass = "Int"
+vartype = "Numeric"
+varcat = "Count or Amount"
+source = "cities"
+isrecoded = false
+islabeled = false
+fcinclude = {crashes = false, parties = false, victims = false, collisions = true, cities = true, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = true}
+tsstats = {sum = false, mean = true, median = false}
+tokeep = true
+
+# 177 Aggregate Travel Time to Work
+[citytraveltime]
+varorder = 177
+rawdata = true
+rawvar = "TRAVEL_TIME"
+modvar = "citytraveltime"
+name = "Aggregate Travel Time to Work"
+desc = "The aggregate travel time to work (in minutes) for all workers in the city"
+varclass = "Int"
+vartype = "Numeric"
+varcat = "Count or Amount"
+source = "cities"
+isrecoded = false
+islabeled = false
+fcinclude = {crashes = false, parties = false, victims = false, collisions = true, cities = true, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = true}
+tsstats = {sum = false, mean = true, median = false}
+tokeep = true
+
+# 178 Mean Travel Time to Work per Vehicle
+[citymeantraveltime]
+varorder = 178
+rawdata = false
+modvar = "citymeantraveltime"
+name = "Mean Travel Time to Work per Vehicle"
+desc = "The mean travel time to work (in minutes) per commuting vehicle in the city"
+varclass = "Float"
+vartype = "Numeric"
+varcat = "Count or Amount"
+source = "derived"
+isrecoded = false
+islabeled = false
+fcinclude = {crashes = false, parties = false, victims = false, collisions = true, cities = true, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = true}
+tsstats = {sum = false, mean = true, median = false}
+tokeep = true
+varnotes = "Calculated by dividing Aggregate Travel Time to Work by Number of Commuting Vehicles"
+
+# 179 Road Name
+[roadname]
+varorder = 179
+rawdata = true
+rawvar = "NAME"
+modvar = "roadname"
+name = "Road Name"
+desc = "The name of the road from the road's layer"
+varclass = "String"
+vartype = "Categorical"
+varcat = "Location or Place"
+source = "roads"
+isrecoded = false
+islabeled = false
+fcinclude = {crashes = false, parties = false, victims = false, collisions = true, cities = false, roads = true, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = false}
+tsstats = {sum = false, mean = false, median = false}
+tokeep = true
+
+# 180 Road ID
+[roadid]
+varorder = 180
+rawdata = true
+rawvar = "RID"
+modvar = "roadid"
+name = "Road ID"
+desc = "The unique identifier for the road from the road's layer"
+varclass = "String"
+vartype = "Identifier"
+varcat = "Unique Identifier"
+source = "roads"
+isrecoded = false
+islabeled = false
+fcinclude = {crashes = false, parties = false, victims = false, collisions = true, cities = false, roads = true, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = false}
+tsstats = {sum = false, mean = false, median = false}
+tokeep = true
+
+# 181 Place Name (Road City)
+[placename]
+varorder = 181
+rawdata = true
+rawvar = "PLACE_NAME"
+modvar = "placename"
+name = "Place Name (Road City)"
+desc = "City of the road from the road's layer"
+varclass = "String"
+vartype = "Categorical"
+varcat = "Location or Place"
+source = "roads"
+isrecoded = false
+islabeled = false
+fcinclude = {crashes = false, parties = false, victims = false, collisions = true, cities = false, roads = true, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = false}
+tsstats = {sum = false, mean = false, median = false}
+tokeep = true
+
+# 182 Road Category
+[roadcat]
+varorder = 182
+rawdata = true
+rawvar = "ROADCAT"
+modvar = "roadcat"
+name = "Road Category"
+desc = "The category of the road from the road's layer"
+varclass = "Int"
+vartype = "Categorical"
+varcat = "Type or Category"
+source = "roads"
+isrecoded = true
+recode = {"1" = "Primary", "2" = "Secondary", "3" = "Local"}
+islabeled = true
+labeltype = "Nominal"
+labels = {"1" = "Primary", "2" = "Secondary", "3" = "Local"}
+fcinclude = {crashes = false, parties = false, victims = false, collisions = true, cities = false, roads = true, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = true}
+tsstats = {sum = false, mean = true, median = false}
+tokeep = true
+
+# 183 Road Length
+[roadlength]
+varorder = 183
+rawdata = true
+rawvar = "RLENGTH"
+modvar = "roadlength"
+name = "Road Length (in miles)"
+desc = "The length of the road segment (in miles) from the OC Tiger/Lines layer"
+varclass = "Float"
+vartype = "Numeric"
+varcat = "Count or Amount"
+source = "roads"
+isrecoded = false
+islabeled = false
+fcinclude = {crashes = false, parties = false, victims = false, collisions = true, cities = false, roads = true, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = true}
+tsstats = {sum = false, mean = true, median = false}
+tokeep = true
+
+# 184 Number of Primary Road Segments
+[roadsprimary]
+varorder = 184
+rawdata = false
+modvar = "roadsprimary"
+name = "Number of Primary Road Segments"
+desc = "The number of primary road segments in the city"
+varclass = "Int"
+vartype = "Numeric"
+varcat = "Count or Amount"
+source = "derived"
+isrecoded = false
+islabeled = false
+fcinclude = {crashes = false, parties = false, victims = false, collisions = true, cities = false, roads = true, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = true}
+tsstats = {sum = false, mean = true, median = false}
+tokeep = true
+
+# 185 Number of Secondary Road Segments
+[roadssecondary]
+varorder = 185
+rawdata = false
+modvar = "roadssecondary"
+name = "Number of Secondary Road Segments"
+desc = "The number of secondary road segments in the city"
+varclass = "Int"
+vartype = "Numeric"
+varcat = "Count or Amount"
+source = "derived"
+isrecoded = false
+islabeled = false
+fcinclude = {crashes = false, parties = false, victims = false, collisions = true, cities = false, roads = true, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = true}
+tsstats = {sum = false, mean = true, median = false}
+tokeep = true
+
+# 186 Number of Local Road Segments
+[roadslocal]
+varorder = 186
+rawdata = false
+modvar = "roadslocal"
+name = "Number of Local Road Segments"
+desc = "The number of local road segments in the city"
+varclass = "Int"
+vartype = "Numeric"
+varcat = "Count or Amount"
+source = "derived"
+isrecoded = false
+islabeled = false
+fcinclude = {crashes = false, parties = false, victims = false, collisions = true, cities = false, roads = true, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = true}
+tsstats = {sum = false, mean = true, median = false}
+tokeep = true
+
+# 187 Mean Road Length
+[roadlengthmean]
+varorder = 187
+rawdata = false
+modvar = "roadlengthmean"
+name = "Mean Road Length"
+desc = "The mean length of road segments (in miles) in the city"
+varclass = "Float"
+vartype = "Numeric"
+varcat = "Count or Amount"
+source = "derived"
+isrecoded = false
+islabeled = false
+fcinclude = {crashes = false, parties = false, victims = false, collisions = true, cities = false, roads = true, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = true}
+tsstats = {sum = false, mean = true, median = false}
+tokeep = true
+
+# 188 Total Road Length
+[roadlengthsum]
+varorder = 188
+rawdata = false
+modvar = "roadlengthsum"
+name = "Total Road Length"
+desc = "The total length of road segments (in miles) in the city"
+varclass = "Float"
+vartype = "Numeric"
+varcat = "Count or Amount"
+source = "derived"
+isrecoded = false
+islabeled = false
+fcinclude = {crashes = false, parties = false, victims = false, collisions = true, cities = false, roads = true, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = true}
+tsstats = {sum = false, mean = true, median = false}
+tokeep = true
+
+# 189 Total Population
+[populationtotal]
+varorder = 189
+rawdata = true
+rawvar = "populationTotal"
+modvar = "populationtotal"
+name = "Total Population"
+desc = "Total population in the Census block"
+varclass = "Int"
+vartype = "Numeric"
+varcat = "Count or Amount"
+source = "blocks"
+isrecoded = false
+islabeled = false
+fcinclude = {crashes = false, parties = false, victims = false, collisions = true, cities = false, roads = false, blocks = true}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = true}
+tsstats = {sum = false, mean = true, median = false}
+tokeep = true
+
+# 190 Total Housing Units
+[housingunitstotal]
+varorder = 190
+rawdata = true
+rawvar = "housingUnitsTotal"
+modvar = "housingunitstotal"
+name = "Total Housing Units"
+desc = "Total housing units in the Census block"
+varclass = "Int"
+vartype = "Numeric"
+varcat = "Count or Amount"
+source = "blocks"
+isrecoded = false
+islabeled = false
+fcinclude = {crashes = false, parties = false, victims = false, collisions = true, cities = false, roads = false, blocks = true}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = true}
+tsstats = {sum = false, mean = true, median = false}
+tokeep = true
+
+# 191 Total Households
+[householdstotal]
+varorder = 191
+rawdata = true
+rawvar = "householdsTotal"
+modvar = "householdstotal"
+name = "Total Households"
+desc = "Total households in the Census block"
+varclass = "Int"
+vartype = "Numeric"
+varcat = "Count or Amount"
+source = "blocks"
+isrecoded = false
+islabeled = false
+fcinclude = {crashes = false, parties = false, victims = false, collisions = true, cities = false, roads = false, blocks = true}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = true}
+tsstats = {sum = false, mean = true, median = false}
+tokeep = true
+
+# 192 Vacant Housing Units
+[housingunitsvacant]
+varorder = 192
+rawdata = true
+rawvar = "housingUnitsVacant"
+modvar = "housingunitsvacant"
+name = "Vacant Housing Units"
+desc = "Total vacant housing units in the Census block"
+varclass = "Int"
+vartype = "Numeric"
+varcat = "Count or Amount"
+source = "blocks"
+isrecoded = false
+islabeled = false
+fcinclude = {crashes = false, parties = false, victims = false, collisions = true, cities = false, roads = false, blocks = true}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = true}
+tsstats = {sum = false, mean = true, median = false}
+tokeep = true
+
+# 193 Housing Units with Mortgage
+[housingunitsmortgage]
+varorder = 193
+rawdata = true
+rawvar = "housingUnitsMortgage"
+modvar = "housingunitsmortgage"
+name = "Housing Units with Mortgage"
+desc = "Total housing units with a mortgage in the Census block"
+varclass = "Int"
+vartype = "Numeric"
+varcat = "Count or Amount"
+source = "blocks"
+isrecoded = false
+islabeled = false
+fcinclude = {crashes = false, parties = false, victims = false, collisions = true, cities = false, roads = false, blocks = true}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = true}
+tsstats = {sum = false, mean = true, median = false}
+tokeep = true
+
+# 194 Housing Units Owned
+[housingunitsowned]
+varorder = 194
+rawdata = true
+rawvar = "housingUnitsOwned"
+modvar = "housingunitsowned"
+name = "Housing Units Owned"
+desc = "Total housing units owned in the Census block"
+varclass = "Int"
+vartype = "Numeric"
+varcat = "Count or Amount"
+source = "blocks"
+isrecoded = false
+islabeled = false
+fcinclude = {crashes = false, parties = false, victims = false, collisions = true, cities = false, roads = false, blocks = true}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = true}
+tsstats = {sum = false, mean = true, median = false}
+tokeep = true
+
+# 195 Renter Occupied Housing Units
+[housingunitsrenteroccupied]
+varorder = 195
+rawdata = true
+rawvar = "housingUnitsRenterOccupied"
+modvar = "housingunitsrenteroccupied"
+name = "Renter Occupied Housing Units"
+desc = "Total renter occupied housing units in the Census block"
+varclass = "Int"
+vartype = "Numeric"
+varcat = "Count or Amount"
+source = "blocks"
+isrecoded = false
+islabeled = false
+fcinclude = {crashes = false, parties = false, victims = false, collisions = true, cities = false, roads = false, blocks = true}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = true}
+tsstats = {sum = false, mean = true, median = false}
+tokeep = true
+
+# 196 Vacancy Rate
+[vacancyrate]
+varorder = 196
+rawdata = false
+modvar = "vacancyrate"
+name = "Vacancy Rate"
+desc = "The vacancy rate (percentage of vacant housing units) in the Census block"
+varclass = "Float"
+vartype = "Numeric"
+varcat = "Count or Amount"
+source = "derived"
+isrecoded = false
+islabeled = false
+fcinclude = {crashes = false, parties = false, victims = false, collisions = true, cities = false, roads = false, blocks = true}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = true}
+tsstats = {sum = false, mean = true, median = false}
+tokeep = true
+
+# 197 Owner Occupied Housing Units
+[housingunitsowneroccupied]
+varorder = 197
+rawdata = true
+rawvar = "housingUnitsOwnerOccupied"
+modvar = "housingunitsowneroccupied"
+name = "Owner Occupied Housing Units"
+desc = "Total owner occupied housing units in the Census block"
+varclass = "Int"
+vartype = "Numeric"
+varcat = "Count or Amount"
+source = "blocks"
+isrecoded = false
+islabeled = false
+fcinclude = {crashes = false, parties = false, victims = false, collisions = true, cities = false, roads = false, blocks = true}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = true}
+tsstats = {sum = false, mean = true, median = false}
+tokeep = true
+
+# 198 Homeownership Rate
+[homeownershiprate]
+varorder = 198
+rawdata = false
+modvar = "homeownershiprate"
+name = "Homeownership Rate"
+desc = "The homeownership rate (percentage of owner occupied housing units) in the Census block"
+varclass = "Float"
+vartype = "Numeric"
+varcat = "Count or Amount"
+source = "derived"
+isrecoded = false
+islabeled = false
+fcinclude = {crashes = false, parties = false, victims = false, collisions = true, cities = false, roads = false, blocks = true}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = true}
+tsstats = {sum = false, mean = true, median = false}
+tokeep = true
+
+# 199 Population Density
+[populationdensity]
+varorder = 199
+rawdata = false
+modvar = "populationdensity"
+name = "Population Density"
+desc = "Population density (in persons per square mile) in the Census block"
+varclass = "Float"
+vartype = "Numeric"
+varcat = "Count or Amount"
+source = "derived"
+isrecoded = false
+islabeled = false
+fcinclude = {crashes = false, parties = false, victims = false, collisions = true, cities = false, roads = false, blocks = true}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = true}
+tsstats = {sum = false, mean = true, median = false}
+tokeep = true
+
+# 200 Housing Density
+[housingdensity]
+varorder = 200
+rawdata = false
+modvar = "housingdensity"
+name = "Housing Density"
+desc = "Housing density (in housing units per square mile) in the Census block"
+varclass = "Float"
+vartype = "Numeric"
+varcat = "Count or Amount"
+source = "derived"
+isrecoded = false
+islabeled = false
+fcinclude = {crashes = false, parties = false, victims = false, collisions = true, cities = false, roads = false, blocks = true}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = true}
+tsstats = {sum = false, mean = true, median = false}
+tokeep = true
+
+# 201 Latitude
+[latitude]
+varorder = 201
+rawdata = true
+rawvar = "LATITUDE"
+modvar = "latitude"
+name = "GPS Latitude"
+desc = "Latitude of the crash location in decimal degrees. The decimal point is included. LATITUDE and LONGITUDE are from the crash report"
+varclass = "Float"
+vartype = "Coordinates"
+varcat = "Location or Place"
+source = "crashes"
+isrecoded = false
+islabeled = false
+fcinclude = {crashes = true, parties = false, victims = false, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = false}
+tsstats = {sum = false, mean = false, median = false}
+tokeep = true
+
+# 202 Longitude
+[longitude]
+varorder = 202
+rawdata = true
+rawvar = "LONGITUDE"
+modvar = "longitude"
+name = "GPS Longitude"
+desc = "Longitude of the crash location in decimal degrees. The decimal point is included. LATITUDE and LONGITUDE are from the crash report"
+varclass = "Float"
+vartype = "Coordinates"
+varcat = "Location or Place"
+source = "crashes"
+isrecoded = false
+islabeled = false
+fcinclude = {crashes = true, parties = false, victims = false, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = false}
+tsstats = {sum = false, mean = false, median = false}
+tokeep = true
+
+# 203 X Coordinate Location
+[pointx]
+varorder = 203
+rawdata = true
+rawvar = "POINT_X"
+modvar = "pointx"
+name = "X Coordinate Location"
+desc = "The longitude of the geocoded location, uses the World Geodetic System from 1984 (WGS84). POINT_X and POINT_Y are generated using the geociding process by UC Berkeley Safe TREC"
+varclass = "Float"
+vartype = "Coordinates"
+varcat = "Location or Place"
+source = "crashes"
+isrecoded = false
+islabeled = false
+fcinclude = {crashes = true, parties = false, victims = false, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = false}
+tsstats = {sum = false, mean = false, median = false}
+tokeep = true
+
+# 204 Y Coordinate Location
+[pointy]
+varorder = 204
+rawdata = true
+rawvar = "POINT_Y"
+modvar = "pointy"
+name = "Y Coordinate Location"
+desc = "The latitude of the geocoded location, uses the World Geodetic System from 1984 (WGS84). POINT_X and POINT_Y are generated using the geociding process by UC Berkeley Safe TREC"
+varclass = "Float"
+vartype = "Coordinates"
+varcat = "Location or Place"
+source = "crashes"
+isrecoded = false
+islabeled = false
+fcinclude = {crashes = true, parties = false, victims = false, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = false}
+tsstats = {sum = false, mean = false, median = false}
+tokeep = true
+
+# 205 Geometry
+[geometry]
+varorder = 205
+rawdata = true
+rawvar = "geometry"
+modvar = "geometry"
+name = "Geometry"
+desc = "The geometry of the layer"
+varclass = "String"
+vartype = "Coordinates"
+varcat = "Location or Place"
+source = "derived"
+isrecoded = false
+islabeled = false
+fcinclude = {crashes = true, parties = true, victims = true, collisions = true, cities = true, roads = true, blocks = true}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = false}
+tsstats = {sum = false, mean = false, median = false}
+tokeep = true
+varnotes = "Generated by the SF Geospatial Library to represent the geometry of the spatial data"
+
+### End of the Codebook ###
