@@ -1,0 +1,405 @@
+[2014]
+dateend = "2014-12-31"
+status = "final"
+notes = "Final data in TIMS (updated on December 2025)"
+dategp = "2025-11-05"
+dateupdated = "2025-06-12"
+year = 2014
+datestart = "2014-01-01"
+
+    [2014.excluded]
+    parties = 301
+    victims = 258
+    crashes = 153
+
+    [2014.files]
+    parties = "Parties_2014.csv"
+    victims = "Victims_2014.csv"
+    crashes = "Crashes_2014.csv"
+
+    [2014.geocoded]
+    parties = 29747
+    victims = 26688
+    crashes = 13748
+
+    [2014.reported]
+    parties = 30048
+    victims = 26946
+    crashes = 13901
+
+[2018]
+dateend = "2018-12-31"
+status = "final"
+notes = "Final data in TIMS (updated on December 2025)"
+dategp = "2025-11-05"
+dateupdated = "2025-06-12"
+year = 2018
+datestart = "2018-01-01"
+
+    [2018.excluded]
+    parties = 629
+    victims = 415
+    crashes = 280
+
+    [2018.files]
+    parties = "Parties_2018.csv"
+    victims = "Victims_2018.csv"
+    crashes = "Crashes_2018.csv"
+
+    [2018.geocoded]
+    parties = 29950
+    victims = 23756
+    crashes = 13688
+
+    [2018.reported]
+    parties = 30579
+    victims = 24171
+    crashes = 13968
+
+[2016]
+dateend = "2016-12-31"
+status = "final"
+notes = "Final data in TIMS (updated on December 2025)"
+dategp = "2025-11-05"
+dateupdated = "2025-06-12"
+year = 2016
+datestart = "2016-01-01"
+
+    [2016.excluded]
+    parties = 723
+    victims = 652
+    crashes = 342
+
+    [2016.files]
+    parties = "Parties_2016.csv"
+    victims = "Victims_2016.csv"
+    crashes = "Crashes_2016.csv"
+
+    [2016.geocoded]
+    parties = 34413
+    victims = 30242
+    crashes = 15712
+
+    [2016.reported]
+    parties = 35136
+    victims = 30894
+    crashes = 16054
+
+[2019]
+dateend = "2019-12-31"
+status = "final"
+notes = "Final data in TIMS (updated on December 2025)"
+dategp = "2025-11-05"
+dateupdated = "2025-06-12"
+year = 2019
+datestart = "2019-01-01"
+
+    [2019.excluded]
+    parties = 690
+    victims = 490
+    crashes = 326
+
+    [2019.files]
+    parties = "Parties_2019.csv"
+    victims = "Victims_2019.csv"
+    crashes = "Crashes_2019.csv"
+
+    [2019.geocoded]
+    parties = 26405
+    victims = 20646
+    crashes = 12068
+
+    [2019.reported]
+    parties = 27095
+    victims = 21136
+    crashes = 12394
+
+[2023]
+dateend = "2023-12-31"
+status = "final"
+notes = "Final data in TIMS (updated on December 2025)"
+dategp = "2025-11-05"
+dateupdated = "2025-09-30"
+year = 2023
+datestart = "2023-01-01"
+
+    [2023.excluded]
+    parties = 673
+    victims = 484
+    crashes = 329
+
+    [2023.files]
+    parties = "Parties_2023.csv"
+    victims = "Victims_2023.csv"
+    crashes = "Crashes_2023.csv"
+
+    [2023.geocoded]
+    parties = 26182
+    victims = 18279
+    crashes = 12350
+
+    [2023.reported]
+    parties = 26855
+    victims = 18763
+    crashes = 12679
+
+[2017]
+dateend = "2017-12-31"
+status = "final"
+notes = "Final data in TIMS (updated on December 2025)"
+dategp = "2025-11-05"
+dateupdated = "2025-06-12"
+year = 2017
+datestart = "2017-01-01"
+
+    [2017.excluded]
+    parties = 625
+    victims = 418
+    crashes = 292
+
+    [2017.files]
+    parties = "Parties_2017.csv"
+    victims = "Victims_2017.csv"
+    crashes = "Crashes_2017.csv"
+
+    [2017.geocoded]
+    parties = 32890
+    victims = 26126
+    crashes = 15078
+
+    [2017.reported]
+    parties = 33515
+    victims = 26544
+    crashes = 15370
+
+[2022]
+dateend = "2022-12-31"
+status = "final"
+notes = "Final data in TIMS (updated on December 2025)"
+dategp = "2025-11-05"
+dateupdated = "2025-06-12"
+year = 2022
+datestart = "2022-01-01"
+
+    [2022.excluded]
+    parties = 600
+    victims = 457
+    crashes = 305
+
+    [2022.files]
+    parties = "Parties_2022.csv"
+    victims = "Victims_2022.csv"
+    crashes = "Crashes_2022.csv"
+
+    [2022.geocoded]
+    parties = 26190
+    victims = 18455
+    crashes = 12298
+
+    [2022.reported]
+    parties = 26790
+    victims = 18912
+    crashes = 12603
+
+[2021]
+dateend = "2021-12-31"
+status = "final"
+notes = "Final data in TIMS (updated on December 2025)"
+dategp = "2025-11-05"
+dateupdated = "2025-06-12"
+year = 2021
+datestart = "2021-01-01"
+
+    [2021.excluded]
+    parties = 505
+    victims = 369
+    crashes = 263
+
+    [2021.files]
+    parties = "Parties_2021.csv"
+    victims = "Victims_2021.csv"
+    crashes = "Crashes_2021.csv"
+
+    [2021.geocoded]
+    parties = 25421
+    victims = 18283
+    crashes = 11939
+
+    [2021.reported]
+    parties = 25926
+    victims = 18652
+    crashes = 12202
+
+[2025]
+dateend = "2025-06-30"
+status = "provisional"
+notes = "Provisional data in TIMS (updated on December 2025)"
+dategp = "2025-11-05"
+dateupdated = "2025-09-30"
+year = 2025
+datestart = "2025-01-01"
+
+    [2025.excluded]
+    parties = 333
+    victims = 246
+    crashes = 170
+
+    [2025.files]
+    parties = "Parties_2025.csv"
+    victims = "Victims_2025.csv"
+    crashes = "Crashes_2025.csv"
+
+    [2025.geocoded]
+    parties = 11144
+    victims = 7676
+    crashes = 5281
+
+    [2025.reported]
+    parties = 11477
+    victims = 7922
+    crashes = 5451
+
+[2015]
+dateend = "2015-12-31"
+status = "final"
+notes = "Final data in TIMS (updated on December 2025)"
+dategp = "2025-11-05"
+dateupdated = "2025-06-12"
+year = 2015
+datestart = "2015-01-01"
+
+    [2015.excluded]
+    parties = 338
+    victims = 308
+    crashes = 172
+
+    [2015.files]
+    parties = "Parties_2015.csv"
+    victims = "Victims_2015.csv"
+    crashes = "Crashes_2015.csv"
+
+    [2015.geocoded]
+    parties = 32134
+    victims = 28988
+    crashes = 14727
+
+    [2015.reported]
+    parties = 32472
+    victims = 29296
+    crashes = 14899
+
+[2012]
+dateend = "2012-12-31"
+status = "final"
+notes = "Data removed from TIMS (updated on December 2025)"
+dategp = "2025-11-05"
+dateupdated = "2025-01-30"
+year = 2012
+datestart = "2012-01-01"
+
+    [2012.excluded]
+    parties = 367
+    victims = 305
+    crashes = 188
+
+    [2012.files]
+    parties = "Parties_2012.csv"
+    victims = "Victims_2012.csv"
+    crashes = "Crashes_2012.csv"
+
+    [2012.geocoded]
+    parties = 30123
+    victims = 27178
+    crashes = 13989
+
+    [2012.reported]
+    parties = 30490
+    victims = 27483
+    crashes = 14177
+
+[2013]
+dateend = "2013-12-31"
+status = "final"
+notes = "Final data in TIMS (updated on December 2025)"
+dategp = "2025-11-05"
+dateupdated = "2025-06-12"
+year = 2013
+datestart = "2013-01-01"
+
+    [2013.excluded]
+    parties = 377
+    victims = 327
+    crashes = 191
+
+    [2013.files]
+    parties = "Parties_2013.csv"
+    victims = "Victims_2013.csv"
+    crashes = "Crashes_2013.csv"
+
+    [2013.geocoded]
+    parties = 29845
+    victims = 26435
+    crashes = 13811
+
+    [2013.reported]
+    parties = 30222
+    victims = 26762
+    crashes = 14002
+
+[2024]
+dateend = "2024-12-31"
+status = "provisional"
+notes = "Provisional data in TIMS (updated on December 2025)"
+dategp = "2025-11-05"
+dateupdated = "2025-09-30"
+year = 2024
+datestart = "2024-01-01"
+
+    [2024.excluded]
+    parties = 602
+    victims = 464
+    crashes = 314
+
+    [2024.files]
+    parties = "Parties_2024.csv"
+    victims = "Victims_2024.csv"
+    crashes = "Crashes_2024.csv"
+
+    [2024.geocoded]
+    parties = 25985
+    victims = 17980
+    crashes = 12239
+
+    [2024.reported]
+    parties = 26587
+    victims = 18444
+    crashes = 12553
+
+[2020]
+dateend = "2020-12-31"
+status = "final"
+notes = "Final data in TIMS (updated on December 2025)"
+dategp = "2025-11-05"
+dateupdated = "2025-06-12"
+year = 2020
+datestart = "2020-01-01"
+
+    [2020.excluded]
+    parties = 620
+    victims = 463
+    crashes = 296
+
+    [2020.files]
+    parties = "Parties_2020.csv"
+    victims = "Victims_2020.csv"
+    crashes = "Crashes_2020.csv"
+
+    [2020.geocoded]
+    parties = 18469
+    victims = 14044
+    crashes = 8719
+
+    [2020.reported]
+    parties = 19089
+    victims = 14507
+    crashes = 9015
