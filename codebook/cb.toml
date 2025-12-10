@@ -231,7 +231,7 @@ vartype = "Categorical"
 varcat = "Type or Category"
 source = "derived"
 isrecoded = true
-recodeinfo = {0 = 0, 1 = 1}
+recode = {0 = 0, 1 = 1}
 islabeled = true
 labeltype = "Boolean"
 labels = {0 = "No", 1 = "Yes"}
@@ -252,7 +252,7 @@ vartype = "Categorical"
 varcat = "Type or Category"
 source = "derived"
 isrecoded = true
-recodeinfo = {0 = 0, 1 = 1}
+recode = {0 = 0, 1 = 1}
 islabeled = true
 labeltype = "Boolean"
 labels = {0 = "No", 1 = "Yes"}
@@ -273,7 +273,7 @@ vartype = "Categorical"
 varcat = "Type or Category"
 source = "derived"
 isrecoded = true
-recodeinfo = {0 = 0, 1 = 1}
+recode = {0 = 0, 1 = 1}
 islabeled = true
 labeltype = "Boolean"
 labels = {0 = "No", 1 = "Yes"}
@@ -294,7 +294,7 @@ vartype = "Categorical"
 varcat = "Type or Category"
 source = "derived"
 isrecoded = true
-recodeinfo = {100 = 1, 10 = 2, 1 = 3, 11 = 4, 101 = 5, 110 = 6, 111 = 7}
+recode = {100 = 1, 10 = 2, 1 = 3, 11 = 4, 101 = 5, 110 = 6, 111 = 7}
 islabeled = true
 labeltype = "Nominal"
 labels = {1 = "Crashes Only", 2 = "Parties Only", 3 = "Victims Only", 4 = "Parties with Victims", 5 = "Crashes with Victims, no Parties", 6 = "Crashes with Parties, no Victims", 7 = "Crashes with Parties and Victims"}
@@ -443,7 +443,7 @@ vartype = "Categorical"
 varcat = "Type or Category"
 source = "cities"
 isrecoded = true
-recodeinfo = {1 = "City", 2 = "Unincorporated Area"}
+recode = {1 = "City", 2 = "Unincorporated Area"}
 islabeled = true
 labeltype = "Nominal"
 labels = {1 = "City", 2 = "Unincorporated Area"}
@@ -615,7 +615,7 @@ vartype = "Datetime"
 varcat = "Date and Time"
 source = "derived"
 isrecoded = true
-recodeinfo = {Q1 = 1, Q2 = 2, Q3 = 3, Q4 = 4, QNA = 0}
+recode = {Q1 = 1, Q2 = 2, Q3 = 3, Q4 = 4, QNA = 0}
 islabeled = true
 labeltype = "Ordinal"
 labels = {1 = "Q1", 2 = "Q2", 3 = "Q3", 4 = "Q4"}
@@ -766,7 +766,7 @@ vartype = "Categorical"
 varcat = "Type or Category"
 source = "derived"
 isrecoded = true
-recodeinfo = {0 = 0, 1 = 1}
+recode = {0 = 0, 1 = 1}
 islabeled = true
 labeltype = "Nominal"
 labels = {0 = "No", 1 = "Yes", -1 = "Unknown"}
@@ -787,7 +787,7 @@ vartype = "Categorical"
 varcat = "Type or Category"
 source = "derived"
 isrecoded = true
-recodeinfo = {PST = -8, PDT = -7}
+recode = {PST = -8, PDT = -7}
 islabeled = true
 labeltype = "Nominal"
 labels = {-8 = "PST", -7 = "PDT"}
@@ -945,7 +945,7 @@ vartype = "Categorical"
 varcat = "Type or Category"
 source = "crashes"
 isrecoded = true
-recodeinfo = {0 = 0, 4 = 1, 3 = 2, 2 = 3, 1 = 4}
+recode = {0 = 0, 4 = 1, 3 = 2, 2 = 3, 1 = 4}
 islabeled = true
 labeltype = "Ordinal"
 labels = {0 = "No injury", 1 = "Possible injury or pain", 2 = "Minor or visible injury", 3 = "Serious or severe injury", 4 = "Fatal injury"}
@@ -1441,7 +1441,7 @@ vartype = "Categorical"
 varcat = "Type or Category"
 source = "crashes"
 isrecoded = true
-recodeinfo = {A = 1, B = 2, C = 3, D = 4, E = 5, _ = 0}
+recode = {A = 1, B = 2, C = 3, D = 4, E = 5, _ = 0}
 islabeled = true
 labeltype = "Nominal"
 labels = {1 = "(Vehicle) Code Violation", 2 = "Other Improper Driving", 3 = "Other than Driver", 4 = "Unknown", 5 = "Fell Asleep", 0 = "Not Stated"}
@@ -1463,7 +1463,7 @@ vartype = "Categorical"
 varcat = "Type or Category"
 source = "crashes"
 isrecoded = true
-recodeinfo = {A = 1, B = 2, C = 3, D = 4, E = 5, F = 6, G = 7, H = 8, _ = 0}
+recode = {A = 1, B = 2, C = 3, D = 4, E = 5, F = 6, G = 7, H = 8, _ = 0}
 islabeled = true
 labeltype = "Nominal"
 labels = {1 = "Head-On", 2 = "Sideswipe", 3 = "Rear End", 4 = "Broadside", 5 = "Hit Object", 6 = "Overturned", 7 = "Vehicle/ Pedestrian", 8 = "Other", 0 = "Not Stated"}
@@ -1485,7 +1485,7 @@ vartype = "Indicator"
 varcat = "Type or Category"
 source = "crashes"
 isrecoded = true
-recodeinfo = {"" = 0, Y = 1}
+recode = {"" = 0, Y = 1}
 islabeled = true
 labeltype = "Boolean"
 labels = {0 = "No", 1 = "Yes"}
@@ -1507,7 +1507,7 @@ vartype = "Indicator"
 varcat = "Type or Category"
 source = "crashes"
 isrecoded = true
-recodeinfo = {"" = 0, Y = 1}
+recode = {"" = 0, Y = 1}
 islabeled = true
 labeltype = "Boolean"
 labels = {0 = "No", 1 = "Yes"}
@@ -1529,7 +1529,7 @@ vartype = "Indicator"
 varcat = "Type or Category"
 source = "crashes"
 isrecoded = true
-recodeinfo = {"" = 0, Y = 1}
+recode = {"" = 0, Y = 1}
 islabeled = true
 labeltype = "Boolean"
 labels = {0 = "No", 1 = "Yes"}
@@ -1551,7 +1551,7 @@ vartype = "Indicator"
 varcat = "Type or Category"
 source = "crashes"
 isrecoded = true
-recodeinfo = {"" = 0, Y = 1}
+recode = {"" = 0, Y = 1}
 islabeled = true
 labeltype = "Boolean"
 labels = {0 = "No", 1 = "Yes"}
@@ -1573,7 +1573,7 @@ vartype = "Categorical"
 varcat = "Type or Category"
 source = "crashes"
 isrecoded = true
-recodeinfo = {N = 0, M = 1, F = 2}
+recode = {N = 0, M = 1, F = 2}
 islabeled = true
 labeltype = "Ordinal"
 labels = {0 = "Not Hit and Run", 1 = "Misdemeanor", 2 = "Felony"}
@@ -1594,7 +1594,7 @@ vartype = "Indicator"
 varcat = "Type or Category"
 source = "derived"
 isrecoded = true
-recodeinfo = {"" = 0, Y = 1}
+recode = {"" = 0, Y = 1}
 islabeled = true
 labeltype = "Boolean"
 labels = {0 = "No", 1 = "Yes"}
@@ -1616,7 +1616,7 @@ vartype = "Indicator"
 varcat = "Type or Category"
 source = "crashes"
 isrecoded = true
-recodeinfo = {"" = 0, Y = 1}
+recode = {"" = 0, Y = 1}
 islabeled = true
 labeltype = "Boolean"
 labels = {0 = "No", 1 = "Yes"}
@@ -1735,7 +1735,7 @@ vartype = "Categorical"
 varcat = "Type or Category"
 source = "crashes"
 isrecoded = true
-recodeinfo = {0 = 0, 1 = 1, 2 = 2, 3 = 3, 4 = 4, 5 = 5, 6 = 6, "_" = 9}
+recode = {0 = 0, 1 = 1, 2 = 2, 3 = 3, 4 = 4, 5 = 5, 6 = 6, "_" = 9}
 islabeled = true
 labeltype = "Nominal"
 labels = {1 = "Schoolbus on Public Roadway", 2 = "State University (also SFIA)", 3 = "Schoolbus Not on Public Roadway", 4 = "Offroad (Unimproved)", 5 = "Vista Point or Rest Area or Sales or Inspection Facility", 6 = "Other Public Access (Improved)", 0 = "Not Above", 9 = "Not Stated"}
@@ -1778,7 +1778,7 @@ vartype = "Categorical"
 varcat = "Type or Category"
 source = "crashes"
 isrecoded = true
-recodeinfo = {1 = 1, 2 = 2, 3 = 3, 4 = 4, 5 = 5, A = 6, S = 7, 6 = 8, 7 = 9, 8 = 10, 9 = 11, 0 = 0}
+recode = {1 = 1, 2 = 2, 3 = 3, 4 = 4, 5 = 5, A = 6, S = 7, 6 = 8, 7 = 9, 8 = 10, 9 = 11, 0 = 0}
 islabeled = true
 labeltype = "Nominal"
 labels = {1 = "Interstate", 2 = "US Highway", 3 = "State Route", 4 = "County RoadLine", 5 = "County RoadArea", 6 = "Safety Services Program Beats", 7 = "Administrative Beats (900's)", 8 = "Contract City: US Highway", 9 = "Contract City: State Route", 10 = "Contract City: County RoadLine", 11 = "Contract City: County RoadArea", 0 = "Not CHP"}
@@ -1897,7 +1897,7 @@ vartype = "Categorical"
 varcat = "Type or Category"
 source = "crashes"
 isrecoded = true
-recodeinfo = {N = 1, S = 2, E = 3, W = 4, "_" = 0}
+recode = {N = 1, S = 2, E = 3, W = 4, "_" = 0}
 islabeled = true
 labeltype = "Nominal"
 labels = {1 = "North", 2 = "South", 3 = "East", 4 = "West", 0 = "Not Stated"}
@@ -1919,7 +1919,7 @@ vartype = "Indicator"
 varcat = "Type or Category"
 source = "crashes"
 isrecoded = true
-recodeinfo = {N = 0, Y = 1, "" = 0}
+recode = {N = 0, Y = 1, "" = 0}
 islabeled = true
 labeltype = "Boolean"
 labels = {0 = "No", 1 = "Yes"}
@@ -1942,7 +1942,7 @@ vartype = "Categorical"
 varcat = "Type or Category"
 source = "crashes"
 isrecoded = true
-recodeinfo = {A = 1, B = 2, C = 3, D = 4, E = 5, G = 6, F = 7, "_" = 0}
+recode = {A = 1, B = 2, C = 3, D = 4, E = 5, G = 6, F = 7, "_" = 0}
 islabeled = true
 labeltype = "Nominal"
 labels = {1 = "Clear", 2 = "Cloudy", 3 = "Raining", 4 = "Snowing", 5 = "Fog", 6 = "Wind", 7 = "Other", 0 = "Not Stated"}
@@ -1964,7 +1964,7 @@ vartype = "Categorical"
 varcat = "Type or Category"
 source = "crashes"
 isrecoded = true
-recodeinfo = {A = 1, B = 2, G = 3, C = 4, E = 5, D = 6, F = 7, "_" = 0}
+recode = {A = 1, B = 2, G = 3, C = 4, E = 5, D = 6, F = 7, "_" = 0}
 islabeled = true
 labeltype = "Nominal"
 labels = {1 = "Clear", 2 = "Cloudy", 3 = "Wind", 4 = "Raining", 5 = "Fog", 6 = "Snowing", 7 = "Other", 0 = "Not Stated"}
@@ -1985,7 +1985,7 @@ vartype = "Categorical"
 varcat = "Type or Category"
 source = "derived"
 isrecoded = true
-recodeinfo = {10 = 10, 11 = 10, 12 = 12, 13 = 13, 14 = 45, 15 = 15, 16 = 16, 17 = 17, 20 = 20, 21 = 21, 22 = 20, 23 = 23, 24 = 24, 25 = 25, 26 = 26, 27 = 27, 30 = 30, 31 = 31, 32 = 32, 33 = 30, 34 = 34, 35 = 35, 36 = 36, 37 = 37, 40 = 40, 45 = 45, 46 = 46, 47 = 47, 50 = 50, 51 = 51, 52 = 52, 53 = 53, 54 = 54, 55 = 50, 56 = 56, 57 = 57, 60 = 60, 61 = 61, 62 = 62, 63 = 63, 64 = 64, 65 = 65, 66 = 60, 67 = 67, 70 = 70, 71 = 70, 72 = 72, 73 = 73, 74 = 74, 75 = 75, 76 = 76, 77 = 70, 0 = 0}
+recode = {10 = 10, 11 = 10, 12 = 12, 13 = 13, 14 = 45, 15 = 15, 16 = 16, 17 = 17, 20 = 20, 21 = 21, 22 = 20, 23 = 23, 24 = 24, 25 = 25, 26 = 26, 27 = 27, 30 = 30, 31 = 31, 32 = 32, 33 = 30, 34 = 34, 35 = 35, 36 = 36, 37 = 37, 40 = 40, 45 = 45, 46 = 46, 47 = 47, 50 = 50, 51 = 51, 52 = 52, 53 = 53, 54 = 54, 55 = 50, 56 = 56, 57 = 57, 60 = 60, 61 = 61, 62 = 62, 63 = 63, 64 = 64, 65 = 65, 66 = 60, 67 = 67, 70 = 70, 71 = 70, 72 = 72, 73 = 73, 74 = 74, 75 = 75, 76 = 76, 77 = 70, 0 = 0}
 islabeled = true
 labeltype = "Nominal"
 labels = {10 = "Clear", 12 = "Clear and Cloudy", 13 = "Clear and Wind", 14 = "Clear and Raining", 15 = "Clear and Fog", 16 = "Clear and Snowing", 17 = "Clear and Other", 20 = "Cloudy", 21 = "Cloudy and Clear", 23 = "Cloudy and Wind", 24 = "Cloudy and Raining", 25 = "Cloudy and Fog", 26 = "Cloudy and Snowing", 27 = "Cloudy and Other", 30 = "Wind", 31 = "Wind and Clear", 32 = "Wind and Cloudy", 34 = "Wind and Raining", 35 = "Wind and Fog", 36 = "Wind and Snowing", 37 = "Wind and Other", 40 = "Raining", 41 = "Raining and Clear", 42 = "Raining and Cloudy", 43 = "Raining and Wind", 45 = "Raining and Fog", 46 = "Raining and Snowing", 47 = "Raining and Other", 50 = "Fog", 51 = "Fog and Clear", 52 = "Fog and Cloudy", 53 = "Fog and Wind", 54 = "Fog and Raining", 56 = "Fog and Snowing", 57 = "Fog and Other", 60 = "Snowing", 61 = "Snowing and Clear", 62 = "Snowing and Cloudy", 63 = "Snowing and Wind", 64 = "Snowing and Raining", 65 = "Snowing and Fog", 67 = "Snowing and Other", 70 = "Other", 72 = "Other and Wind", 73 = "Other and Raining", 74 = "Other and Fog", 75 = "Other and Snowing", 0 = "Not Stated"}
@@ -2008,7 +2008,7 @@ vartype = "Categorical"
 varcat = "Type or Category"
 source = "crashes"
 isrecoded = true
-recodeinfo = {A = 1, B = 2, C = 3, D = 4, H = 5, "_" = 0}
+recode = {A = 1, B = 2, C = 3, D = 4, H = 5, "_" = 0}
 islabeled = true
 labeltype = "Nominal"
 labels = {1 = "Dry", 2 = "Wet", 3 = "Snowy or Icy", 4 = "Slippery (Muddy, Oily, etc)", 5 = "Unknown", 0 = "Not Stated"}
@@ -2030,7 +2030,7 @@ vartype = "Categorical"
 varcat = "Type or Category"
 source = "crashes"
 isrecoded = true
-recodeinfo = {A = 1, B = 2, C = 3, D = 4, E = 5, F = 6, G = 7, H = 8, "_" = 0}
+recode = {A = 1, B = 2, C = 3, D = 4, E = 5, F = 6, G = 7, H = 8, "_" = 0}
 islabeled = true
 labeltype = "Nominal"
 labels = {1 = "Holes, Deep Ruts", 2 = "Loose Material on Roadway", 3 = "Obstruction on Roadway", 4 = "Construction or Repair Zone", 5 = "Reduced Roadway Width", 6 = "Flooded", 7 = "Other", 8 = "No Unusual Condition", 0 = "Not Stated"}
@@ -2052,7 +2052,7 @@ vartype = "Categorical"
 varcat = "Type or Category"
 source = "crashes"
 isrecoded = true
-recodeinfo = {A = 1, B = 2, C = 3, D = 4, E = 5, F = 6, G = 7, H = 8, "_" = 0}
+recode = {A = 1, B = 2, C = 3, D = 4, E = 5, F = 6, G = 7, H = 8, "_" = 0}
 islabeled = true
 labeltype = "Nominal"
 labels = {1 = "Holes, Deep Ruts", 2 = "Loose Material on Roadway", 3 = "Obstruction on Roadway", 4 = "Construction or Repair Zone", 5 = "Reduced Roadway Width", 6 = "Flooded", 7 = "Other", 8 = "No Unusual Condition", 0 = "Not Stated"}
@@ -2074,7 +2074,7 @@ vartype = "Categorical"
 varcat = "Type or Category"
 source = "crashes"
 isrecoded = true
-recodeinfo = {A = 1, B = 2, C = 3, D = 4, E = 5, "_" = 0}
+recode = {A = 1, B = 2, C = 3, D = 4, E = 5, "_" = 0}
 islabeled = true
 labeltype = "Nominal"
 labels = {0 = "Not Stated", 1 = "Daylight", 2 = "Dusk - Dawn", 3 = "Dark - Street Lights", 4 = "Dark - No Street Lights", 5 = "Dark - Street Lights Not Functioning"}
@@ -2096,7 +2096,7 @@ vartype = "Categorical"
 varcat = "Type or Category"
 source = "crashes"
 isrecoded = true
-recodeinfo = {A = 1, B = 2, C = 3, D = 4, "_" = 0}
+recode = {A = 1, B = 2, C = 3, D = 4, "_" = 0}
 islabeled = true
 labeltype = "Nominal"
 labels = {1 = "Functioning", 2 = "Not Functioning", 3 = "Obscured", 4 = "None", 0 = "Not Stated"}
@@ -2118,7 +2118,7 @@ vartype = "Indicator"
 varcat = "Type or Category"
 source = "crashes"
 isrecoded = true
-recodeinfo = {N = 0, Y = 1, "" = 0}
+recode = {N = 0, Y = 1, "" = 0}
 islabeled = true
 labeltype = "Boolean"
 labels = {0 = "Not State Highway", 1 = "State Highway"}
@@ -2141,7 +2141,7 @@ vartype = "Categorical"
 varcat = "Type or Category"
 source = "crashes"
 isrecoded = true
-recodeinfo = {N = 1, S = 2, E = 3, W = 4, L = 5, R = 6, "" = 0}
+recode = {N = 1, S = 2, E = 3, W = 4, L = 5, R = 6, "" = 0}
 islabeled = true
 labeltype = "Nominal"
 labels = {1 = "Northbound", 2 = "Southbound", 3 = "Eastbound", 4 = "Westbound", 5 = "Left Side", 6 = "Right Side", 0 = "Not Stated"}
@@ -2163,7 +2163,7 @@ vartype = "Indicator"
 varcat = "Type or Category"
 source = "crashes"
 isrecoded = true
-recodeinfo = {N = 0, Y = 1, "" = 0}
+recode = {N = 0, Y = 1, "" = 0}
 islabeled = true
 labeltype = "Boolean"
 labels = {0 = "No", 1 = "Yes"}
@@ -2185,7 +2185,7 @@ vartype = "Categorical"
 varcat = "Type or Category"
 source = "crashes"
 isrecoded = true
-recodeinfo = {B = 1, C = 2, H = 3, I = 4, O = 5, P = 6, S = 7, W = 8, "_" = 0}
+recode = {B = 1, C = 2, H = 3, I = 4, O = 5, P = 6, S = 7, W = 8, "_" = 0}
 islabeled = true
 labeltype = "Nominal"
 labels = {1 = "Business and Professions", 2 = "Vehicle", 3 = "City Health and Safety", 4 = "City Ordinance", 5 = "County Ordinance", 6 = "Penal", 7 = "Streets and Highways", 8 = "Welfare and Institutions", 0 = "Not Stated"}
@@ -2207,7 +2207,7 @@ vartype = "Categorical"
 varcat = "Type or Category"
 source = "crashes"
 isrecoded = true
-recodeinfo = {01 = 1, 02 = 2, 03 = 3, 04 = 4, 05 = 5, 06 = 6, 07 = 7, 08 = 8, 09 = 9, 10 = 10, 11 = 11, 12 = 12, 13 = 13, 14 = 14, 15 = 15, 16 = 16, 17 = 17, 18 = 18, 19 = 19, 20 = 20, 21 = 21, 22 = 22, 23 = 23, 24 = 24, 00 = 0, "_" = 99}
+recode = {01 = 1, 02 = 2, 03 = 3, 04 = 4, 05 = 5, 06 = 6, 07 = 7, 08 = 8, 09 = 9, 10 = 10, 11 = 11, 12 = 12, 13 = 13, 14 = 14, 15 = 15, 16 = 16, 17 = 17, 18 = 18, 19 = 19, 20 = 20, 21 = 21, 22 = 22, 23 = 23, 24 = 24, 00 = 0, "_" = 99}
 islabeled = true
 labeltype = "Nominal"
 labels = {"1" = "Driving or Bicycling Under the Influence of Alcohol or Drug", "2" = "Impeding Traffic", "3" = "Unsafe Speed", "4" = "Following Too Closely", "5" = "Wrong Side of Road", "6" = "Improper Passing", "7" = "Unsafe Lane Change", "8" = "Improper Turning", "9" = "Automobile Right of Way", "10" = "Pedestrian Right of Way", "11" = "Pedestrian Violation", "12" = "Traffic Signals and Signs", "13" = "Hazardous Parking", "14" = "Lights", "15" = "Brakes", "16" = "Other Equipment", "17" = "Other Hazardous Violation", "18" = "Other Than Driver (or Pedestrian)", "21" = "Unsafe Starting or Backing", "22" = "Other Improper Driving", "23" = "Pedestrian or 'Other' Under the Influence of Alcohol or Drug", "24" = "Fell Asleep", "0" = "Unknown", "99" = "Not Stated"}
@@ -2267,7 +2267,7 @@ vartype = "Categorical"
 varcat = "Type or Category"
 source = "crashes"
 isrecoded = true
-recodeinfo = {"A" = 1, "B" = 2, "C" = 3, "D" = 4, "E" = 5, "F" = 6, "G" = 7, "H" = 8, "I" = 9, "J" = 10, "0" = 11, "1" = 12, "2" = 13, "3" = 14, "4" = 15, "5" = 16, "6" = 17, "7" = 18, "8" = 19, "9" = 20, "-" = 0}
+recode = {"A" = 1, "B" = 2, "C" = 3, "D" = 4, "E" = 5, "F" = 6, "G" = 7, "H" = 8, "I" = 9, "J" = 10, "0" = 11, "1" = 12, "2" = 13, "3" = 14, "4" = 15, "5" = 16, "6" = 17, "7" = 18, "8" = 19, "9" = 20, "-" = 0}
 islabeled = true
 labeltype = "Nominal"
 labels = {"1" = "Non-Collision", "2" = "Pedestrian", "3" = "Other Motor Vehicle", "4" = "Motor Vehicle on Other Roadway", "5" = "Parked Motor Vehicle", "6" = "Train", "7" = "Bicycle", "8" = "Animal", "9" = "Fixed Object", "10" = "Other Object", "11" = "Non-Collision and Additional Object", "12" = "Pedestrian and Additional Object", "13" = "Other Motor Vehicle and Additional Object", "14" = "Motor Vehicle on Other Roadway and Additional Object", "15" = "Parked Motor Vehicle and Additional Object", "16" = "Train and Additional Object", "17" = "Bicycle and Additional Object", "18" = "Animal and Additional Object", "19" = "Fixed Object and Additional Object", "20" = "Other Object and Additional Object", "0" = "Not Stated"}
@@ -2289,7 +2289,7 @@ vartype = "Categorical"
 varcat = "Type or Category"
 source = "crashes"
 isrecoded = true
-recodeinfo = {"A" = 1, "B" = 2, "C" = 3, "D" = 4, "E" = 5, "F" = 6, "G" = 7, "-" = 0}
+recode = {"A" = 1, "B" = 2, "C" = 3, "D" = 4, "E" = 5, "F" = 6, "G" = 7, "-" = 0}
 islabeled = true
 labeltype = "Nominal"
 labels = {"1" = "No Pedestrian Involved", "2" = "Crossing in Crosswalk at Intersection", "3" = "Crossing in Crosswalk Not at Intersection", "4" = "Crossing Not in Crosswalk", "5" = "In Road, Including Shoulder", "6" = "Not in Road", "7" = "Approaching/Leaving School Bus", "0" = "Not Stated"}
@@ -2311,7 +2311,7 @@ vartype = "Indicator"
 varcat = "Type or Category"
 source = "crashes"
 isrecoded = true
-recodeinfo = {"Y" = 1, "" = 0}
+recode = {"Y" = 1, "" = 0}
 islabeled = true
 labeltype = "Boolean"
 labels = {0 = "No", 1 = "Yes"}
@@ -2333,7 +2333,7 @@ vartype = "Categorical"
 varcat = "Type or Category"
 source = "crashes"
 isrecoded = true
-recodeinfo = {"A" = 1, "B" = 2, "C" = 3, "D" = 4, "E" = 5, "F" = 6, "G" = 7, "H" = 8, "I" = 9, "J" = 10, "K" = 11, "L" = 12, "M" = 13, "N" = 14, "O" = 15, "-" = 0}
+recode = {"A" = 1, "B" = 2, "C" = 3, "D" = 4, "E" = 5, "F" = 6, "G" = 7, "H" = 8, "I" = 9, "J" = 10, "K" = 11, "L" = 12, "M" = 13, "N" = 14, "O" = 15, "-" = 0}
 islabeled = true
 labeltype = "Nominal"
 labels = {"1" = "Passenger Car/Station Wagon", "2" = "Passenger Car with Trailer", "3" = "Motorcycle/Scooter", "4" = "Pickup or Panel Truck", "5" = "Pickup or Panel Truck with Trailer", "6" = "Truck or Truck Tractor", "7" = "Truck or Truck Tractor with Trailer", "8" = "Schoolbus", "9" = "Other Bus", "10" = "Emergency Vehicle", "11" = "Highway Construction Equipment", "12" = "Bicycle", "13" = "Other Vehicle", "14" = "Pedestrian", "15" = "Moped", "0" = "Not Stated"}
@@ -2341,6 +2341,505 @@ fcinclude = {crashes = true, parties = false, victims = false, collisions = true
 tsinclude = {crashes = false, parties = false, victims = false, collisions = false}
 tsstats = {sum = false, mean = false, median = false}
 tokeep = true
+
+# 119 CHP Vehicle Type at Fault
+[chpvehtypeatfault]
+varorder = 119
+rawdata = true
+rawvar = "CHP_VEHTYPE_AT_FAULT"
+modvar = "chpvehtypeatfault"
+name = "CHP Vehicle Type at Fault"
+desc = "Indicates the CHP vehicle type of the party who is at fault"
+varclass = "Int"
+vartype = "Categorical"
+varcat = "Type or Category"
+source = "crashes"
+isrecoded = true
+recode = {"1" = 1, "2" = 2, "3" = 3, "4" = 4, "5" = 5, "6" = 6, "7" = 7, "8" = 8, "9" = 9, "10" = 10, "11" = 11, "12" = 12, "13" = 13, "14" = 14, "15" = 15, "16" = 16, "17" = 17, "18" = 18, "19" = 19, "20" = 20, "21" = 21, "22" = 22, "23" = 23, "24" = 24, "25" = 25, "26" = 26, "27" = 27, "28" = 28, "29" = 29, "30" = 30, "31" = 31, "32" = 32, "33" = 33, "34" = 34, "35" = 35, "36" = 36, "37" = 37, "38" = 38, "39" = 39, "40" = 40, "41" = 41, "42" = 42, "43" = 43, "44" = 44, "45" = 45, "46" = 46, "47" = 47, "48" = 48, "49" = 49, "50" = 50, "51" = 51, "52" = 52, "53" = 53, "54" = 54, "55" = 55, "56" = 56, "57" = 57, "58" = 58, "59" = 59, "60" = 60, "61" = 61, "62" = 62, "63" = 63, "64" = 64, "65" = 65, "66" = 66, "71" = 71, "72" = 72, "73" = 73, "75" = 75, "76" = 76, "77" = 77, "78" = 78, "79" = 79, "81" = 81, "82" = 82, "83" = 83, "85" = 85, "86" = 86, "87" = 87, "88" = 88, "89" = 89, "91" = 91, "93" = 93, "94" = 94, "95" = 95, "96" = 96, "97" = 97, "98" = 98, "99" = 99, "0" = 0, "-" = 0}
+islabeled = true
+labeltype = "Nominal"
+labels = {"1" = "Passenger Car, Station Wagon, or Jeep", "2" = "Motorcycle", "3" = "Motor-Driven Cycle < 15 hp", "4" = "Bicycle", "5" = "Motorized Bicycle", "6" = "All-Terrain Vehicle - ATV", "7" = "Sport Utility Vehicle", "8" = "Minivan", "9" = "Paratransit Bus", "10" = "Tour Bus", "11" = "Other Commercial Bus", "12" = "Non-Commercial Bus", "13" = "Schoolbus Public I", "14" = "Schoolbus Public II", "15" = "Schoolbus Private I", "16" = "Schoolbus Private II", "17" = "Schoolbus Contractual I", "18" = "Schoolbus Contractual II", "19" = "General Public Paratransit Vehicle", "20" = "Public Transit Authority", "21" = "Two-Axle Tank Truck", "22" = "Pickup or Panel Truck", "23" = "Pickup Truck With Camper", "24" = "Three-Axle Tank Truck", "25" = "Truck Tractor", "26" = "Two-Axle Truck", "27" = "Three-Axle Truck", "28" = "Semi-Tank Trailer", "29" = "Pull-Tank Trailer", "30" = "Two-Tank Trailer", "31" = "Semi-Trailer", "32" = "Pull Trailer - includes dolly", "33" = "Two Trailers - includes semi and trailer", "34" = "Boat Trailer", "35" = "Utility Trailer", "36" = "Trailer Coach", "37" = "Oversize Vehicle/Load", "38" = "Pole, Pipe, or Logging Dolly", "39" = "Three Trailers - includes semi and two trailers", "40" = "Semi 48 or Less with King Pin to Trailer Axle of over 38", "41" = "Ambulance", "42" = "Dune Buggy", "43" = "Fire Truck - not rescue", "44" = "Forklift", "45" = "Highway Construction Equipment - only while not in construction area", "46" = "Implement of Husbandry", "47" = "Motor Home (40 ft or less)", "48" = "CHP, Police, or Sheriff Car - emergency service or not", "49" = "CHP, Police, or Sheriff Motorcycle - emergency service or not", "50" = "Mobile Equipment", "51" = "Farm Labor Vehicle - certified", "52" = "Federally Legal Double Cargo Combo over 75 ft", "53" = "5th Wheel Trailer", "54" = "Container Chassis", "55" = "Two-Axle Tow Truck", "56" = "Three-Axle Tow Truck", "57" = "Farm Labor Vehicle (non-certified)", "58" = "Farm Labor Transporter", "59" = "Motorhome - over 40 ft", "60" = "Pedestrian (includes motorized wheelchair)", "61" = "School Pupil Activity Bus I (<2002)", "62" = "School Pupil Activity Bus II (<2002)", "63" = "Youth Bus", "64" = "School Pupil Activity Bus I", "65" = "School Pupil Activity Bus II", "66" = "School Bus Without Pupil Passengers", "71" = "Passenger Car - Hazardous Materials Only", "72" = "Pickups and Panels - Hazardous Materials Only", "73" = "Pickups and Campers - Hazardous Materials Only", "75" = "Truck Tractor - Hazardous Materials Only", "76" = "Two-Axle Truck - Hazardous Materials Only", "77" = "Three or More Axle Truck - Hazardous Materials Only", "78" = "Two-Axle Tank Truck - Hazardous Materials Only", "79" = "Three-Axle Tank Truck - Hazardous Materials Only", "81" = "Passenger Car - Hazardous Waste or Waste/Material Combo", "82" = "Pickups and Panels - Hazardous Waste or Waste/Material Combo", "83" = "Pickups and Campers - Hazardous Waste or Waste/Material Combo", "85" = "Truck Tractor - Hazardous Waste or Waste/Material Combo", "86" = "Two-Axle Truck - Hazardous Waste or Waste/Material Combo", "87" = "Three or More Axle Truck - Hazardous Waste or Waste/Material Combo", "88" = "Two-Axle Tank Truck - Hazardous Waste or Waste/Material Combo", "89" = "Three-Axle Tank Truck - Hazardous Waste or Waste/Material Combo", "91" = "Electric Bicycle", "93" = "Electrically Motorized Board", "94" = "Motorized Transportation Device", "95" = "Miscellaneous Non-Motorized Vehicle With Victim", "96" = "Miscellaneous Motorized Vehicle", "97" = "Low Speed Vehicle", "98" = "Emergency Vehicle on an Emergency Run", "99" = "Not Stated or Unknown - Hit and Run", "0" = "Not Stated/Unknown"}
+fcinclude = {crashes = true, parties = false, victims = false, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = false}
+tsstats = {sum = false, mean = false, median = false}
+tokeep = true
+
+# 120 Primary Ramp
+[primaryramp]
+varorder = 120
+rawdata = true
+rawvar = "PRIMARY_RAMP"
+modvar = "primaryramp"
+name = "Primary Ramp"
+desc = "A description of the ramp, if any, on primary roadway. This value is computed by the key operator from information on the crash report"
+varclass = "Int"
+vartype = "Categorical"
+varcat = "Type or Category"
+source = "crashes"
+isrecoded = true
+recode = {"TO" = 1, "FR" = 2, "NF" = 3, "SF" = 4, "EF" = 5, "WF" = 6, "NO" = 7, "SO" = 8, "EO" = 9, "WO" = 10, "TR" = 11, "CO" = 12, "CN" = 13, "-" = 0}
+islabeled = true
+labeltype = "Nominal"
+labels = {"1" = "To", "2" = "From", "3" = "North off ramp", "4" = "South off ramp", "5" = "East off ramp", "6" = "West off ramp", "7" = "North on ramp", "8" = "South on ramp", "9" = "East on ramp", "10" = "West on ramp", "11" = "Transition", "12" = "Collector", "13" = "Connector", "0" = "Not Stated"}
+fcinclude = {crashes = true, parties = false, victims = false, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = false}
+tsstats = {sum = false, mean = false, median = false}
+tokeep = true
+
+# 121 Secondary Ramp
+[secondaryramp]
+varorder = 121
+rawdata = true
+rawvar = "SECONDARY_RAMP"
+modvar = "secondaryramp"
+name = "Secondary Ramp"
+desc = "A description of the ramp, if any, on secondary roadway. This value is computed by the key operator from information on the crash report"
+varclass = "Int"
+vartype = "Categorical"
+varcat = "Type or Category"
+source = "crashes"
+isrecoded = true
+recode = {"TO" = 1, "FR" = 2, "NF" = 3, "SF" = 4, "EF" = 5, "WF" = 6, "NO" = 7, "SO" = 8, "EO" = 9, "WO" = 10, "TR" = 11, "CO" = 12, "CN" = 13, "-" = 0}
+islabeled = true
+labeltype = "Nominal"
+labels = {"1" = "To", "2" = "From", "3" = "North off ramp", "4" = "South off ramp", "5" = "East off ramp", "6" = "West off ramp", "7" = "North on ramp", "8" = "South on ramp", "9" = "East on ramp", "10" = "West on ramp", "11" = "Transition", "12" = "Collector", "13" = "Connector", "0" = "Not Stated"}
+fcinclude = {crashes = true, parties = false, victims = false, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = false}
+tsstats = {sum = false, mean = false, median = false}
+tokeep = true
+
+# 122 Party Type
+[partytype]
+varorder = 122
+rawdata = true
+rawvar = "PARTY_TYPE"
+modvar = "partytype"
+name = "Party Type"
+desc = "Indicates the type of party involved in the crash"
+varclass = "Int"
+vartype = "Categorical"
+varcat = "Type or Category"
+source = "parties"
+isrecoded = true
+recode = {"1" = 1, "2" = 2, "3" = 3, "4" = 4, "5" = 5, "6" = 6, "_" = 0}
+islabeled = true
+labeltype = "Nominal"
+labels = {"1" = "Driver (including Hit and Run)", "2" = "Pedestrian", "3" = "Parked Vehicle", "4" = "Bicyclist", "5" = "Other", "6" = "Operator", "0" = "Not Stated"}
+fcinclude = {crashes = false, parties = true, victims = false, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = false}
+tsstats = {sum = false, mean = false, median = false}
+tokeep = true
+
+# 123 At Fault
+[atfault]
+varorder = 123
+rawdata = true
+rawvar = "AT_FAULT"
+modvar = "atfault"
+name = "At Fault"
+desc = "Indicates whether the party was at fault in the crash"
+varclass = "Boolean"
+vartype = "Indicator"
+varcat = "Type or Category"
+source = "parties"
+isrecoded = true
+recode = {"Y" = 1, "N" = 0}
+islabeled = true
+labeltype = "Boolean"
+labels = {0 = "No", 1 = "Yes"}
+fcinclude = {crashes = false, parties = true, victims = false, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = true}
+tsstats = {sum = true, mean = false, median = false}
+tokeep = true
+
+# 124 Party Sex
+[partysex]
+varorder = 124
+rawdata = true
+rawvar = "PARTY_SEX"
+modvar = "partysex"
+name = "Party Sex"
+desc = "The gender of the party involved in the crash"
+varclass = "Int"
+vartype = "Categorical"
+varcat = "Type or Category"
+source = "parties"
+isrecoded = true
+recode = {"M" = 1, "F" = 2, "X" = 3, "_" = 0}
+islabeled = true
+labeltype = "Nominal"
+labels = {"1" = "Male", "2" = "Female", "3" = "Nonbinary", "0" = "Not Stated"}
+fcinclude = {crashes = false, parties = true, victims = false, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = false}
+tsstats = {sum = false, mean = false, median = false}
+tokeep = true
+
+# 125 Party Age
+[partyage]
+varorder = 125
+rawdata = true
+rawvar = "PARTY_AGE"
+modvar = "partyage"
+name = "Party Age"
+desc = "The age of the party involved in the crash"
+varclass = "Int"
+vartype = "Numeric"
+varcat = "Count or Amount"
+source = "parties"
+isrecoded = false
+islabeled = true
+labeltype = "Nominal"
+labels = {"998" = "Unknown"}
+fcinclude = {crashes = false, parties = true, victims = false, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = true, victims = false, collisions = true}
+tsstats = {sum = false, mean = true, median = true}
+tokeep = true
+
+# 126 Party Age Group
+[partyagegroup]
+varorder = 126
+rawdata = false
+modvar = "partyagegroup"
+name = "Party Age Group"
+desc = "The age group of the party involved in the crash"
+varclass = "Int"
+vartype = "Categorical"
+varcat = "Type or Category"
+source = "derived"
+isrecoded = true
+recode = [0, 10, 18, 25, 35, 45, 55, 65, 80, 100, 125]
+islabeled = true
+labeltype = "Ordinal"
+labels = {"0" = "Unknown", "1" = "0-10", "2" = "11-18", "3" = "19-25", "4" = "26-35", "5" = "36-45", "6" = "46-55", "7" = "56-65", "8" = "66-80", "9" = "81-100", "10" = "100+"}
+fcinclude = {crashes = false, parties = true, victims = false, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = false}
+tsstats = {sum = false, mean = false, median = false}
+tokeep = true
+
+# 127 Party Race
+[partyrace]
+varorder = 127
+rawdata = true
+rawvar = "RACE"
+modvar = "partyrace"
+name = "Party Race"
+desc = "The race of the party involved in the crash"
+varclass = "Int"
+vartype = "Categorical"
+varcat = "Type or Category"
+source = "parties"
+isrecoded = true
+recode = {"A" = 1, "B" = 2, "H" = 3, "O" = 4, "W" = 5, "" = 0}
+islabeled = true
+labeltype = "Nominal"
+labels = {"1" = "Asian", "2" = "Black or African American", "3" = "Hispanic or Latino", "4" = "Other", "5" = "White", "0" = "Not Stated"}
+fcinclude = {crashes = false, parties = true, victims = false, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = false}
+tsstats = {sum = false, mean = false, median = false}
+tokeep = true
+
+# 128 Party Number Killed
+[partynumberkilled]
+varorder = 128
+rawdata = true
+rawvar = "PARTY_NUMBER_KILLED"
+modvar = "partynumberkilled"
+name = "Party Number Killed"
+desc = "The number of fatalities associated with the party involved in the crash"
+varclass = "Int"
+vartype = "Numeric"
+varcat = "Count or Amount"
+source = "parties"
+isrecoded = false
+islabeled = false
+fcinclude = {crashes = false, parties = true, victims = false, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = true, victims = false, collisions = true}
+tsstats = {sum = false, mean = true, median = false}
+tokeep = true
+
+# 129 Party Number Injured
+[partynumberinj]
+varorder = 129
+rawdata = true
+rawvar = "PARTY_NUMBER_INJURED"
+modvar = "partynumberinj"
+name = "Party Number Injured"
+desc = "The number of non-fatal injuries associated with the party involved in the crash"
+varclass = "Int"
+vartype = "Numeric"
+varcat = "Count or Amount"
+source = "parties"
+isrecoded = false
+islabeled = false
+fcinclude = {crashes = false, parties = true, victims = false, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = true, victims = false, collisions = true}
+tsstats = {sum = false, mean = true, median = false}
+tokeep = true
+
+# 130 Innattention
+[innattention]
+varorder = 130
+rawdata = true
+rawvar = "INNATTENTION"
+modvar = "innattention"
+name = "Innattention"
+desc = "Type of inattention by the party at the time of the crash"
+varclass = "Int"
+vartype = "Categorical"
+varcat = "Type or Category"
+source = "parties"
+isrecoded = true
+recode = {"A" = 1, "B" = 2, "C" = 3, "D" = 4, "E" = 5, "F" = 6, "G" = 7, "H" = 8, "I" = 9, "J" = 10, "K" = 11, "P" = 12, "-" = 0}
+islabeled = true
+labeltype = "Nominal"
+labels = {"1" = "Cell Phone Handheld", "2" = "Cell Phone Handsfree", "3" = "Electronic Equipment", "4" = "Radio/CD", "5" = "Smoking", "6" = "Eating", "7" = "Children", "8" = "Animal", "9" = "Personal Hygiene", "10" = "Reading", "11" = "Other", "12" = "Cell Phone", "0" = "Not Stated"}
+fcinclude = {crashes = false, parties = true, victims = false, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = false}
+tsstats = {sum = false, mean = false, median = false}
+tokeep = true
+
+# 131 Party Sobriety
+[partysobriety]
+varorder = 131
+rawdata = true
+rawvar = "PARTY_SOBRIETY"
+modvar = "partysobriety"
+name = "Party Sobriety"
+desc = "The sobriety status of the party involved in the crash"
+varclass = "Int"
+vartype = "Categorical"
+varcat = "Type or Category"
+source = "parties"
+isrecoded = true
+recode = {"A" = 1, "B" = 2, "C" = 3, "D" = 4, "G" = 5, "H" = 6, "-" = 0}
+islabeled = true
+labeltype = "Nominal"
+labels = {"1" = "Had Not Been Drinking", "2" = "Had Been Drinking, Under Influence", "3" = "Had Been Drinking, Not Under Influence", "4" = "Had Been Drinking, Impairment Unknown", "5" = "Impairment Unknown", "6" = "Not Applicable", "0" = "Not Stated"}
+fcinclude = {crashes = false, parties = true, victims = false, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = false}
+tsstats = {sum = false, mean = false, median = false}
+tokeep = true
+varnotes = "Aggregation ofly if it is 2 (DUI)"
+
+# 132 DUI Alcohol Indicator
+[duialcoholind]
+varorder = 132
+rawdata = false
+modvar = "duialcoholind"
+name = "DUI Alcohol Indicator"
+desc = "Indicates whether the party involved in the crash was driving under the influence of alcohol"
+varclass = "Boolean"
+vartype = "Indicator"
+varcat = "Type or Category"
+source = "derived"
+isrecoded = true
+recode = {"2" = 1}
+islabeled = true
+labeltype = "Boolean"
+labels = {0 = "No", 1 = "Yes"}
+fcinclude = {crashes = false, parties = true, victims = false, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = true, victims = false, collisions = true}
+tsstats = {sum = true, mean = false, median = false}
+tokeep = true
+
+# 133 Party Drug Physical
+[partydrugphysical]
+varorder = 133
+rawdata = true
+rawvar = "PARTY_DRUG_PHYSICAL"
+modvar = "partydrugphysical"
+name = "Party Drug Physical"
+desc = "Indicates whether the party involved in the crash was driving under the influence of drugs or had physical impairments"
+varclass = "Int"
+vartype = "Categorical"
+varcat = "Type or Category"
+source = "parties"
+isrecoded = true
+recode = {"E" = 1, "F" = 2, "G" = 3, "H" = 4, "I" = 5, "-" = 0}
+islabeled = true
+labeltype = "Nominal"
+labels = {"1" = "Under Drug Influence", "2" = "Impairment - Physical", "3" = "Impairment Unknown", "4" = "Not Applicable", "5" = "Sleepy/Fatigued", "0" = "Not Stated"}
+fcinclude = {crashes = false, parties = true, victims = false, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = false}
+tsstats = {sum = false, mean = false, median = false}
+tokeep = true
+varnotes = "Aggregate only if it is 1 (DUI)"
+
+# 134 DUI Drug Indicator
+[duidrugind]
+varorder = 134
+rawdata = false
+modvar = "duidrugind"
+name = "DUI Drug Indicator"
+desc = "Indicates whether the party involved in the crash was driving under the influence of drugs"
+varclass = "Boolean"
+vartype = "Indicator"
+varcat = "Type or Category"
+source = "derived"
+isrecoded = true
+recode = {"1" = 1}
+islabeled = true
+labeltype = "Boolean"
+labels = {0 = "No", 1 = "Yes"}
+fcinclude = {crashes = false, parties = true, victims = false, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = true, victims = false, collisions = true}
+tsstats = {sum = true, mean = false, median = false}
+tokeep = true
+
+# 135 Direction of Travel
+[diroftravel]
+varorder = 135
+rawdata = true
+rawvar = "DIR_OF_TRAVEL"
+modvar = "diroftravel"
+name = "Direction of Travel"
+desc = "The compass direction in which the party involved in the crash was traveling"
+varclass = "Int"
+vartype = "Categorical"
+varcat = "Type or Category"
+source = "parties"
+isrecoded = true
+recode = {"N" = 1, "S" = 2, "E" = 3, "W" = 4, "-" = 0}
+islabeled = true
+labeltype = "Nominal"
+labels = {"1" = "North", "2" = "South", "3" = "East", "4" = "West", "0" = "Not Stated"}
+fcinclude = {crashes = false, parties = true, victims = false, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = false}
+tsstats = {sum = false, mean = false, median = false}
+tokeep = true
+
+# 136 Party Safety Equipment 1
+[partysafetyeq1]
+varorder = 136
+rawdata = true
+rawvar = "PARTY_SAFETY_EQUIP_1"
+modvar = "partysafetyeq1"
+name = "Party Safety Equipment 1"
+desc = "The primary safety equipment used by the party involved in the crash"
+varclass = "Int"
+vartype = "Categorical"
+varcat = "Type or Category"
+source = "parties"
+isrecoded = true
+recode = {"A" = 1, "B" = 2, "C" = 3, "D" = 4, "E" = 5, "F" = 6, "G" = 7, "H" = 8, "J" = 9, "K" = 10, "L" = 11, "M" = 12, "N" = 13, "P" = 14, "Q" = 15, "R" = 16, "S" = 17, "T" = 18, "U" = 19, "V" = 20, "W" = 21, "X" = 22, "Y" = 23, "-" = 0}
+islabeled = true
+labeltype = "Nominal"
+labels = {"1" = "None in Vehicle", "2" = "Unknown", "3" = "Lap Belt Used", "4" = "Lap Belt Not Used", "5" = "Shoulder Harness Used", "6" = "Shoulder Harness Not Used", "7" = "Lap/Shoulder Harness Used", "8" = "Lap/Shoulder Harness Not Used", "9" = "Passive Restraint Used", "10" = "Passive Restraint Not Used", "11" = "Air Bag Deployed", "12" = "Air Bag Not Deployed", "13" = "Other", "14" = "Not Required", "15" = "Child Restraint in Vehicle Used", "16" = "Child Restraint in Vehicle Not Used", "17" = "Child Restraint in Vehicle, Use Unknown", "18" = "Child Restraint in Vehicle, Improper Use", "19" = "No Child Restraint in Vehicle", "20" = "Driver, Motorcycle Helmet Not Used", "21" = "Driver, Motorcycle Helmet Used", "22" = "Passenger, Motorcycle Helmet Not Used", "23" = "Passenger, Motorcycle Helmet Used", "0" = "Not Stated"}
+fcinclude = {crashes = false, parties = true, victims = false, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = false}
+tsstats = {sum = false, mean = false, median = false}
+tokeep = true
+
+# 137 Party Safety Equipment 2
+[partysafetyeq2]
+varorder = 137
+rawdata = true
+rawvar = "PARTY_SAFETY_EQUIP_2"
+modvar = "partysafetyeq2"
+name = "Party Safety Equipment 2"
+desc = "The secondary safety equipment used by the party involved in the crash"
+varclass = "Int"
+vartype = "Categorical"
+varcat = "Type or Category"
+source = "parties"
+isrecoded = true
+recode = {"A" = 1, "B" = 2, "C" = 3, "D" = 4, "E" = 5, "F" = 6, "G" = 7, "H" = 8, "J" = 9, "K" = 10, "L" = 11, "M" = 12, "N" = 13, "P" = 14, "Q" = 15, "R" = 16, "S" = 17, "T" = 18, "U" = 19, "V" = 20, "W" = 21, "X" = 22, "Y" = 23, "-" = 0}
+islabeled = true
+labeltype = "Nominal"
+labels = {"1" = "None in Vehicle", "2" = "Unknown", "3" = "Lap Belt Used", "4" = "Lap Belt Not Used", "5" = "Shoulder Harness Used", "6" = "Shoulder Harness Not Used", "7" = "Lap/Shoulder Harness Used", "8" = "Lap/Shoulder Harness Not Used", "9" = "Passive Restraint Used", "10" = "Passive Restraint Not Used", "11" = "Air Bag Deployed", "12" = "Air Bag Not Deployed", "13" = "Other", "14" = "Not Required", "15" = "Child Restraint in Vehicle Used", "16" = "Child Restraint in Vehicle Not Used", "17" = "Child Restraint in Vehicle, Use Unknown", "18" = "Child Restraint in Vehicle, Improper Use", "19" = "No Child Restraint in Vehicle", "20" = "Driver, Motorcycle Helmet Not Used", "21" = "Driver, Motorcycle Helmet Used", "22" = "Passenger, Motorcycle Helmet Not Used", "23" = "Passenger, Motorcycle Helmet Used", "0" = "Not Stated"}
+fcinclude = {crashes = false, parties = true, victims = false, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = false}
+tsstats = {sum = false, mean = false, median = false}
+tokeep = true
+
+# 138 Financial Responsibility
+[finanrespons]
+varorder = 138
+rawdata = true
+rawvar = "FINAN_RESPONS"
+modvar = "finanrespons"
+name = "Financial Responsibility"
+desc = "Indicates whether the party involved in the crash had financial responsibility (insurance)"
+varclass = "Int"
+vartype = "Categorical"
+varcat = "Type or Category"
+source = "parties"
+isrecoded = true
+recode = {"N" = 0, "Y" = 1, "O" = 2, "E" = 3, "-" = 9}
+islabeled = true
+labeltype = "Nominal"
+labels = {"0" = "No Proof of Insurance Obtained", "1" = "Yes, Proof of Insurance Obtained", "2" = "Not Applicable (parked cars, bicyclists, pedestrians, and party type others)", "3" = "Used if the officer is called away from the scene of the crash prior to obtaining the insurance information", "9" = "Not Stated"}
+fcinclude = {crashes = false, parties = true, victims = false, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = false}
+tsstats = {sum = false, mean = false, median = false}
+tokeep = true
+
+# 139 Special Information 1
+[spinfo1]
+varorder = 139
+rawdata = true
+rawvar = "SP_INFO_1"
+modvar = "spinfo1"
+name = "Special Information 1"
+desc = "Value A indicates that the crash involved in a vehicle known to be, or believed to be, transporting a hazardous material as defined in CVC Section 353, whether or not the crash involved a hazardous material incident"
+varclass = "Int"
+vartype = "Categorical"
+varcat = "Type or Category"
+source = "parties"
+isrecoded = true
+recode = {"A" = 1, "-" = 0}
+islabeled = true
+labeltype = "Boolean"
+labels = {"1" = "Hazardous Material", "0" = "Not Stated"}
+fcinclude = {crashes = false, parties = true, victims = false, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = false}
+tsstats = {sum = false, mean = false, median = false}
+tokeep = true
+
+# 140 Special Information 2
+[spinfo2]
+varorder = 140
+rawdata = true
+rawvar = "SP_INFO_2"
+modvar = "spinfo2"
+name = "Special Information 2"
+desc = "Cell Phone Information"
+varclass = "Int"
+vartype = "Categorical"
+varcat = "Type or Category"
+source = "parties"
+isrecoded = true
+recode = {"B" = 1, "C" = 2, "D" = 3, "1" = 4, "2" = 5, "3" = 2, "4" = 6, "-" = 0}
+islabeled = true
+labeltype = "Nominal"
+labels = {"1" = "Cell Phone in Use", "2" = "Cell Phone Not in Use", "3" = "No Cell Phone/Unknown", "4" = "Cell Phone Handheld in Use", "5" = "Cell Phone Handsfree in Use", "6" = "Cell Phone Use Unknown", "0" = "Not Stated"}
+fcinclude = {crashes = false, parties = true, victims = false, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = false}
+tsstats = {sum = false, mean = false, median = false}
+tokeep = true
+
+# 141 Special Information 3
+[spinfo3]
+varorder = 141
+rawdata = true
+rawvar = "SP_INFO_3"
+modvar = "spinfo3"
+name = "Special Information 3"
+desc = "Value E indicates that the crash involved a motor vehicle in-transport passing a stopped school bus with its red signal lamps in operation pursuant to CVC Section 22112, or reacting to, pursuant to CVC Section 22454"
+varclass = "Int"
+vartype = "Categorical"
+varcat = "Type or Category"
+source = "parties"
+isrecoded = true
+recode = {"E" = 1, "-" = 0}
+islabeled = true
+labeltype = "Boolean"
+labels = {"1" = "School Bus Related", "0" = "Not Stated"}
+fcinclude = {crashes = false, parties = true, victims = false, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = false}
+tsstats = {sum = false, mean = false, median = false}
+tokeep = true
+
 
 
 
