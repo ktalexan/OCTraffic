@@ -2194,5 +2194,153 @@ tsinclude = {crashes = false, parties = false, victims = false, collisions = fal
 tsstats = {sum = false, mean = false, median = false}
 tokeep = true
 
+# 112 PCF Violation Category
+[pcfviolcategory]
+varorder = 112
+rawdata = true
+rawvar = "PCF_VIOL_CATEGORY"
+modvar = "pcfviolcategory"
+name = "PCF Violation Category"
+desc = " value computed from the law section that was given as the primary cause of the crash"
+varclass = "Int"
+vartype = "Categorical"
+varcat = "Type or Category"
+source = "crashes"
+isrecoded = true
+recodeinfo = {01 = 1, 02 = 2, 03 = 3, 04 = 4, 05 = 5, 06 = 6, 07 = 7, 08 = 8, 09 = 9, 10 = 10, 11 = 11, 12 = 12, 13 = 13, 14 = 14, 15 = 15, 16 = 16, 17 = 17, 18 = 18, 19 = 19, 20 = 20, 21 = 21, 22 = 22, 23 = 23, 24 = 24, 00 = 0, "_" = 99}
+islabeled = true
+labeltype = "Nominal"
+labels = {"1" = "Driving or Bicycling Under the Influence of Alcohol or Drug", "2" = "Impeding Traffic", "3" = "Unsafe Speed", "4" = "Following Too Closely", "5" = "Wrong Side of Road", "6" = "Improper Passing", "7" = "Unsafe Lane Change", "8" = "Improper Turning", "9" = "Automobile Right of Way", "10" = "Pedestrian Right of Way", "11" = "Pedestrian Violation", "12" = "Traffic Signals and Signs", "13" = "Hazardous Parking", "14" = "Lights", "15" = "Brakes", "16" = "Other Equipment", "17" = "Other Hazardous Violation", "18" = "Other Than Driver (or Pedestrian)", "21" = "Unsafe Starting or Backing", "22" = "Other Improper Driving", "23" = "Pedestrian or 'Other' Under the Influence of Alcohol or Drug", "24" = "Fell Asleep", "0" = "Unknown", "99" = "Not Stated"}
+fcinclude = {crashes = true, parties = false, victims = false, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = false}
+tsstats = {sum = false, mean = false, median = false}
+tokeep = true
+
+# 113 PCF Violation
+[pcfviolation]
+varorder = 113
+rawdata = true
+rawvar = "PCF_VIOLATION"
+modvar = "pcfviolation"
+name = "PCF Violation"
+desc = "The law section given as the primary cause of the crash. The subsection is in the data element pcf_viol_subsection"
+varclass = "String"
+vartype = "Categorical"
+varcat = "Type or Category"
+source = "crashes"
+isrecoded = false
+islabeled = false
+fcinclude = {crashes = true, parties = false, victims = false, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = false}
+tsstats = {sum = false, mean = false, median = false}
+tokeep = true
+
+# 114 PCF Violation Subsection
+[pcfviolsubsection]
+varorder = 114
+rawdata = true
+rawvar = "PCF_VIOL_SUBSECTION"
+modvar = "pcfviolsubsection"
+name = "PCF Violation Subsection"
+desc = "The subsection of the law section given as the primary cause of the crash in the data element pcf_violation"
+varclass = "String"
+vartype = "Categorical"
+varcat = "Type or Category"
+source = "crashes"
+isrecoded = false
+islabeled = false
+fcinclude = {crashes = true, parties = false, victims = false, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = false}
+tsstats = {sum = false, mean = false, median = false}
+tokeep = true
+
+# 115 Motor Vehicle Involved With (MVIW)
+[mviw]
+varorder = 115
+rawdata = true
+rawvar = "MVIW"
+modvar = "mviw"
+name = "Motor Vehicle Involved With (MVIW)"
+desc = "escribes what, in conjunction with a motor vehicle in-transport, produced the first injury or damage-causing event, on or off the road"
+varclass = "Int"
+vartype = "Categorical"
+varcat = "Type or Category"
+source = "crashes"
+isrecoded = true
+recodeinfo = {"A" = 1, "B" = 2, "C" = 3, "D" = 4, "E" = 5, "F" = 6, "G" = 7, "H" = 8, "I" = 9, "J" = 10, "0" = 11, "1" = 12, "2" = 13, "3" = 14, "4" = 15, "5" = 16, "6" = 17, "7" = 18, "8" = 19, "9" = 20, "-" = 0}
+islabeled = true
+labeltype = "Nominal"
+labels = {"1" = "Non-Collision", "2" = "Pedestrian", "3" = "Other Motor Vehicle", "4" = "Motor Vehicle on Other Roadway", "5" = "Parked Motor Vehicle", "6" = "Train", "7" = "Bicycle", "8" = "Animal", "9" = "Fixed Object", "10" = "Other Object", "11" = "Non-Collision and Additional Object", "12" = "Pedestrian and Additional Object", "13" = "Other Motor Vehicle and Additional Object", "14" = "Motor Vehicle on Other Roadway and Additional Object", "15" = "Parked Motor Vehicle and Additional Object", "16" = "Train and Additional Object", "17" = "Bicycle and Additional Object", "18" = "Animal and Additional Object", "19" = "Fixed Object and Additional Object", "20" = "Other Object and Additional Object", "0" = "Not Stated"}
+fcinclude = {crashes = true, parties = false, victims = false, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = false}
+tsstats = {sum = false, mean = false, median = false}
+tokeep = true
+
+# 116 Pedestrian Action
+[pedaction]
+varorder = 116
+rawdata = true
+rawvar = "PED_ACTION"
+modvar = "pedaction"
+name = "Pedestrian Action"
+desc = "The action just prior to the crash of the first pedestrian injured or otherwise involved"
+varclass = "Int"
+vartype = "Categorical"
+varcat = "Type or Category"
+source = "crashes"
+isrecoded = true
+recodeinfo = {"A" = 1, "B" = 2, "C" = 3, "D" = 4, "E" = 5, "F" = 6, "G" = 7, "-" = 0}
+islabeled = true
+labeltype = "Nominal"
+labels = {"1" = "No Pedestrian Involved", "2" = "Crossing in Crosswalk at Intersection", "3" = "Crossing in Crosswalk Not at Intersection", "4" = "Crossing Not in Crosswalk", "5" = "In Road, Including Shoulder", "6" = "Not in Road", "7" = "Approaching/Leaving School Bus", "0" = "Not Stated"}
+fcinclude = {crashes = true, parties = false, victims = false, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = false}
+tsstats = {sum = false, mean = false, median = false}
+tokeep = true
+
+# 117 Not Private Property
+[notprivateproperty]
+varorder = 117
+rawdata = true
+rawvar = "NOT_PRIVATE_PROPERTY"
+modvar = "notprivateproperty"
+name = "Not Private Property"
+desc = "Y indicates that the crash did not occur on private property"
+varclass = "Boolean"
+vartype = "Indicator"
+varcat = "Type or Category"
+source = "crashes"
+isrecoded = true
+recodeinfo = {"Y" = 1, "" = 0}
+islabeled = true
+labeltype = "Boolean"
+labels = {0 = "No", 1 = "Yes"}
+fcinclude = {crashes = true, parties = false, victims = false, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = false}
+tsstats = {sum = false, mean = false, median = false}
+tokeep = true
+
+# 118 Statewide Vehicle Type at Fault
+[stwdvehtypeatfault]
+varorder = 118
+rawdata = true
+rawvar = "STWD_VEHTYPE_AT_FAULT"
+modvar = "stwdvehtypeatfault"
+name = "Statewide Vehicle Type at Fault"
+desc = "Indicates the statewide vehicle type of the party who is at fault"
+varclass = "Int"
+vartype = "Categorical"
+varcat = "Type or Category"
+source = "crashes"
+isrecoded = true
+recodeinfo = {"A" = 1, "B" = 2, "C" = 3, "D" = 4, "E" = 5, "F" = 6, "G" = 7, "H" = 8, "I" = 9, "J" = 10, "K" = 11, "L" = 12, "M" = 13, "N" = 14, "O" = 15, "-" = 0}
+islabeled = true
+labeltype = "Nominal"
+labels = {"1" = "Passenger Car/Station Wagon", "2" = "Passenger Car with Trailer", "3" = "Motorcycle/Scooter", "4" = "Pickup or Panel Truck", "5" = "Pickup or Panel Truck with Trailer", "6" = "Truck or Truck Tractor", "7" = "Truck or Truck Tractor with Trailer", "8" = "Schoolbus", "9" = "Other Bus", "10" = "Emergency Vehicle", "11" = "Highway Construction Equipment", "12" = "Bicycle", "13" = "Other Vehicle", "14" = "Pedestrian", "15" = "Moped", "0" = "Not Stated"}
+fcinclude = {crashes = true, parties = false, victims = false, collisions = true, cities = false, roads = false, blocks = false}
+tsinclude = {crashes = false, parties = false, victims = false, collisions = false}
+tsstats = {sum = false, mean = false, median = false}
+tokeep = true
+
 
 
