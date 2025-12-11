@@ -103,3 +103,16 @@ end
 for year in collect(prjmd["years"])
     println("Processing year: $year")
 end
+
+for year in collect(prjmd["years"])
+    year = parse(Int, string(year))
+    if year in excludedyears
+        println("Year $year is excluded.")
+    elseif year in finalyears
+        println("Year $year is final.")
+    elseif year in provisionalyears
+        println("Year $year is provisional.")
+    else
+        println("Year $year is unknown.")
+    end
+end

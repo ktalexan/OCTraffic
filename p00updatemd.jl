@@ -98,6 +98,7 @@ end
 
 # For each year key in prjmd["tims"], update the metadata
 for year in collect(prjmd["years"])
+    year = parse(Int, string(year))
     if year in excludedyears
         prjmd["tims"]["$year"]["status"] = "final"
         prjmd["tims"]["$year"]["notes"] = "Data removed from TIMS (updated on $currentdate)"
