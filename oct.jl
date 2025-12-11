@@ -20,7 +20,7 @@ using Match
 using TOML
 using Logging
 
-export projectmetadata, exportmetadata, projectdirectories
+export projectmetadata, exportmetadata, projectdirectories, updatetimsmetadata, relocatecolumn!
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -52,7 +52,7 @@ function projectmetadata(part::Int64, version::Float64, silent::Bool=false)
     end
 
     # Read the metadata file to a dictionary
-    md = Dict{String, Any}()
+    md = Dict{String,Any}()
     try
         md = TOML.parsefile(mdpath)
     catch e
@@ -98,7 +98,7 @@ function projectmetadata(part::Int64, version::Float64, silent::Bool=false)
     end
 
     # Create a dictionary to hold the project metadata
-    metadata = Dict{String, Any}()
+    metadata = Dict{String,Any}()
     metadata["name"] = "OC Traffic Data Analysis"
     metadata["title"] = step
     metadata["description"] = desc
@@ -114,7 +114,7 @@ function projectmetadata(part::Int64, version::Float64, silent::Bool=false)
     metadata["datestart"] = Dates.format(startdate, dateformat"yyyy-mm-dd")
     metadata["dateend"] = Dates.format(enddate, dateformat"yyyy-mm-dd")
 
-    
+
     # If the silent flag is false, print the metadata
     if !silent
         println("Project Metadata:\n- Name: $(metadata["name"])\n- Title: $(metadata["title"])\n- Description: $(metadata["description"])\n- Version: $(metadata["version"])\n- Author: $(metadata["author"])\n- Data Years: $(join(metadata["years"], ", "))\n- Data Start Date: $(Dates.format(startdate, dateformat"U dd, yyyy"))\n- Data End Date: $(Dates.format(enddate, dateformat"U dd, yyyy"))")
@@ -254,4 +254,150 @@ function projectdirectories(basepath::String, silent::Bool=false)::Dict{String,S
     return prjdirs
 end
 
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# 5. Update TIMS Metadata Function
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+"""
+    updatetimsmetadata(year::Int; type::String="reported", datacounts::Vector{Int}=Int[0, 0, 0])
+
+Update the TIMS metadata file with the counts of crashes, parties, and victims for a given year and type.
+
+# Arguments
+- `year::Int`: The year for which the metadata is being updated.
+- `type::String`: The type of data being updated. Valid values are "reported", "geocoded", or "excluded".
+- `datacounts::Vector{Int}`: A list containing the counts of crashes, parties, and victims. Defaults to `[0, 0, 0]`.
+
+# Returns
+- `Nothing`: Updates the `metadata/timsmd.toml` file.
+
+# Raises
+- `ArgumentError`: If the type is not valid.
+- `ErrorException`: If the metadata file does not exist.
+"""
+function updatetimsmetadata(year::Int64; type::String="reported", datacounts::Vector{Int}=Int[0, 0, 0])
+    # Types definition
+    valid_types = ["reported", "geocoded", "excluded"]
+    if !(type in valid_types)
+        throw(ArgumentError("Invalid type '$type'. Valid types are: $(join(valid_types, ", "))"))
+    end
+
+    # Check if datacounts is a list of three integers
+    if length(datacounts) != 3
+        throw(ArgumentError("datacounts must be a list of three integers: [crashes, parties, victims]"))
+    end
+
+    # Get the counts from the datacounts list
+    cntcrashes = datacounts[1]
+    cntparties = datacounts[2]
+    cntvictims = datacounts[3]
+
+    # Check if the TIMS metadata file exists
+    mdfile = joinpath(pwd(), "metadata", "timsmd.toml")
+    if !isfile(mdfile)
+        error("Metadata file $mdfile does not exist.")
+    end
+
+    # Load the TIMS metadata
+    timsmd = TOML.parsefile(mdfile)
+
+    # Convert year to string for dictionary key access
+    yearstring = string(year)
+
+    # Note: TOML parsing results in Dict{String, Any}.
+    # We need to make sure the structure exists.
+    if !haskey(timsmd, yearstring)
+        # If year doesn't exist, we might want to create it or error. 
+        # For now, let's assume it should exist or we create a basic structure.
+        timsmd[yearstring] = Dict{String,Any}()
+    end
+
+    if !haskey(timsmd[yearstring], type)
+        timsmd[yearstring][type] = Dict{String,Any}()
+    end
+
+    timsmd[yearstring][type]["crashes"] = cntcrashes
+    timsmd[yearstring][type]["parties"] = cntparties
+    timsmd[yearstring][type]["victims"] = cntvictims
+
+    # Save the updated metadata back to the file
+    open(mdfile, "w") do io
+        TOML.print(io, timsmd; sorted=true)
+    end
+
+    return nothing
+end
+
+
+
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# 6. Relocate Data Frame Column Function
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+"""
+    relocatecolumn!(df::DataFrame, col_name::Union{String, Vector{String}}, ref_col_name::String, position::String="after") -> DataFrame
+
+Relocates a column in a DataFrame to a new position relative to another column.
+
+# Arguments
+- `df::DataFrame`: The DataFrame to modify.
+- `col_name::Union{String, Vector{String}}`: The name of the column to relocate.
+- `ref_col_name::String`: The name of the reference column.
+- `position::String`: "before" or "after" the reference column. Default is "after".
+
+# Returns
+- `DataFrame`: The modified DataFrame with the relocated column.
+"""
+function relocatecolumn!(df::DataFrame, col_name::Union{String,Vector{String}}, ref_col_name::String, position::String="after")
+
+    # Make sure the ref_col_name exists in the DataFrame
+    if !(ref_col_name in names(df))
+        throw(ArgumentError("Reference column '\$ref_col_name' does not exist in the DataFrame."))
+    end
+
+    # Normalize col_name to a vector of strings
+    cols_to_move = isa(col_name, String) ? [col_name] : col_name
+
+    # Check if all columns to move exist
+    for c in cols_to_move
+        if !(c in names(df))
+            throw(ArgumentError("Column '\$c' does not exist in the DataFrame."))
+        end
+    end
+
+    if !(position in ["before", "after"])
+        throw(ArgumentError("Position must be 'before' or 'after'."))
+    end
+
+    # Get all column names
+    all_cols = names(df)
+
+    # Remove the columns to be moved from the list of columns
+    remaining_cols = filter(c -> !(c in cols_to_move), all_cols)
+
+    # Find the index of the reference column in the remaining columns
+    ref_idx = findfirst(==(ref_col_name), remaining_cols)
+
+    if isnothing(ref_idx)
+        throw(ArgumentError("Reference column cannot be one of the columns being moved."))
+    end
+
+    # Determine insertion index
+    if position == "before"
+        insert_idx = ref_idx
+    else # position == "after"
+        insert_idx = ref_idx + 1
+    end
+
+    # Construct the new column order
+    new_order = vcat(remaining_cols[1:insert_idx-1], cols_to_move, remaining_cols[insert_idx:end])
+
+    # Reorder the DataFrame
+    select!(df, new_order)
+
+    return df
+end
 
