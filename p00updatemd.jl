@@ -77,39 +77,39 @@ missingyears = []
 
 # Create a list of the years in prjyears that are not in prjmd["years"]
 for year in prjyears
-    if !(year in prjmd["years"])
+    if !("$year" in prjmd["years"])
         # Add the year to the missingyears list
         push!(missingyears, year)
-
+        
         # Append the prjmd["tims"] with a new template for that year
-        prjmd["tims"][string(year)] = Dict(
+        prjmd["tims"]["$year"] = Dict(
             "datestart" => "$year-01-01",
             "dateend" => "$year-03-31",
             "dateupdated" => currentdate,
             "dategp" => "",
-            "status" => "provisional",
-            "files.crashes" => "crashes_$year.csv",
-            "files.parties" => "parties_$year.csv",
-            "files.victims" => "victims_$year.csv"
+            "status" => "provisional"
         )
+        # Append the files sub-dictionary
+        prjmd["tims"]["$year"]["files"]["crashes"] = "crashes_$year.csv"
+        prjmd["tims"]["$year"]["files"]["parties"] = "parties_$year.csv"
+        prjmd["tims"]["$year"]["files"]["victims"] = "victims_$year.csv"
     end
 end
 
 # For each year key in prjmd["tims"], update the metadata
 for year in collect(prjmd["years"])
-    year = parse(Int, string(year))
     if year in excludedyears
-        prjmd["tims"][string(year)]["status"] = "final"
-        prjmd["tims"][string(year)]["notes"] = "Data removed from TIMS (updated on $currentdate)"
+        prjmd["tims"]["$year"]["status"] = "final"
+        prjmd["tims"]["$year"]["notes"] = "Data removed from TIMS (updated on $currentdate)"
     elseif year in finalyears
-        prjmd["tims"][string(year)]["status"] = "final"
-        prjmd["tims"][string(year)]["notes"] = "Final data in TIMS (updated on $currentdate)"
+        prjmd["tims"]["$year"]["status"] = "final"
+        prjmd["tims"]["$year"]["notes"] = "Final data in TIMS (updated on $currentdate)"
     elseif year in provisionalyears
-        prjmd["tims"][string(year)]["status"] = "provisional"
-        prjmd["tims"][string(year)]["notes"] = "Provisional data in TIMS (updated on $currentdate)"
+        prjmd["tims"]["$year"]["status"] = "provisional"
+        prjmd["tims"]["$year"]["notes"] = "Provisional data in TIMS (updated on $currentdate)"
     else
-        prjmd["tims"][string(year)]["status"] = "unknown"
-        prjmd["tims"][string(year)]["notes"] = "Unknown data in TIMS (updated on $currentdate)"
+        prjmd["tims"]["$year"]["status"] = "unknown"
+        prjmd["tims"]["$year"]["notes"] = "Unknown data in TIMS (updated on $currentdate)"
     end
 end
 
@@ -117,35 +117,35 @@ end
 println("- Updating counts in metadata...")
 for year in collect(prjmd["years"])
     # Define the file paths
-    crashespath = joinpath(prjdirs["dataraw"], prjmd["tims"][string(year)]["files.crashes"])
-    partiespath = joinpath(prjdirs["dataraw"], prjmd["tims"][string(year)]["files.parties"])
-    victimspath = joinpath(prjdirs["dataraw"], prjmd["tims"][string(year)]["files.victims"])
+    crashespath = joinpath(prjdirs["dataraw"], prjmd["tims"]["$year"]["files"]["crashes"])
+    partiespath = joinpath(prjdirs["dataraw"], prjmd["tims"]["$year"]["files"]["parties"])
+    victimspath = joinpath(prjdirs["dataraw"], prjmd["tims"]["$year"]["files"]["victims"])
     # Read the CSV files and count the number of rows
     # Update crashes count
     if isfile(crashespath)
         crashesdf = CSV.read(crashespath, DataFrame)
-        prjmd["tims"][string(year)]["reported"]["crashes"] = nrow(crashesdf)
+        prjmd["tims"]["$year"]["reported"]["crashes"] = nrow(crashesdf)
         println("  - Year $year: Crashes count updated to $(nrow(crashesdf))")
     else
-        prjmd["tims"][year]["reported.crashes"] = 0
+        prjmd["tims"][year]["reported"]["crashes"] = 0
         println("  - Year $year: Crashes file not found, count set to 0")
     end
     # Update parties count
     if isfile(partiespath)
         partiesdf = CSV.read(partiespath, DataFrame)
-        prjmd["tims"][year]["reported.parties"] = nrow(partiesdf)
+        prjmd["tims"][year]["reported"]["parties"] = nrow(partiesdf)
         println("  - Year $year: Parties count updated to $(nrow(partiesdf))")
     else
-        prjmd["tims"][year]["reported.parties"] = 0
+        prjmd["tims"][year]["reported"]["parties"] = 0
         println("  - Year $year: Parties file not found, count set to 0")
     end
     # Update victims count
     if isfile(victimspath)
         victimsdf = CSV.read(victimspath, DataFrame)
-        prjmd["tims"][year]["reported.victims"] = nrow(victimsdf)
+        prjmd["tims"][year]["reported"]["victims"] = nrow(victimsdf)
         println("  - Year $year: Victims count updated to $(nrow(victimsdf))")
     else
-        prjmd["tims"][year]["reported.victims"] = 0
+        prjmd["tims"][year]["reported"]["victims"] = 0
         println("  - Year $year: Victims file not found, count set to 0")
     end
 end

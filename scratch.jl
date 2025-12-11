@@ -91,3 +91,15 @@ for year in collect(prjmd["years"])
         println("Year: $year, Crashes File: $crashespath does not exist.")
     end
 end
+
+for year in prjyears
+    if !("$year" in prjmd["years"])
+        println("Year $year is missing from project metadata!")
+    else
+        println("Year $year is present in project metadata.")
+    end
+end
+
+for year in collect(prjmd["years"])
+    println("Processing year: $year")
+end
