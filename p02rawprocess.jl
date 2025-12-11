@@ -20,6 +20,8 @@ using Dates
 using CSV
 using Formatting
 using Arrow, DataFrames
+using GeoDataFrames
+using ArchGDAL
 
 # Include the oct.jl file to access the projectmetadata function
 include(joinpath(pwd(), "oct.jl"))
@@ -84,4 +86,68 @@ dfdata = Arrow.Table(dfdatapath) |> DataFrame
 println("\n2.2. Supporting GIS Data from Geodatabase")
 
 # Import the supporting feature classes (boundaries, cities, roads, blocks) from the OCSWITRS Geodatabase as spatial dataframes
+
+# Path to the project geodatabase, and the supporting feature dataset
+gdbpath = prjdirs["agpgdb"]
+gdbsupporting = prjdirs["agpgdbsupporting"]
+
+# Boundaries data frame
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+println("- Loading the boundaries data frame...")
+
+# Read the boundaries data frame from the geodatabase
+boundaries = GeoDataFrames.read(gdbpath, "boundaries")
+
+# Add metadata attributes to the boundaries data frame
+metadata!(boundaries, "name", "boundaries", style=:note)
+metadata!(boundaries, "label", "OCSWITRS Boundaries", style=:note)
+metadata!(boundaries, "description", "Spatially enabled dataframe containing the Orange County boundaries for the OCSWITRS dataset.", style=:note)
+metadata!(boundaries, "version", prjmd["version"], style=:note)
+metadata!(boundaries, "author", prjmd["author"], style=:note)
+metadata!(boundaries, "updated", Dates.format(Dates.today(), "mm/dd/yyyy"), style=:note)
+
+# Cities data frame
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+println("- Loading the cities data frame...")
+
+# Read the cities data frame from the geodatabase
+cities = GeoDataFrames.read(gdbpath, "cities")
+
+# Add metadata attributes to the cities data frame
+metadata!(cities, "name", "cities", style=:note)
+metadata!(cities, "label", "OCSWITRS Cities", style=:note)
+metadata!(cities, "description", "Spatially enabled dataframe containing the Orange County cities for the OCSWITRS dataset.", style=:note)
+metadata!(cities, "version", prjmd["version"], style=:note)
+metadata!(cities, "author", prjmd["author"], style=:note)
+metadata!(cities, "updated", Dates.format(Dates.today(), "mm/dd/yyyy"), style=:note)
+
+# Roads data frame
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+println("- Loading the roads data frame...")
+
+# Read the roads data frame from the geodatabase
+roads = GeoDataFrames.read(gdbpath, "roads")
+
+# Add metadata attributes to the roads data frame
+metadata!(roads, "name", "roads", style=:note)
+metadata!(roads, "label", "OCSWITRS Roads", style=:note)
+metadata!(roads, "description", "Spatially enabled dataframe containing the Orange County roads for the OCSWITRS dataset.", style=:note)
+metadata!(roads, "version", prjmd["version"], style=:note)
+metadata!(roads, "author", prjmd["author"], style=:note)
+metadata!(roads, "updated", Dates.format(Dates.today(), "mm/dd/yyyy"), style=:note)
+
+# Blocks data frame
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+println("- Loading the blocks data frame...")
+
+# Read the blocks data frame from the geodatabase
+blocks = GeoDataFrames.read(gdbpath, "blocks")
+
+# Add metadata attributes to the blocks data frame
+metadata!(blocks, "name", "blocks", style=:note)
+metadata!(blocks, "label", "OCSWITRS Census Blocks", style=:note)
+metadata!(blocks, "description", "Spatially enabled dataframe containing the Orange County census blocks for the OCSWITRS dataset.", style=:note)
+metadata!(blocks, "version", prjmd["version"], style=:note)
+metadata!(blocks, "author", prjmd["author"], style=:note)
+metadata!(blocks, "updated", Dates.format(Dates.today(), "mm/dd/yyyy"), style=:note)
 

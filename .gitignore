@@ -196,6 +196,8 @@ cython_debug/
 # Project Folder Exceptions
 admin/*
 data/*
+# All OCSWITRS ArcGIS Pro project folder and files
+ocswitrs/*
 
 # Julia
 # Ignore user package directory, compiled caches and artifacts,
