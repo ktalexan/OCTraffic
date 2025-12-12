@@ -174,3 +174,288 @@ printmetadata(blocks)
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 println("\n2.3. Statistics and Data Processing")
 
+# Compile a list of the data frames to be processed
+println("- Compiling a list of the data frames to be processed...")
+dataframes = [crashes, parties, victims, boundaries, cities, roads, blocks]
+
+# Get basic statistics of the imported data frames
+println(
+    "- Basic Data Frame Statistics\n" *
+    "  Raw Data Frames:\n" *
+    "  - crashes: $(format(nrow(crashes), commas=true)) rows x $(ncol(crashes)) columns\n" *
+    "  - parties: $(format(nrow(parties), commas=true)) rows x $(ncol(parties)) columns\n" *
+    "  - victims: $(format(nrow(victims), commas=true)) rows x $(ncol(victims)) columns\n" *
+    "  Supporting Data Frames:\n" *
+    "  - boundaries: $(format(nrow(boundaries), commas=true)) rows x $(ncol(boundaries)) columns\n" *
+    "  - cities: $(format(nrow(cities), commas=true)) rows x $(ncol(cities)) columns\n" *
+    "  - roads: $(format(nrow(roads), commas=true)) rows x $(ncol(roads)) columns\n" *
+    "  - blocks: $(format(nrow(blocks), commas=true)) rows x $(ncol(blocks)) columns"
+)
+
+# List of columns for each of the raw data frames ensuring that (a) the columns are in the correct order, and (b) the columns are not duplicated (apart from the case_id column which is common in all data frames, and the party number which is common between the parties and victims data frames).
+rawcols = Dict(
+    "crashes" => [
+        "CASE_ID",
+        "CITY",
+        "COLLISION_DATE",
+        "COLLISION_TIME",
+        "ACCIDENT_YEAR",
+        "DAY_OF_WEEK",
+        "PROC_DATE",
+        "COLLISION_SEVERITY",
+        "PARTY_COUNT",
+        "NUMBER_KILLED",
+        "NUMBER_INJURED",
+        "COUNT_SEVERE_INJ",
+        "COUNT_VISIBLE_INJ",
+        "COUNT_COMPLAINT_PAIN",
+        "COUNT_PED_KILLED",
+        "COUNT_PED_INJURED",
+        "COUNT_BICYCLIST_KILLED",
+        "COUNT_BICYCLIST_INJURED",
+        "COUNT_MC_KILLED",
+        "COUNT_MC_INJURED",
+        "PRIMARY_COLL_FACTOR",
+        "TYPE_OF_COLLISION",
+        "PEDESTRIAN_ACCIDENT",
+        "BICYCLE_ACCIDENT",
+        "MOTORCYCLE_ACCIDENT",
+        "TRUCK_ACCIDENT",
+        "HIT_AND_RUN",
+        "ALCOHOL_INVOLVED",
+        "JURIS",
+        "OFFICER_ID",
+        "REPORTING_DISTRICT",
+        "CHP_SHIFT",
+        "CNTY_CITY_LOC",
+        "SPECIAL_COND",
+        "BEAT_TYPE",
+        "CHP_BEAT_TYPE",
+        "CHP_BEAT_CLASS",
+        "BEAT_NUMBER",
+        "PRIMARY_RD",
+        "SECONDARY_RD",
+        "DISTANCE",
+        "DIRECTION",
+        "INTERSECTION",
+        "WEATHER_1",
+        "WEATHER_2",
+        "ROAD_SURFACE",
+        "ROAD_COND_1",
+        "ROAD_COND_2",
+        "LIGHTING",
+        "CONTROL_DEVICE",
+        "STATE_HWY_IND",
+        "SIDE_OF_HWY",
+        "TOW_AWAY",
+        "PCF_CODE_OF_VIOL",
+        "PCF_VIOL_CATEGORY",
+        "PCF_VIOLATION",
+        "PCF_VIOL_SUBSECTION",
+        "MVIW",
+        "PED_ACTION",
+        "NOT_PRIVATE_PROPERTY",
+        "STWD_VEHTYPE_AT_FAULT",
+        "CHP_VEHTYPE_AT_FAULT",
+        "PRIMARY_RAMP",
+        "SECONDARY_RAMP",
+        "LATITUDE",
+        "LONGITUDE",
+        "POINT_X",
+        "POINT_Y",
+        "POPULATION",
+        "CITY_DIVISION_LAPD",
+        "CALTRANS_COUNTY",
+        "CALTRANS_DISTRICT",
+        "STATE_ROUTE",
+        "ROUTE_SUFFIX",
+        "POSTMILE_PREFIX",
+        "POSTMILE",
+        "LOCATION_TYPE",
+        "RAMP_INTERSECTION",
+        "CHP_ROAD_TYPE",
+        "COUNTY"
+    ],
+    "parties" => [
+        "CASE_ID",
+        "PARTY_NUMBER",
+        "PARTY_TYPE",
+        "AT_FAULT",
+        "PARTY_SEX",
+        "PARTY_AGE",
+        "RACE",
+        "PARTY_NUMBER_KILLED",
+        "PARTY_NUMBER_INJURED",
+        "INATTENTION",
+        "PARTY_SOBRIETY",
+        "PARTY_DRUG_PHYSICAL",
+        "DIR_OF_TRAVEL",
+        "PARTY_SAFETY_EQUIP_1",
+        "PARTY_SAFETY_EQUIP_2",
+        "FINAN_RESPONS",
+        "SP_INFO_1",
+        "SP_INFO_2",
+        "SP_INFO_3",
+        "OAF_VIOLATION_CODE",
+        "OAF_VIOL_CAT",
+        "OAF_VIOL_SECTION",
+        "OAF_VIOLATION_SUFFIX",
+        "OAF_1",
+        "OAF_2",
+        "MOVE_PRE_ACC",
+        "VEHICLE_YEAR",
+        "VEHICLE_MAKE",
+        "STWD_VEHICLE_TYPE",
+        "CHP_VEH_TYPE_TOWING",
+        "CHP_VEH_TYPE_TOWED",
+        "SPECIAL_INFO_F",
+        "SPECIAL_INFO_G"
+    ],
+    "victims" => [
+        "CASE_ID",
+        "PARTY_NUMBER",
+        "VICTIM_NUMBER",
+        "VICTIM_ROLE",
+        "VICTIM_SEX",
+        "VICTIM_AGE",
+        "VICTIM_DEGREE_OF_INJURY",
+        "VICTIM_SEATING_POSITION",
+        "VICTIM_SAFETY_EQUIP_1",
+        "VICTIM_SAFETY_EQUIP_2",
+        "VICTIM_EJECTED"
+    ]
+)
+
+# Export the rawcols dictionary to disk as a TOML file
+rawcolspath = joinpath(prjdirs["codebook"], "rawcols.toml")
+open(rawcolspath, "w") do io
+    TOML.print(io, rawcols; sorted=true)
+end
+
+# Reorder the columns in the crashes, parties, and victims data frames using the rawcols["crashes"], rawcols["parties"], and rawcols["victims"] dictionaries
+crashes = crashes[:, rawcols["crashes"]]
+parties = parties[:, rawcols["parties"]]
+victims = victims[:, rawcols["victims"]]
+
+# Make sure that the columns in the data frames are matching the raw_cols dictionary
+if ncol(crashes) != length(rawcols["crashes"]) || ncol(parties) != length(rawcols["parties"]) || ncol(victims) != length(rawcols["victims"])
+    println("Error: The number of columns in the data frames does not match the raw_cols dictionary.")
+    exit()
+elseif ncol(crashes) == length(rawcols["crashes"]) && ncol(parties) == length(rawcols["parties"]) && ncol(victims) == length(rawcols["victims"])
+    println("The number of columns in the data frames matches the raw_cols dictionary.")
+end
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# 2.4. Import codebook
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+println("\n2.4. Importing codebook")
+
+# Import the codebook from disk as a TOML file
+println("- Importing the codebook TOML file...")
+cbpath = joinpath(prjdirs["codebook"], "cb.toml")
+cb = TOML.parsefile(cbpath)
+
+# Create a data frame from the cb TOML file by transposing the data
+rows = [merge(Dict("Field" => k), v) for (k, v) in cb]
+allkeys = unique(reduce(vcat, collect(keys(r)) for r in rows))
+cbdf = DataFrame()
+for key in allkeys
+    cbdf[!, key] = [get(row, key, missing) for row in rows]
+end
+select!(cbdf, "Field", Not("Field"))
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# 3. Raw Data operations
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+println("\n3. Raw Data operations")
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# 3.1. Variable Name and columns
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+println("\n3.1. Variable Name and columns")
+
+# For each of the data frames below, we will process their data by:
+# 1. Creating a list of names for the data frame (contains new_name as name, and old_name as value).
+# 2. Renaming the columns of the data frame using the new_names from the codebook list.
+# 3. Removing all the deprecated and unused columns from the data frame.
+
+# Crashes Data Frame
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+println("- Crashes Data Frame")
+
+# from the cb dictionary, find all the keys that have rawdata = true, and their fcinclude contains crases = true
+crasheskeys = [k for (k, v) in cb if get(v, "rawdata", false) && get(get(v, "fcinclude", Dict()), "crashes", false)]
+println("Found $(length(crasheskeys)) keys for crashes raw data.")
+
+# Initialize the old and new names for the crashes data frame
+oldname = Nothing
+newname = Nothing
+
+# Loop through the list of selected names and rename the columns in the crashes data frame
+for newname in crasheskeys
+    oldname = cb[newname]["rawvar"]
+    println("Renaming $oldname to $newname")
+    # Check if the oldname exists in the crashes data frame
+    if oldname in names(crashes)
+        # Rename the column in place
+        rename!(crashes, oldname => newname)
+    end
+end
+
+# Remove all the columns in the crashes data frame that are not in crasheskeys
+select!(crashes, intersect(names(crashes), crasheskeys))
+
+# Parties Data Frame
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+println("- Parties Data Frame")
+
+# from the cb dictionary, find all the keys that have rawdata = true, and their fcinclude contains parties = true
+partieskeys = [k for (k, v) in cb if get(v, "rawdata", false) && get(get(v, "fcinclude", Dict()), "parties", false)]
+println("Found $(length(partieskeys)) keys for parties raw data.")
+
+# Initialize the old and new names for the parties data frame
+oldname = Nothing
+newname = Nothing
+
+# Loop through the list of selected names and rename the columns in the parties data frame
+for newname in partieskeys
+    oldname = cb[newname]["rawvar"]
+    println("Renaming $oldname to $newname")
+    # Check if the oldname exists in the parties data frame
+    if oldname in names(parties)
+        # Rename the column in place
+        rename!(parties, oldname => newname)
+    end
+end
+
+# Remove all the columns in the parties data frame that are not in partieskeys
+select!(parties, intersect(names(parties), partieskeys))
+
+# Victims Data Frame
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+println("- Victims Data Frame")
+
+# from the cb dictionary, find all the keys that have rawdata = true, and their fcinclude contains victims = true
+victimskeys = [k for (k, v) in cb if get(v, "rawdata", false) && get(get(v, "fcinclude", Dict()), "victims", false)]
+println("Found $(length(victimskeys)) keys for victims raw data.")
+
+# Initialize the old and new names for the victims data frame
+oldname = Nothing
+newname = Nothing
+
+# Loop through the list of selected names and rename the columns in the victims data frame
+for newname in victimskeys
+    oldname = cb[newname]["rawvar"]
+    println("Renaming $oldname to $newname")
+    # Check if the oldname exists in the victims data frame
+    if oldname in names(victims)
+        # Rename the column in place
+        rename!(victims, oldname => newname)
+    end
+end
+
+# Remove all the columns in the victims data frame that are not in victimskeys
+select!(victims, intersect(names(victims), victimskeys))
+
