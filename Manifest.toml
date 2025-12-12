@@ -2,7 +2,7 @@
 
 julia_version = "1.12.1"
 manifest_format = "2.0"
-project_hash = "a3d02c23ac7978f9d4f4d8d863e70e644fef0d89"
+project_hash = "d3b29b62f240f4f7ca606dc343d0c39002c16a9c"
 
 [[deps.AbstractTrees]]
 git-tree-sha1 = "2d9c9a55f9c93e8887ad391fbae72f8ef55e1177"
@@ -268,6 +268,12 @@ deps = ["Statistics"]
 git-tree-sha1 = "05882d6995ae5c12bb5f36dd2ed3f61c98cbb172"
 uuid = "53c48c17-4a7d-5ca2-90c5-79b7896eea93"
 version = "0.8.5"
+
+[[deps.Formatting]]
+deps = ["Logging", "Printf"]
+git-tree-sha1 = "fb409abab2caf118986fc597ba84b50cbaf00b87"
+uuid = "59287772-0a20-5a39-b81b-1366585eb4c0"
+version = "0.4.3"
 
 [[deps.Future]]
 deps = ["Random"]
@@ -606,6 +612,12 @@ version = "0.4.3"
 deps = ["Base64", "JuliaSyntaxHighlighting", "StyledStrings"]
 uuid = "d6f4376e-aef5-505a-96c1-9c027394607a"
 version = "1.11.0"
+
+[[deps.Match]]
+deps = ["MacroTools", "OrderedCollections"]
+git-tree-sha1 = "58c5c5db26f2f0512facb359991410b7b5982c38"
+uuid = "7eb4fadd-790c-5f42-8a69-bfa0b872bfbf"
+version = "2.4.1"
 
 [[deps.MicrosoftMPI_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]

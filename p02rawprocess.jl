@@ -106,6 +106,10 @@ metadata!(boundaries, "version", prjmd["version"], style=:note)
 metadata!(boundaries, "author", prjmd["author"], style=:note)
 metadata!(boundaries, "updated", Dates.format(Dates.today(), "mm/dd/yyyy"), style=:note)
 
+# Print the metadata of the boundaries data frame
+println("\nMetadata of the boundaries data frame:")
+printmetadata(boundaries)
+
 # Cities data frame
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 println("- Loading the cities data frame...")
@@ -120,6 +124,10 @@ metadata!(cities, "description", "Spatially enabled dataframe containing the Ora
 metadata!(cities, "version", prjmd["version"], style=:note)
 metadata!(cities, "author", prjmd["author"], style=:note)
 metadata!(cities, "updated", Dates.format(Dates.today(), "mm/dd/yyyy"), style=:note)
+
+# Print the metadata of the cities data frame
+println("\nMetadata of the cities data frame:")
+printmetadata(cities)
 
 # Roads data frame
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -136,6 +144,11 @@ metadata!(roads, "version", prjmd["version"], style=:note)
 metadata!(roads, "author", prjmd["author"], style=:note)
 metadata!(roads, "updated", Dates.format(Dates.today(), "mm/dd/yyyy"), style=:note)
 
+# Print the metadata of the roads data frame
+println("\nMetadata of the roads data frame:")
+printmetadata(roads)
+
+
 # Blocks data frame
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 println("- Loading the blocks data frame...")
@@ -150,4 +163,14 @@ metadata!(blocks, "description", "Spatially enabled dataframe containing the Ora
 metadata!(blocks, "version", prjmd["version"], style=:note)
 metadata!(blocks, "author", prjmd["author"], style=:note)
 metadata!(blocks, "updated", Dates.format(Dates.today(), "mm/dd/yyyy"), style=:note)
+
+# Print the metadata of the blocks data frame
+println("\nMetadata of the blocks data frame:")
+printmetadata(blocks)
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# 2.3. Statistics and Data Processing
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+println("\n2.3. Statistics and Data Processing")
 

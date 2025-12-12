@@ -19,6 +19,12 @@ using DataFrames
 using Match
 using TOML
 using Logging
+using DotEnv
+using GeoDataFrames
+using ArchGDAL
+using Formatting
+using Arrow
+
 
 export projectmetadata, exportmetadata, projectdirectories, updatetimsmetadata, relocatecolumn!
 
@@ -330,6 +336,28 @@ function updatetimsmetadata(year::Int64; type::String="reported", datacounts::Ve
 end
 
 
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# 5. Print Data Frame Metadata Function
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+"""
+    printmetadata(df::AbstractDataFrame)
+Prints the metadata of a DataFrame.
+
+# Arguments
+- `df::AbstractDataFrame`: The DataFrame to print metadata for.
+"""
+function printmetadata(df::AbstractDataFrame)
+    if isempty(metadata(df))
+        println("No metadata found.")
+        return
+    end
+
+    for (k, v) in sort(collect(metadata(df)), by=x -> x[1])
+        println("- $k: $v")
+    end
+end
 
 
 
