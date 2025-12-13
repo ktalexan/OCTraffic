@@ -511,12 +511,36 @@ println("\n3.3. Add CID, PID and VID Columns")
 
 ### Add CID Columns ----
 println("- Adding CID columns...")
+
 # Generate CID column for the data frames by converting the case_id column to a string and adding them to the data frame
-crashes[!, "cid"] = string.(crashes[!, "caseid"])
-parties[!, "cid"] = string.(parties[!, "caseid"])
-victims[!, "cid"] = string.(victims[!, "caseid"])
+crashes.cid = string.(crashes.caseid)
+parties.cid = string.(parties.caseid)
+victims.cid = string.(victims.caseid)
 
 # Move the cid column after the caseid column in the data frames
 select!(crashes, "caseid", "cid", Not(["caseid", "cid"]))
 select!(parties, "caseid", "cid", Not(["caseid", "cid"]))
 select!(victims, "caseid", "cid", Not(["caseid", "cid"]))
+
+
+### Add PID Columns ----
+println("- Adding PID columns...")
+
+# Generate PID column for the data frames by converting the caseid column to a string and for each caseid on the same row, adding the partynumber as a string, separated by a dash
+parties.pid = string.(parties.caseid) .* "-" .* string.(parties.partynumber)
+victims.pid = string.(victims.caseid) .* "-" .* string.(victims.partynumber)
+
+# Move the pid column after the cid column in the data frames
+select!(parties, 1:columnindex(parties, :cid), :pid, Not(1:columnindex(parties, :cid), :pid))
+select!(victims, 1:columnindex(victims, :cid), :pid, Not(1:columnindex(victims, :cid), :pid))
+
+
+### Add VID Columns ----
+println("- Adding VID columns...")
+
+# Generate VID column for the data frames by converting the caseid column to a string and for each caseid on the same row, adding the partynumber and victimnumber as a string, separated by a dash
+victims.vid = string.(victims.caseid) .* "-" .* string.(victims.partynumber) .* "-" .* string.(victims.victimnumber)
+
+# Move the vid column after the pid column in the data frame
+select!(victims, 1:columnindex(victims, :pid), :vid, Not(1:columnindex(victims, :pid), :vid))
+
