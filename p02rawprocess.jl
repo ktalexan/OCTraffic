@@ -9,7 +9,7 @@
 println("\nOCTraffic Data Processing - Part 2: Processing Raw Data Files\n")
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# 1. Preliminaries
+# 1. Preliminaries ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 println("1. Preliminaries")
 
@@ -36,7 +36,7 @@ version = 2025.02
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# 1.1. Project and Workspace variables
+## 1.1. Project and Workspace variables ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 println("\n1.1. Project and Workspace variables")
 
@@ -50,12 +50,12 @@ prjdirs = projectdirectories(pwd(), false)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# 2. Raw Data Import (initialization)
+# 2. Raw Data Import (initialization) ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 println("\n2. Raw Data Import (initialization)")
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# 2.1. Importing Raw Data Files from disk
+## 2.1. Importing Raw Data Files from disk ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 println("\n2.1. Importing Raw Data Files from disk")
 
@@ -81,7 +81,7 @@ dfdata = Arrow.Table(dfdatapath) |> DataFrame
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# 2.2. Supporting GIS Data from Geodatabase
+## 2.2. Supporting GIS Data from Geodatabase ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 println("\n2.2. Supporting GIS Data from Geodatabase")
 
@@ -91,8 +91,7 @@ println("\n2.2. Supporting GIS Data from Geodatabase")
 gdbpath = prjdirs["agpgdb"]
 gdbsupporting = prjdirs["agpgdbsupporting"]
 
-# Boundaries data frame
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+### Boundaries data frame ----------------------------------------
 println("- Loading the boundaries data frame...")
 
 # Read the boundaries data frame from the geodatabase
@@ -110,8 +109,7 @@ metadata!(boundaries, "updated", Dates.format(Dates.today(), "mm/dd/yyyy"), styl
 println("\nMetadata of the boundaries data frame:")
 printmetadata(boundaries)
 
-# Cities data frame
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+### Cities data frame ----------------------------------------
 println("- Loading the cities data frame...")
 
 # Read the cities data frame from the geodatabase
@@ -129,8 +127,7 @@ metadata!(cities, "updated", Dates.format(Dates.today(), "mm/dd/yyyy"), style=:n
 println("\nMetadata of the cities data frame:")
 printmetadata(cities)
 
-# Roads data frame
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+### Roads data frame ----------------------------------------
 println("- Loading the roads data frame...")
 
 # Read the roads data frame from the geodatabase
@@ -149,8 +146,7 @@ println("\nMetadata of the roads data frame:")
 printmetadata(roads)
 
 
-# Blocks data frame
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+### Blocks data frame ----------------------------------------
 println("- Loading the blocks data frame...")
 
 # Read the blocks data frame from the geodatabase
@@ -170,7 +166,7 @@ printmetadata(blocks)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# 2.3. Statistics and Data Processing
+## 2.3. Statistics and Data Processing ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 println("\n2.3. Statistics and Data Processing")
 
@@ -347,7 +343,7 @@ end
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# 2.4. Import codebook
+## 2.4. Import codebook ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 println("\n2.4. Importing codebook")
 
@@ -367,12 +363,12 @@ select!(cbdf, "Field", Not("Field"))
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# 3. Raw Data operations
+# 3. Raw Data operations ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 println("\n3. Raw Data operations")
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# 3.1. Variable Name and columns
+## 3.1. Variable Name and columns ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 println("\n3.1. Variable Name and columns")
 
@@ -381,8 +377,7 @@ println("\n3.1. Variable Name and columns")
 # 2. Renaming the columns of the data frame using the new_names from the codebook list.
 # 3. Removing all the deprecated and unused columns from the data frame.
 
-# Crashes Data Frame
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+### Crashes Data Frame ----------------------------------------
 println("- Crashes Data Frame")
 
 # from the cb dictionary, find all the keys that have rawdata = true, and their fcinclude contains crases = true
@@ -407,8 +402,19 @@ end
 # Remove all the columns in the crashes data frame that are not in crasheskeys
 select!(crashes, intersect(names(crashes), crasheskeys))
 
-# Parties Data Frame
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Add metadata attributes to the crashes data frame
+metadata!(crashes, "name", "crashes", style=:note)
+metadata!(crashes, "label", "OCSWITRS Crashes", style=:note)
+metadata!(crashes, "description", "Spatially enabled dataframe containing the Orange County crashes for the OCSWITRS dataset.", style=:note)
+metadata!(crashes, "version", prjmd["version"], style=:note)
+metadata!(crashes, "author", prjmd["author"], style=:note)
+metadata!(crashes, "updated", Dates.format(Dates.today(), "mm/dd/yyyy"), style=:note)
+
+# Print the metadata of the crashes data frame
+println("\nMetadata of the crashes data frame:")
+printmetadata(crashes)
+
+### Parties Data Frame ----------------------------------------
 println("- Parties Data Frame")
 
 # from the cb dictionary, find all the keys that have rawdata = true, and their fcinclude contains parties = true
@@ -433,8 +439,19 @@ end
 # Remove all the columns in the parties data frame that are not in partieskeys
 select!(parties, intersect(names(parties), partieskeys))
 
-# Victims Data Frame
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Add metadata attributes to the parties data frame
+metadata!(parties, "name", "parties", style=:note)
+metadata!(parties, "label", "OCSWITRS Parties", style=:note)
+metadata!(parties, "description", "Spatially enabled dataframe containing the Orange County parties for the OCSWITRS dataset.", style=:note)
+metadata!(parties, "version", prjmd["version"], style=:note)
+metadata!(parties, "author", prjmd["author"], style=:note)
+metadata!(parties, "updated", Dates.format(Dates.today(), "mm/dd/yyyy"), style=:note)
+
+# Print the metadata of the parties data frame
+println("\nMetadata of the parties data frame:")
+printmetadata(parties)
+
+### Victims Data Frame ----------------------------------------
 println("- Victims Data Frame")
 
 # from the cb dictionary, find all the keys that have rawdata = true, and their fcinclude contains victims = true
@@ -458,4 +475,31 @@ end
 
 # Remove all the columns in the victims data frame that are not in victimskeys
 select!(victims, intersect(names(victims), victimskeys))
+
+# Add metadata attributes to the victims data frame
+metadata!(victims, "name", "victims", style=:note)
+metadata!(victims, "label", "OCSWITRS Victims", style=:note)
+metadata!(victims, "description", "Spatially enabled dataframe containing the Orange County victims for the OCSWITRS dataset.", style=:note)
+metadata!(victims, "version", prjmd["version"], style=:note)
+metadata!(victims, "author", prjmd["author"], style=:note)
+metadata!(victims, "updated", Dates.format(Dates.today(), "mm/dd/yyyy"), style=:note)
+
+# Print the metadata of the victims data frame
+println("\nMetadata of the victims data frame:")
+printmetadata(victims)
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+## 3.2. Remove Leading and Trailing Spaces ----
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+println("\n3.2. Remove Leading and Trailing Spaces")
+
+# Remove leading and trailing spaces from all columns in the crashes data frame
+for df in [crashes, parties, victims]
+    println("\n- Removing leading and trailing spaces from $(metadata(df, "name")) data frame...")
+    # Loop through the columns of the data frame and remove leading and trailing spaces from the content of each column
+    for col in names(df)
+        println("  - Removing leading and trailing spaces from $col column...")
+        df[!, col] = strip.(string.(df[!, col]))
+    end
+end
 

@@ -10,7 +10,7 @@ println("\nOCTraffic Data Processing - Part 0: Update Metadata for OCSWITRS Data
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# 1. Preliminaries
+# 1. Preliminaries ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 println("1. Preliminaries")
 
@@ -33,7 +33,7 @@ version = 2025.02
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# 1.1. Data Definition variables
+## 1.1. Data Definition variables ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 println("\n1.1. Data Definition variables")
 
@@ -48,7 +48,7 @@ currentdate = Dates.format(Dates.now(), dateformat"U yyyy")
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# 1.2. Project and Workspace variables
+## 1.2. Project and Workspace variables ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 println("\n1.2. Project and Workspace variables")
 
@@ -62,7 +62,7 @@ prjdirs = projectdirectories(pwd(), false)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# 2. Update TIMS Metadata
+# 2. Update TIMS Metadata ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 println("\n2. Update TIMS Metadata")
 
@@ -171,7 +171,7 @@ println("\nMetadata update completed successfully.\n")
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# End of p00updatemd.jl script
+# End of Script ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 println("End of Part 0 - Update Metadata for OCSWITRS Datasets")
 println("Last updated on $(Dates.format(Dates.now(), dateformat"U dd, yyyy"))")

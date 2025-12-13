@@ -9,7 +9,7 @@
 println("\nOCTraffic Data Processing - Part 1: Merging Raw Data Files\n")
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# 1. Preliminaries
+# 1. Preliminaries ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 println("1. Preliminaries")
 
@@ -34,7 +34,7 @@ version = 2025.02
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# 1.1. Project and Workspace variables
+## 1.1. Project and Workspace variables ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 println("\n1.1. Project and Workspace variables")
 
@@ -48,13 +48,13 @@ prjdirs = projectdirectories(pwd(), false)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# 2. Import Raw Data (initialization)
+# 2. Import Raw Data (initialization) ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 println("\n2. Import Raw Data (initialization)")
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# 2.1. Importing Raw Data Files from disk
+## 2.1. Importing Raw Data Files from disk ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 println("\n2.1. Importing Raw Data Files from disk")
 
@@ -161,12 +161,11 @@ metadata!(dfdata, "updated", Dates.format(Dates.today(), "mm/dd/yyyy"), style=:n
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# 2.2. Merging Temporal Raw Data Files
+## 2.2. Merging Temporal Raw Data Files ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 println("\n2.2. Merging Temporal Raw Data Files")
 
-# Crashes Data Frame
-#~~~~~~~~~~~~~~~~~~~
+### Crashes Data Frame ----------------------------------------
 
 println("\n- Merging the raw crashes data files...")
 
@@ -196,8 +195,7 @@ metadata!(crashes, "author", prjmd["author"], style=:note)
 metadata!(crashes, "updated", Dates.format(Dates.today(), "mm/dd/yyyy"), style=:note)
 
 
-# Parties Data Frame
-#~~~~~~~~~~~~~~~~~~~
+### Parties Data Frame ----------------------------------------
 
 println("\n- Merging the raw parties data files...")
 
@@ -227,8 +225,7 @@ metadata!(parties, "author", prjmd["author"], style=:note)
 metadata!(parties, "updated", Dates.format(Dates.today(), "mm/dd/yyyy"), style=:note)
 
 
-# Victims Data Frame
-#~~~~~~~~~~~~~~~~~~~
+### Victims Data Frame ----------------------------------------
 
 println("\n- Merging the raw victims data files...")
 
@@ -258,8 +255,7 @@ metadata!(victims, "author", prjmd["author"], style=:note)
 metadata!(victims, "updated", Dates.format(Dates.today(), "mm/dd/yyyy"), style=:note)
 
 
-# Wrap-up
-#~~~~~~~~
+### Wrap-up -----------------------------------------
 
 println("\n- Counting the rows in each of the data frames...")
 
@@ -274,7 +270,7 @@ println("  - Parties: $(format(cntparties, commas=true)) rows")
 println("  - Victims: $(format(cntvictims, commas=true)) rows")
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# 2.3. Saving the Data Frames
+## 2.3. Saving the Data Frames ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 println("\n2.3. Saving the Data Frames\n")
 
@@ -292,7 +288,7 @@ Arrow.write(joinpath(prjdirs["dataprocessed"], "dfdata.arrow"), dfdata)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# 2.4. Create LaTeX Variable Dictionary
+## 2.4. Create LaTeX Variable Dictionary ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 println("\n2.4. Create LaTeX Variable Dictionary")
 
@@ -339,7 +335,7 @@ println("- LaTeX variable dictionary saved to $latexvarpath")
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# End of p01rawmerge.jl script
+# End of Script ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 println("\nEnd of Part 1 - Raw Data Merge")
 println("Last updated on $(Dates.format(Dates.now(), dateformat"U dd, yyyy"))")
