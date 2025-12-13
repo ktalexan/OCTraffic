@@ -544,3 +544,45 @@ victims.vid = string.(victims.caseid) .* "-" .* string.(victims.partynumber) .* 
 # Move the vid column after the pid column in the data frame
 select!(victims, 1:columnindex(victims, :pid), :vid, Not(1:columnindex(victims, :pid), :vid))
 
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+## 3.4. Add totalcrashes, totalparties, and totalvictims columns ----
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+println("\n3.4. Add totalcrashes, totalparties, and totalvictims columns")
+
+### Crashes: totalcrashes ----
+println("- Adding totalcrashes column to the crashes data frame...")
+
+# Add count of unique cid to the crashes data frame
+transform!(groupby(crashes, :cid), :cid => length => :crashescidcount)
+
+# Relocate the crashescidcount column after the cid column in the data frame
+select!(crashes, 1:columnindex(crashes, :cid), :crashescidcount, Not(1:columnindex(crashes, :cid), :crashescidcount))
+
+
+### Parties: totalparties ----
+println("- Adding totalparties column to the parties data frame...")
+
+# Add count of unique cid to the parties data frame
+transform!(groupby(parties, :cid), :cid => length => :partiescidcount)
+transform!(groupby(parties, :pid), :pid => length => :partiespidcount)
+
+# Relocate the partiescidcount and partiespidcount columns after the pid column in the data frame
+select!(parties, 1:columnindex(parties, :pid), :partiescidcount, :partiespidcount, Not(1:columnindex(parties, :pid), :partiescidcount, :partiespidcount))
+
+### Victims: totalvictims ----
+println("- Adding totalvictims column to the victims data frame...")
+
+# Add count of unique cid to the victims data frame
+transform!(groupby(victims, :cid), :cid => length => :victimscidcount)
+transform!(groupby(victims, :pid), :pid => length => :victimspidcount)
+transform!(groupby(victims, :vid), :vid => length => :victimsvidcount)
+
+# Relocate the victimscidcount, victimspidcount, and victimsvidcount columns after the vid column in the data frame
+select!(victims, 1:columnindex(victims, :vid), :victimscidcount, :victimspidcount, :victimsvidcount, Not(1:columnindex(victims, :vid), :victimscidcount, :victimspidcount, :victimsvidcount))
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+## 3.5. Additional Column Processing ----
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+println("\n3.5. Additional Column Processing")
