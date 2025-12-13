@@ -586,3 +586,26 @@ select!(victims, 1:columnindex(victims, :vid), :victimscidcount, :victimspidcoun
 ## 3.5. Additional Column Processing ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 println("\n3.5. Additional Column Processing")
+
+### CIty Names Title Case ----
+println("- Converting city names to title case...")
+
+# Convert city names to title case in the crashes data frame
+for df in [crashes, parties, victims]
+    println("\n- Converting city names to title case in $(metadata(df, "name")) data frame...")
+    # Loop through the columns of the data frame and convert the city names to title case
+    for col in names(df)
+        if col == "city"
+            df[!, col] = titlecase.(string.(df[!, col]))
+        end
+    end
+end 
+
+
+# list all the unique city names in the crashes data frame
+uniquecities = unique(crashes.city)
+
+# print the unique city names
+println("\n  - Unique city names in the crashes data frame: $uniquecities")
+
+# If needed, convert the city names to title case in the roads data frame
