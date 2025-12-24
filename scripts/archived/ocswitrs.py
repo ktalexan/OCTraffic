@@ -1,0 +1,1033 @@
+# -*- coding: utf-8 -*-
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Project: OCSWITRS Data Processing
+# Title: Create Project Functions
+# Author: Dr. Kostas Alexandridis, GISP
+# Version: 2.1, Date: 2023-10-01
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# 1. Import necessary libraries ----
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+import os, sys, datetime, pickle
+from typing import Union, List, Optional
+import pprint
+import json, pytz
+import pandas as pd
+from pandas.api.types import CategoricalDtype
+import numpy as np
+import scipy.stats as stats
+import statsmodels.api as sm
+import matplotlib.pyplot as plt
+from matplotlib.ticker import FuncFormatter, MultipleLocator
+import matplotlib.dates as mdates
+from matplotlib.patches import Rectangle
+import codebook.cbl as cbl
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# 2. Project metadata function ----
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+def project_metadata(part: int, version: float, silent: bool = False) -> dict:
+    """
+    Function to generate project metadata for the OCSWITRS data processing project.
+
+    Args:
+        part (int): The part number of the project.
+        version (float): The version number of the project.
+        silent (bool): If True, suppresses the print output. Default is False.
+
+    Returns:
+        metadata (dict): A dictionary containing the project metadata. The dictionary includes: name, title, description, version, author, years, date_start, date_end, date_updated, and TIMS metadata.
+
+    Raises:
+        ValueError: If part is not an integer, or if version is not numeric.
+
+    Example:
+        >>> metadata = project_metadata(1, 1.0)
+    Notes:
+        This function reads the TIMS metadata from a JSON file located in the "metadata" directory.
+        It generates a dictionary with project metadata based on the provided part and version.
+        The function also checks if the TIMS metadata file exists and raises an error if it does not.
+    """
+    
+    # Check if the TIMS metadata file exists
+    metadata_file = os.path.join(os.getcwd(), "metadata", "tims_metadata.json")
+    if not os.path.exists(metadata_file):
+        raise FileNotFoundError(f"Metadata file {metadata_file} does not exist.")
+    
+    # Load the TIMS metadata
+    with open(metadata_file, 'r') as f:
+        tims_metadata = json.load(f)
+    
+    # Get the first and last dates from the TIMS metadata
+    start_date = datetime.date.fromisoformat(tims_metadata[list(tims_metadata.keys())[0]]["date_start"])
+    end_date= datetime.date.fromisoformat(tims_metadata[list(tims_metadata.keys())[-1]]["date_end"])
+
+    # Check if the part is integer
+    if not isinstance(part, int):
+        raise ValueError("Part must be an integer.")
+
+    # Check if the version is numeric
+    if not isinstance(version, (int, float)):
+        raise ValueError("Version must be a number.")
+    
+    # Set dateUpdated to the current date
+    date_updated = datetime.date.today()
+    
+    # Match the part to a specific step and description (with default case)
+    match part:
+        case 0:
+            step = "Part 0: TIMS Metadata Update"
+            desc = "Updating the TIMS metadata for the OCSWITRS data processing project."
+        case 1:
+            step = "Part 1: Raw Data Merging"
+            desc = "Merging and verifying the raw SWITRS annual data files into single files."
+        case 2:
+            step = "Part 2: Raw Data Processing"
+            desc = "Processing the raw data files into data frames and generating additional variables."
+        case 3:
+            step = "Part 3: Time Series Processing"
+            desc = "Generating and processing time series data from OCSWITRS collision data."
+        case 4:
+            step = "Part 4: Collision Data Analysis"
+            desc = "Analyzing the collision data and generating graphs and statistics."
+        case 5:
+            step = "Part 5: Time Series Analysis"
+            desc = "Analyzing the OCSWITRS time series data and generating graphs and statistics."
+        case 6:
+            step = "Part 6: GIS Feature Class Processing"
+            desc = "Processing data frame tabular data into GIS feature classes, and performing geoprocessing operations and analysis."
+        case 7:
+            step = "Part 7: GIS Map Processing"
+            desc = "Processing GIS feature classes into GIS maps."
+        case 8:
+            step = "Part 8: GIS Layout Processing"
+            desc = "Processing GIS maps and layers into GIS layouts."
+        case 9:
+            step = "Part 9: ArcGIS Online Feature Sharing"
+            desc = "Sharing GIS feature classes to ArcGIS Online."
+        case 10:
+            step = "Part 10: ArcGIS Online Metadata Update"
+            desc = "Updating the metadata of the shared ArcGIS Online feature classes."
+        case _:
+            step = "Part 0: General Data Processing"
+            desc = "General data processing and analysis (default)."
+    
+    # Create a dictionary to hold the metadata
+    metadata = {
+        "name": "OCSWITRS Data Processing",
+        "title": step,
+        "description": desc,
+        "version": version,
+        "author": "Dr. Kostas Alexandridis, GISP",
+        "years": [tims_metadata[key]["year"] for key in tims_metadata.keys()],
+        "date_start": start_date,
+        "date_end": end_date,
+        "date_updated": date_updated,
+        "tims": tims_metadata
+    }
+
+    # If it is not silent, print the metadata
+    if not silent:
+        print(
+            f"Project Metadata:\n- Name: {metadata['name']}\n- Title: {metadata['title']}\n- Description: {metadata['description']}\n- Version: {metadata['version']}\n- Author: {metadata['author']}\n- Start Date: {metadata['date_start'].strftime('%B %d, %Y')}\n- End Date: {metadata['date_end'].strftime('%B %d, %Y')}\n- Years: {list(metadata['years'])}\n- Last Updated: {metadata['date_updated'].strftime('%B %d, %Y')}"
+        )
+
+    # Return the metadata
+    return metadata
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# 3. Export TIMS Metadata function ----
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+def export_tims_metadata(metadata: dict) -> None:
+    """
+    Exports the TIMS metadata to a JSON file.
+
+    Args:
+        metadata (dict): The metadata dictionary to export.
+
+    Returns:
+        None
+
+    Raises:
+        FileNotFoundError: If the metadata directory does not exist.
+    """
+    tims_metadata = {}
+    # Check if the metadata is in locals() and is a dictionary
+    if "metadata" in locals() and isinstance(metadata, dict):
+        tims_metadata = metadata["tims"]
+    elif "metadata" not in locals():
+        raise ValueError("- Metadata is not defined in the local scope.")
+    elif not isinstance(metadata, dict):
+        raise ValueError("- Metadata must be a dictionary.")
+    else:
+        raise ValueError("- Metadata does not contain 'tims' key.")
+    
+    # Define the path to the metadata directory
+    tims_path = os.path.join(os.getcwd(), "metadata", "tims_metadata.json")
+    # Write the TIMS metadata to a JSON file and overwrite if it exists
+    with open(tims_path, 'w') as f:
+        json.dump(tims_metadata, f, indent=4)
+    
+    # if successful, print a message
+    print(f"- TIMS metadata exported to disk successfully.")
+    
+    return None
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# 4. Project Directories function ----
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+def project_directories(base_path: str, silent: bool = False) -> dict:
+    """
+    Function to generate project directories for the OCSWITRS data processing project.
+
+    Args:
+        base_path (str): The base path of the project.
+
+    Returns:
+        prj_dirs (dict): A dictionary containing the project directories.
+
+    Example:
+        >>> prj_dirs = projectDirectories("/path/to/project")
+    """
+    prj_dirs = {
+        "root": base_path,
+        "admin": os.path.join(base_path, "admin"),
+        "agp": os.path.join(base_path, "AGPSWITRS"),
+        "agp_aprx": os.path.join(base_path, "AGPSWITRS", "AGPSWITRS.aprx"),
+        "agp_gdb": os.path.join(base_path, "AGPSWITRS", "AGPSWITRS.gdb"),
+        "agp_gdb_raw": os.path.join(base_path, "AGPSWITRS", "AGPSWITRS.gdb", "raw"),
+        "agp_gdb_supporting": os.path.join(base_path, "AGPSWITRS", "AGPSWITRS.gdb", "supporting"),
+        "agp_gdb_analysis": os.path.join(base_path, "AGPSWITRS", "AGPSWITRS.gdb", "analysis"),
+        "agp_gdb_hotspots": os.path.join(base_path, "AGPSWITRS", "AGPSWITRS.gdb", "hotspots"),
+        "analysis": os.path.join(base_path, "analysis"),
+        "analysis_graphics": os.path.join(base_path, "analysis", "graphics"),
+        "analysis_graphics_gis": os.path.join(base_path, "analysis", "graphics", "gis"),
+        "analysis_graphics_stata": os.path.join(base_path, "analysis", "graphics", "stata"),
+        "codebook": os.path.join(base_path, "codebook"),
+        "data": os.path.join(base_path, "data"),
+        "data_ago": os.path.join(base_path, "data", "ago"),
+        "data_gis": os.path.join(base_path, "data", "gis"),
+        "data_python": os.path.join(base_path, "data", "python"),
+        "data_raw": os.path.join(base_path, "data", "raw"),
+        "data_stata": os.path.join(base_path, "data", "stata"),
+        "layers": os.path.join(base_path, "layers"),
+        "layers_templates": os.path.join(base_path, "layers", "templates"),
+        "layouts": os.path.join(base_path, "layouts"),
+        "maps": os.path.join(base_path, "maps"),
+        "metadata": os.path.join(base_path, "metadata"),
+        "notebooks": os.path.join(base_path, "notebooks"),
+        "notebooks_archived": os.path.join(base_path, "notebooks", "archived"),
+        "python": os.path.join(base_path, "python"),
+        "python_archived": os.path.join(base_path, "python", "archived"),
+        "r": os.path.join(base_path, "r"),
+        "rData": os.path.join(base_path, "r", "rData"),
+        "stata": os.path.join(base_path, "stata"),
+        "styles": os.path.join(base_path, "styles"),
+    }
+    # Print the project directories
+    if not silent:
+        print("Project Directories:")
+        for key, value in prj_dirs.items():
+            print(f"- {key}: {value}")
+    # Return the project directories
+    return prj_dirs
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# 5. Relocate Dataframe Column Function ----
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+def relocate_column(
+    df: pd.DataFrame, col_name: Union[str, List[str]], ref_col_name: str, position: str = "after"
+) -> None:
+    """
+    Relocates a column in a DataFrame to a new position relative to another column.
+
+    Args:
+        df (pd.DataFrame): The DataFrame to modify.
+        col_name (Union[str, List[str]]): The name of the column to relocate.
+        ref_col_name (str): The name of the reference column.
+        position (str): "before" or "after" the reference column.
+
+    Returns:
+        pd.DataFrame: The modified DataFrame with the relocated column.
+    """
+
+    # Make sure the ref_col_name exists in the DataFrame
+    if ref_col_name not in df.columns:
+        raise ValueError(f"Reference column '{ref_col_name}' does not exist in the DataFrame.")
+
+    # Check if the column names are strings
+    if isinstance(col_name, str):
+        ref_type = 1
+    elif isinstance(col_name, list):
+        ref_type = 2
+    else:
+        raise ValueError("test must be a string or a list.")
+
+    if position == "before":
+        new_position = df.columns.get_loc(ref_col_name)
+    elif position == "after":
+        new_position = df.columns.get_loc(ref_col_name)
+        # check if the new_position is integer
+        if isinstance(new_position, int):
+            new_position += 1
+        else:
+            raise ValueError("Reference column position is not an integer.")
+    else:
+        raise ValueError("Position must be 'before' or 'after'.")
+
+    # If the column name is a string, move it to the new position
+    if ref_type == 1:
+        # Move the column to the new position
+        col = df.pop(col_name)
+        df.insert(new_position, col_name, col)
+    # If the column name is a list, move each column to the new position one after the other
+    elif ref_type == 2:
+        for cname in col_name:
+            # Move the column to the new position
+            col = df.pop(cname)
+            df.insert(new_position, cname, col)
+            new_position += 1
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# 6. Categorical Pandas Series function ----
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+def categorical_series(var_series: pd.Series, var_name: str, cb_dict: dict) -> pd.Series:
+    """
+    Function that converts a pandas series to categorical or ordered categorical type.
+    Requires importing the 'cbl' module for the variable labels, and the 'CategoricalDtype' from pandas.
+
+    Args:
+        var_series (pandas series): The data to be converted.
+        var_name (str): The name of the series.
+        codebook (dict): The codebook containing the variable labels and types.
+
+    Returns:
+        categoricalSeries (pandas series): The converted series.
+
+    Raises:
+        TypeError: If var_series is not a pandas series.
+        ValueError: If var_name is not a string.
+        ValueError: If codebook is not a dictionary.
+        ValueError: If var_name is not in the codebook.
+        ValueError: If var_type is not 'binary', 'categorical' or 'ordered'.
+
+    Example:
+        >>> categoricalSeries(dfCrashes["dtWeekDay"], "dtWeekDay", "categorical")
+    """
+
+    # First, check if the series is labeled:
+    if cb_dict[var_name]["is_labeled"] == 1:
+        # Get the label type
+        var_type = cb_dict[var_name]["label_type"]
+        # Check if the type is correct
+        if var_type not in ["binary", "nominal", "ordinal"]:
+            raise ValueError(f"Variable {var_name} Categorical type is not valid.")
+    else:
+        # Check if the series is labeled
+        raise ValueError(f"Variable {var_name} is not labeled.")
+
+    # Get the codes for the series
+    var_labels = getattr(cbl, var_name)
+    cats = [v for k, v in var_labels.items()]
+
+    # Set the codes to None
+    cat_series = None
+    # Labeled codes
+    labeled_series = var_series.map(var_labels)
+
+    # Obtain the codes if the type is binary, nominal or ordinal
+    if var_type == "binary":
+        # Binary codes
+        cat_series = labeled_series.astype(CategoricalDtype(categories=cats, ordered=False))
+    elif var_type == "nominal":
+        # Categorical codes
+        cat_series = labeled_series.astype(CategoricalDtype(categories=cats, ordered=False))
+    elif var_type == "ordinal":
+        # Get the ordered categories
+        # Ordinal codes
+        cat_series = labeled_series.astype(CategoricalDtype(categories=cats, ordered=True))
+    else:
+        # Raise an error if the type is not valid
+        raise ValueError(f"Variable {var_name} Categorical type is not valid.")
+
+    # Return the codes
+    return cat_series
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# 7. Daylight Saving Time function ----
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+def is_dst(dt_series: pd.Series, tz_name: str = "America/Los_Angeles") -> pd.Series:
+    """
+    Function to determine if a datetime series is in Daylight Saving Time (DST).
+
+    Args:
+        dt_series (pandas series): The datetime series to check.
+        tz_name (str): The timezone name. Default is "America/Los_Angeles".
+
+    Returns:
+        dst_result (pandas series): The result of the check.
+        0 if not in DST, 1 if in DST, -1 if unknown.
+
+    Raises:
+        ValueError: If dt_series is not a pandas series.
+        ValueError: If tz_name is not a string.
+        ValueError: If tz_name is not a valid timezone.
+
+    Example:
+        >>> isDst(dfCrashes["dtCrashDateTime"], "America/Los_Angeles")
+    """
+    try:
+        # Convert pandas Series to Python datetime objects with timezone info
+        def check_dst(dt):
+            if pd.isna(dt):
+                return False
+            # Convert to datetime object if it's not already
+            if not isinstance(dt, datetime.datetime):
+                dt = pd.Timestamp(dt).to_pydatetime()
+            # Get the timezone
+            tz = pytz.timezone(tz_name)
+            # Localize the datetime (assume it's in UTC if not timezone-aware)
+            if dt.tzinfo is None:
+                dt = pytz.utc.localize(dt).astimezone(tz)
+            else:
+                dt = dt.astimezone(tz)
+            # Check if it's in DST
+            dst_result = None
+            if bool(dt.dst()) is False:
+                dst_result = 0
+            elif bool(dt.dst()) is True:
+                dst_result = 1
+            else:
+                dst_result = -1
+            # Return the result
+            return dst_result
+
+        # Apply the function to each datetime in the series
+        return dt_series.apply(check_dst)
+    except (pytz.UnknownTimeZoneError, ValueError, TypeError) as e:
+        print(f"Error determining DST: {str(e)}")
+        return pd.Series([False] * len(dt_series), index=dt_series.index)
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# 8. Add Codebook Attributes Function ----
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+def add_attributes(df: pd.DataFrame, cb: dict) -> pd.DataFrame:
+    """
+    Adds column attributes to a DataFrame based on a codebook dictionary.
+
+    Args:
+        df (pd.DataFrame): The DataFrame to modify.
+        cb (dict): Codebook dictionary where keys are column names and values are dicts of attributes.
+
+    Returns:
+        pd.DataFrame: The DataFrame with updated column attributes.
+    """
+    for cname in df.columns:
+        if cname in cb:
+            attrs = cb[cname]
+            df[cname].attrs["label"] = attrs.get("label")
+            df[cname].attrs["description"] = attrs.get("description")
+            df[cname].attrs["var_order"] = attrs.get("var_order")
+            df[cname].attrs["var_class"] = attrs.get("var_class")
+            df[cname].attrs["var_category"] = attrs.get("var_category")
+            df[cname].attrs["var_type"] = attrs.get("var_type")
+            df[cname].attrs["has_source"] = attrs.get("has_source")
+            is_labeled = attrs.get("is_labeled")
+            df[cname].attrs["is_labeled"] = "Yes" if is_labeled == 1 else "No"
+            df[cname].attrs["ts_include"] = attrs.get("ts_include")
+            df[cname].attrs["ts_stats"] = attrs.get("ts_stats")
+            df[cname].attrs["var_notes"] = attrs.get("var_notes")
+    return df
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# 9. Save to Disk Function ----
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+def save_to_disk(dir_list: dict, local_vars: dict = locals(), global_vars: dict = globals()) -> None:
+    """
+    Save the data frames, codebook, and graphics list to disk.
+
+    Args:
+        dir_list (dict): A dictionary containing project directories.
+        local_vars (dict): A dictionary containing local variables. Default is locals().
+        global_vars (dict): A dictionary containing global variables. Default is globals().
+
+    Returns:
+        None
+
+    Raises:
+        FileNotFoundError: If the specified directories do not exist.
+
+    Example:
+        >>> save_to_disk(prj_dirs)
+    """
+
+    print("1. Saving the data frames to disk")
+
+    # Save the raw data frames to disk
+    df_names = [
+        "crashes",
+        "crashes_agp",
+        "parties",
+        "parties_agp",
+        "victims",
+        "victims_agp",
+        "collisions",
+        "collisions_agp",
+        "cities",
+        "roads",
+        "boundaries",
+        "blocks",
+    ]
+
+    # Check if the data frames exist in the local or global scope
+    for name in df_names:
+        if name in local_vars:
+            print("  - Saving the", name, "data frame:", f"{name}.pkl")
+            with open(os.path.join(dir_list["data_python"], f"{name}.pkl"), "wb") as f:
+                pickle.dump(local_vars[name], f)
+        elif name in global_vars:
+            print("  - Saving the", name, "data frame:", f"{name}.pkl")
+            with open(os.path.join(dir_list["data_python"], f"{name}.pkl"), "wb") as f:
+                pickle.dump(global_vars[name], f)
+
+    print("2. Saving the Codebook and Reference Tables to disk")
+
+    # Save the codebook to disk
+    if "cb" in local_vars:
+        print("  - Saving the codebook to disk")
+        with open(os.path.join(dir_list["codebook"], "cb.pkl"), "wb") as f:
+            pickle.dump(local_vars["cb"], f)
+    elif "cb" in global_vars:
+        print("  - Saving the codebook to disk")
+        with open(os.path.join(dir_list["codebook"], "cb.pkl"), "wb") as f:
+            pickle.dump(global_vars["cb"], f)
+
+    # Save the codebook reference table to disk
+    if "df_cb" in local_vars:
+        print("  - Saving the codebook reference table to disk")
+        with open(os.path.join(dir_list["codebook"], "df_cb.pkl"), "wb") as f:
+            pickle.dump(local_vars["df_cb"], f)
+    elif "df_cb" in global_vars:
+        print("  - Saving the codebook reference table to disk")
+        with open(os.path.join(dir_list["codebook"], "df_cb.pkl"), "wb") as f:
+            pickle.dump(global_vars["df_cb"], f)
+    
+    print("3. Export the TIMS Metadata to disk")
+    
+    # Save the TIMS metadata to disk
+    if "prj_meta" in local_vars:
+        print("  - Exporting the TIMS metadata to disk")
+        export_tims_metadata(local_vars["prj_meta"])
+
+    print("4. Saving the Time Series Data Frames to disk")
+
+    # Save the time series data frames to disk
+    ts_names = ["ts_year", "ts_quarter", "ts_month", "ts_week", "ts_day"]
+    for name in ts_names:
+        if name in local_vars:
+            print("  - Saving the", name, "data frame:", f"{name}.pkl")
+            with open(os.path.join(dir_list["data_python"], f"{name}.pkl"), "wb") as f:
+                pickle.dump(local_vars[name], f)
+        elif name in global_vars:
+            print("  - Saving the", name, "data frame:", f"{name}.pkl")
+            with open(os.path.join(dir_list["data_python"], f"{name}.pkl"), "wb") as f:
+                pickle.dump(global_vars[name], f)
+
+    # Save the graphics list to disk
+    if "graphics_list" in local_vars:
+        print("4. Saving the Graphics data to disk")
+        with open(os.path.join(dir_list["data_python"], "graphics_list.pkl"), "wb") as f:
+            pickle.dump(local_vars["graphics_list"], f)
+    elif "graphics_list" in global_vars:
+        print("4. Saving the Graphics data to disk")
+        with open(os.path.join(dir_list["data_python"], "graphics_list.pkl"), "wb") as f:
+            pickle.dump(global_vars["graphics_list"], f)
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# 10. Graphics Entry Function ----
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+def graphics_entry(
+    gr_type: int, gr_id: int, gr_attr: dict, gr_list: Optional[dict] = None, gr_dirs: Optional[dict] = None
+) -> dict:
+    """
+    Adds a table or graphic entry to the specified list.
+
+    Args:
+        gr_type (int): The type of entry (1 = Table, 2 = Graphic).
+        gr_id (int): The entry id.
+        gr_attr (dict): A dictionary of attributes for the entry.
+        gr_list (dict): The dictionary to add the entry to. Should have 'tables' and 'graphics' keys.
+        gr_dirs (dict, optional): Project directories, required for graphics.
+
+    Returns:
+        dict: The updated list_name dictionary.
+
+    Raises:
+        ValueError: If entry_type is not 1 or 2.
+
+    Examples:
+        >>> tables_graphics = {"tables": [], "graphics": []}
+        >>> attr = {"name": "Summary", "description": "desc", "caption": "cap", "method": "describe", "fileFormat": "csv", "file": "summary.csv", "status": "draft"}
+        >>> graphics_entry(tables_graphics, 1, 1, attr)
+    """
+    # Check if the gr_list is empty or not
+    if not gr_list or not isinstance(gr_list, dict):
+        # Create a new graphics list if it is empty
+        print("Creating a new graphics list.")
+        gr_list = {"tables": {}, "graphics": {}}
+    elif "tables" not in gr_list or "graphics" not in gr_list:
+        raise ValueError("gr_list must contain 'tables' and 'graphics' keys.")
+    else:
+        # continue with the existing graphics list
+        print("Using the provided graphics list.")
+
+    # Get the number of tables and graphics in the list
+    nt = len(gr_list["tables"])
+    ng = len(gr_list["graphics"])
+    print(f"Number of tables: {nt}, Number of graphics: {ng}")
+
+    # Get the entry type and id
+    gr_type = int(gr_type)
+    gr_id = int(gr_id)
+
+    # Check if the entry type is valid
+    if gr_type == 1:
+        # check if eid is smaller or equal to nt
+        if gr_id <= nt:
+            print(f"Table {gr_id} already exists. Exiting function...")
+            return gr_list
+        else:
+            # If it is a table, create a new table entry
+            entry_id = f"tbl{nt + 1}"
+            print(f"Creating new table entry with id: {entry_id}")
+            gr_path = gr_dirs["analysis_graphics"] if gr_dirs is not None and "analysis_graphics" in gr_dirs else ""
+            # Add the table fields from the attributes list provided
+            # for the table entry the attributes must have the following entries provided: name, description, caption, method, fileFormat, file, status
+            entry_table = {
+                "id": f"tbl{nt + 1}",
+                "category": "Table",
+                "category_no": nt + 1,
+                "name": str(gr_attr.get("name", "")),
+                "description": str(gr_attr.get("description", "")),
+                "caption": str(gr_attr.get("caption", "")),
+                "type": "Table",
+                "method": str(gr_attr.get("method", "")),
+                "path": os.path.join(
+                    gr_path,
+                    f"tbl{nt + 1}_{gr_attr.get('file', '').lower().replace(' ', '_')}"
+                    + str(gr_attr.get("file_format", "")),
+                ),
+                "file_format": str(gr_attr.get("file_format", "")),
+                "file": f"tbl{nt + 1}_{gr_attr.get('file', '').lower().replace(' ', '_')}",
+                "status": str(gr_attr.get("status", "")),
+                "date": str(datetime.date.today()),
+            }
+            gr_list["tables"][entry_id] = entry_table
+    elif gr_type == 2:
+        # Check if the entry is a graphic
+        # For the graphic entry the attributes must have the following entries provided: category, name, description, caption, type, method, path, fileFormat, file, resolution, width, height, status
+        # check if eid is smaller or equal to ng
+        if gr_id <= ng:
+            print(f"Figure {gr_id} already exists. Exiting function...")
+            return gr_list
+        else:
+            # If it is a graphic, create a new graphic entry
+            entry_id = f"fig{ng + 1}"
+            gr_path = gr_dirs["analysis_graphics"] if gr_dirs is not None and "analysis_graphics" in gr_dirs else ""
+            entry_graphic = {
+                "id": f"fig{ng + 1}",
+                "category": str(gr_attr.get("category", "")),
+                "category_no": ng + 1,
+                "name": str(gr_attr.get("name", "")),
+                "description": str(gr_attr.get("description", "")),
+                "caption": str(gr_attr.get("caption", "")),
+                "type": str(gr_attr.get("type", "")),
+                "method": str(gr_attr.get("method", "")),
+                "path": os.path.join(
+                    gr_path,
+                    f"fig{ng + 1}_{gr_attr.get('file', '').lower().replace(' ', '_')}"
+                    + str(gr_attr.get("file_format", "")),
+                ),
+                "file_format": str(gr_attr.get("file_format", "")),
+                "file": f"fig{ng + 1}_{gr_attr.get('file', '').lower().replace(' ', '_')}",
+                "resolution": 300,
+                "width": 12,
+                "height": 8,
+                "status": str(gr_attr.get("status", "")),
+                "date": str(datetime.date.today()),
+            }
+            gr_list["graphics"][entry_id] = entry_graphic
+    else:
+        raise ValueError("entry_type must be 1 (Table) or 2 (Graphic).")
+
+    # Print the entry name
+    print(f"Graphics List:\n {gr_list}")
+    # Return the updated list_name
+    return gr_list
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# 11. Chi-squared Independence Test Function ----
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+def chi2_test(df: pd.DataFrame, col1: str, col2: str) -> dict:
+    """
+    Perform a Chi-squared test of independence on two categorical variables.
+
+    Args:
+        df (pd.DataFrame): The DataFrame containing the data.
+        col1 (str): The name of the first categorical column.
+        col2 (str): The name of the second categorical column.
+
+    Returns:
+        float: The p-value from the Chi-squared test.
+    """
+    contingency_table = pd.crosstab(df[col1], df[col2])
+    test = stats.chi2_contingency(contingency_table)
+    t = "Chi-squared test of independence"
+    s = test.statistic
+    p = test.pvalue
+    d = p_value_display(test.pvalue)
+    n = len(df)
+    return {"test": t, "statistic": s, "p-value": p, "p-value_display": d, "observations": n}
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# 12. Chi-squared Goodness-of-fit Function ----
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+def chi2_gof_test(df: pd.DataFrame, col: str) -> dict:
+    """
+    Perform a Chi-squared Goodness-of-Fit test on a categorical variable.
+    Args:
+        df (pd.DataFrame): The DataFrame containing the data.
+        col (str): The name of the categorical column.
+    Returns:
+        float: The p-value from the Chi-squared test.
+    """
+    # Create observed and expected counts for the df[col] column
+    observed = df[col].value_counts().values
+    expected = np.full_like(observed, dtype=np.float64, fill_value=np.mean(observed))
+    stat = stats.chisquare(f_obs=observed, f_exp=expected)
+    t = "Chi-squared Goodness-of-Fit test"
+    s = stat.statistic
+    p = stat.pvalue
+    d = p_value_display(stat.pvalue)
+    n = len(df)
+    return {"test": t, "statistic": s, "p-value": p, "p-value_display": d, "observations": n}
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# 13. Kruskal-Wallis H-test Function ----
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+def kruskal_test(df: pd.DataFrame, col1: str, col2: str) -> dict:
+    """
+    Perform a Kruskal-Wallis H-test for independent samples on VictimCount grouped by Severity.
+
+    Args:
+        df (pd.DataFrame): The DataFrame containing 'victim_count' and 'severity' columns.
+        col1 (str): The name of the column containing the values to compare (e.g., 'victim_count').
+        col2 (str): The name of the column containing the grouping variable (e.g., 'severity').
+
+    Returns:
+        float: The p-value from the Kruskal-Wallis test.
+        str: Formatted p-value string.
+
+    Raises:
+        KeyError: If required columns are missing.
+
+    Examples:
+        >>> kruskal_test_victim_count_severity(df3)
+        (0.034, '<0.05')
+    """
+    groups = [group[col1].values for name, group in df.groupby(col2, observed=True)]
+    test = stats.kruskal(*groups)
+    t = "Kruskal-Wallis H-test"
+    s = test.statistic
+    p = test.pvalue
+    d = p_value_display(test.pvalue)
+    n = len(df)
+    return {"test": t, "statistic": s, "p-value": p, "p-value_display": d, "observations": n}
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# 14. P-Value Display Function ----
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+def p_value_display(p_value: float) -> str:
+    """
+    Displays the p-value in a readable format.
+
+    Args:
+        p_value (float): The p-value to display.
+
+    Returns:
+        str: Formatted p-value string.
+
+    Examples:
+        >>> p_value_display_v2(0.0005)
+        '<0.001'
+        >>> p_value_display_v2(0.005)
+        '<0.01'
+        >>> p_value_display_v2(0.02)
+        '<0.05'
+        >>> p_value_display_v2(0.08)
+        '0.08'
+    """
+    if p_value < 0.001:
+        return "<0.001"
+    elif 0.001 <= p_value < 0.01:
+        return "<0.01"
+    elif 0.01 <= p_value < 0.05:
+        return "<0.05"
+    else:
+        return f"{p_value:.2f}"
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# 15. Create STL Plot Function ----
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+def create_stl_plot(time_series, season, model="additive", label=None, covid=False, robust=True):
+    """
+    Create a Seasonal-Trend decomposition using LOESS (STL).
+
+    Args:
+        time_series (pandas.Series): Time series data with DatetimeIndex
+        season (str): The periodicity of the data (quarterly, monthly, weekly, daily)
+        model (str): Type of model to use ('additive' or 'multiplicative')
+        label (str): Label for the time series (optional)
+        covid (bool): Whether to show COVID-19 period annotation (March 2020 - March 2022)
+        robust (bool): Whether to use the robust estimation (helps with outliers)
+
+    Returns:
+        tuple: (decomposition_result, figure)
+
+    Raises:
+        ValueError: If season is not one of the specified options.
+
+    Example:
+        >>> decomposition, fig = create_stl_plot(ts, 'monthly', robust=True)
+    """
+    # Check the seasonality and set the period and model accordingly
+    period = None
+    footnote = None
+    match season:
+        case "quarterly":
+            period = 4
+            footnote = "Note: Data reflect quarterly time series (seasonality set to 4 periods per year)."
+        case "monthly":
+            period = 12
+            footnote = "Note: Data reflect monthly time series (seasonality set to 12 periods per year)."
+        case "weekly":
+            period = 52
+            footnote = "Note: Data reflect weekly time series (seasonality set to 52 periods per year)."
+        case "daily":
+            period = 365
+            footnote = "Note: Data reflect daily time series (seasonality set to 365 periods per year)."
+        case "-":
+            raise ValueError("Seasonality must be one of: quarterly, monthly, weekly, daily.")
+
+    # set the title for the original time series
+    original_title = f"Original Time Series: {label}" if label else "Original Time Series"  # Perform STL decomposition
+    if robust:
+        # Use STL for robust decomposition
+        stl = sm.tsa.STL(time_series, period=period)
+        decomposition = stl.fit()
+    else:
+        # Use seasonal_decompose for non-robust decomposition
+        decomposition = sm.tsa.seasonal_decompose(
+            time_series, period=period, model=model
+        )  # Create figure with subplots for original, trend, seasonal, and residual
+    fig = plt.figure(figsize=(12, 10))  # Plot original time series
+    ax1 = plt.subplot(411)
+    ax1.plot(time_series, color="royalblue")
+    ax1.set_title(original_title, fontweight="bold")
+    # Format y-axis values based on their magnitude
+    ax1.yaxis.set_major_formatter(
+        plt.FuncFormatter(
+            lambda x, loc: (
+                "{:,.0f}".format(x) if abs(x) == 0 else "{:,.2f}".format(x) if abs(x) < 1 else "{:,.0f}".format(x)
+            )
+        )
+    )
+    # Remove top and right spines
+    ax1.spines["top"].set_visible(False)
+    ax1.spines["right"].set_visible(False)  # Plot trend component
+    ax2 = plt.subplot(412)
+    ax2.plot(
+        decomposition.trend, color="brown", linewidth=3
+    )  # Increased line thickness
+    ax2.set_title("Trend Component", fontweight="bold")
+    # Format y-axis values based on their magnitude
+    ax2.yaxis.set_major_formatter(
+        plt.FuncFormatter(
+            lambda x, loc: (
+                "{:,.0f}".format(x) if abs(x) == 0 else "{:,.2f}".format(x) if abs(x) < 1 else "{:,.0f}".format(x)
+            )
+        )
+    )
+    # Remove top and right spines
+    ax2.spines["top"].set_visible(False)
+    ax2.spines["right"].set_visible(False)  # Plot seasonal component
+    ax3 = plt.subplot(413)
+    ax3.plot(decomposition.seasonal, color="darkgreen")
+    ax3.set_title("Seasonal Component", fontweight="bold")
+    # Format y-axis values based on their magnitude
+    ax3.yaxis.set_major_formatter(
+        plt.FuncFormatter(
+            lambda x, loc: (
+                "{:,.0f}".format(x) if abs(x) == 0 else "{:,.2f}".format(x) if abs(x) < 1 else "{:,.0f}".format(x)
+            )
+        )
+    )
+    # Remove top and right spines
+    ax3.spines["top"].set_visible(False)
+    ax3.spines["right"].set_visible(False)
+
+    # Plot residual component
+    ax4 = plt.subplot(414)
+    ax4.plot(decomposition.resid, color="purple")
+    ax4.set_title("Residual Component", fontweight="bold")
+    # Format y-axis values based on their magnitude
+    ax4.yaxis.set_major_formatter(
+        plt.FuncFormatter(
+            lambda x, loc: (
+                "{:,.0f}".format(x) if abs(x) == 0 else "{:,.2f}".format(x) if abs(x) < 1 else "{:,.0f}".format(x)
+            )
+        )
+    )
+    # Remove top and right spines
+    ax4.spines["top"].set_visible(False)
+    ax4.spines["right"].set_visible(False)
+    # Ensure time axes are aligned across all subplots
+    fig.subplots_adjust(hspace=0.3)
+    for ax in [ax1, ax2, ax3, ax4]:
+        ax.set_xlim(time_series.index.min(), time_series.index.max())
+
+    # Add COVID-19 period annotation if requested
+    if covid:
+        # Define COVID-19 period
+        covid_start = pd.to_datetime("2020-03-01")
+        covid_end = pd.to_datetime("2022-03-01")
+        covid_start_num = float(mdates.date2num(covid_start))
+        covid_end_num = float(mdates.date2num(covid_end))
+
+        # First pass to adjust y-limits to fit all data
+        for ax in [ax1, ax2, ax3, ax4]:
+            # Force matplotlib to calculate the limits
+            ax.relim()
+            ax.autoscale_view()
+
+        # Add the COVID-19 reference boxes to each subplot
+        for ax in [ax1, ax2, ax3, ax4]:
+            # Get the ylim after we've forced matplotlib to calculate them
+            ymin, ymax = ax.get_ylim()
+            # Add the shaded region with proper height
+            rect = Rectangle(
+                (covid_start_num, ymin),  # Start at the bottom of the plot
+                covid_end_num - covid_start_num,
+                ymax - ymin,  # Span the entire height
+                facecolor="green",
+                alpha=0.2,
+                zorder=0,  # Ensure it's behind the data
+            )
+            ax.add_patch(rect)
+
+            # Add the reference lines
+            ax.axvline(x=covid_start_num, linewidth=0.5, linestyle="dashed", color="darkgreen")
+            ax.axvline(x=covid_end_num, linewidth=0.5, linestyle="dashed", color="darkgreen")
+
+        # Add the annotation text only to the first subplot
+        covid_mid_dt = covid_start + (covid_end - covid_start) / 2
+        covid_mid_num = float(mdates.date2num(covid_mid_dt))
+        ax1.annotate(
+            "COVID-19\nRestrictions",
+            xy=(covid_mid_num, ax1.get_ylim()[1] * 0.85),
+            xycoords="data",
+            ha="center",
+            fontsize=10,
+            fontweight="bold",
+            fontstyle="italic",
+            color="darkgreen",
+        )
+
+    # Adjust layout
+    plt.tight_layout()
+
+    # Add footnote at the bottom left of the plot
+    # if footnote is a single string, add it to the figure
+    if footnote is not None and isinstance(footnote, str):
+        fig.text(0.01, 0, footnote, fontsize=10, style="italic", ha="left")
+
+    # Return the decomposition result and the figure
+    return decomposition, fig
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# 16. Export TIMS Metadata Function ----
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+def update_tims_metadata(year: int, type: str = "reported", data_counts = None):
+    """
+    Update the TIMS metadata file with the counts of crashes, parties, and victims for a given year and type.
+    Args:
+        year (int): The year for which the metadata is being updated.
+        type (str): The type of data being updated. Valid values are "reported", "geocoded", or "excluded".
+        data_counts (list, optional): A list containing the counts of crashes, parties, and victims.
+    Returns:
+        None
+    Raises:
+        ValueError: If the type is not one of the valid values.
+        FileNotFoundError: If the metadata file does not exist.
+    """    
+    # Types definition
+    types = ["reported", "geocoded", "excluded"]
+    if type not in types:
+        raise ValueError(f"Invalid type '{type}'. Valid types are: {', '.join(types)}")
+    
+    if data_counts is None:
+        data_counts = [0, 0, 0]  # Default to zero counts for crashes, parties, victims
+    
+    # Check if data_counts is a list of three integers
+    if not isinstance(data_counts, list) or len(data_counts) != 3 or not all(isinstance(x, int) for x in data_counts):
+        raise ValueError("data_counts must be a list of three integers: [crashes, parties, victims]")
+    
+    # Get the counts from the data_counts list
+    count_crashes = data_counts[0]
+    count_parties = data_counts[1]
+    count_victims = data_counts[2]
+
+
+    # Check if the TIMS metadata file exists
+    metadata_file = os.path.join(os.getcwd(), "metadata", "tims_metadata.json")
+    if not os.path.exists(metadata_file):
+        raise FileNotFoundError(f"Metadata file {metadata_file} does not exist.")
+    
+    # Load the TIMS metadata
+    with open(metadata_file, 'r') as f:
+        tims_metadata = json.load(f)
+    
+    # Update the metadata for the specified type
+    if type == "reported":
+        tims_metadata[str(year)]["reported"]["crashes"] = count_crashes
+    elif type == "geocoded":
+        tims_metadata[str(year)]["geocoded"]["parties"] = count_parties
+    elif type == "excluded":
+        tims_metadata[str(year)]["excluded"]["victims"] = count_victims
+    
+    # Save the updated metadata back to the file
+    with open(metadata_file, 'w') as f:
+        json.dump(tims_metadata, f, indent=4)
+    
+    print(f"TIMS metadata for {year} ({type}) updated successfully:\nCrashes: {count_crashes:,}, Parties: {count_parties:,}, Victims: {count_victims:,}")
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# End of File ----
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

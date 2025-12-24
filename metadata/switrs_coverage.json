@@ -1,0 +1,45 @@
+{
+    "Project": {
+        "Name": "OC SWITRS",
+        "Description": "Main project folder for the OC SWITRS project",
+        "Folder": "SWITRS",
+        "Date": "09/30/2025"
+    },
+    "Metadata": {
+        "Name": "OC SWITRS Metadata",
+        "Description": "Folder containing key metadata for the OC SWITRS project, including coverage dates, sources and methods",
+        "Folder": "Metadata",
+        "Date": "09/30/2025",
+        "Source": "Transportation Injury Mapping System (TIMS)",
+        "Link": "https://tims.berkeley.edu/",
+        "Coverage": {
+            "StartDate": "01/01/2012",
+            "EndDate": "06/30/2025"
+        },
+        "File": "SwitrsCoverage.json"
+    },
+    "RawData": {
+        "Name": "OC SWITRS Raw Data",
+        "Description": "Folder containing the raw data files for the OC SWITRS project",
+        "Folder": "RawData",
+        "Date": "09/30/2025",
+        "Data": {
+            "Crashes": "Crashes.csv",
+            "Parties": "Parties.csv",
+            "Victims": "Victims.csv"
+        }
+    },
+    "Scripts": {
+        "Name": "OC SWITRS Scripts",
+        "Description": "Folder containing key scripts and code files for the data processing of the OC SWITRS project",
+        "Folder": "Scripts",
+        "Date": "09/30/2025",
+        "Languages": ["Python", "JavaScript", "JSON"]
+    },
+    "Analysis": {
+        "Name": "OC SWITRS Analysis",
+        "Description": "Folder containing analysis data for the OC SWITRS project",
+        "Folder": "Analysis",
+        "Date": "09/30/2025"
+    }
+}
