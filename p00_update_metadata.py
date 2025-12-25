@@ -22,9 +22,11 @@ print("\n1.1. Referencing Libraries and Initialization")
 import os, datetime
 import json
 import pandas as pd
-import numpy as np
 from dotenv import load_dotenv
-import ocswitrs as ocs
+from octraffic import octraffic
+
+# Initialize the OCTraffic class
+ocs = octraffic()
 
 # Loading environment variables from .env file
 load_dotenv()
@@ -190,4 +192,4 @@ prj_meta = ocs.project_metadata(part=0, version=2025.2, silent=False)
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 print("\nLast Execution:", datetime.datetime.now().strftime("%Y-%m-%d"))
 print("\nEnd of Script")
-# Last Execution: 2025-10-21
+# Last Execution: 2025-12-24

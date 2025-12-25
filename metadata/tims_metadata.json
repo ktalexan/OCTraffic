@@ -26,7 +26,7 @@
             "parties": 367,
             "victims": 305
         },
-        "notes": "Data Removed from TIMS (updated on November 2025)"
+        "notes": "Data Removed from TIMS (updated on December 2025)"
     },
     "2013": {
         "year": 2013,
@@ -55,7 +55,7 @@
             "parties": 377,
             "victims": 327
         },
-        "notes": "Final Data in TIMS (updated on November 2025)"
+        "notes": "Final Data in TIMS (updated on December 2025)"
     },
     "2014": {
         "year": 2014,
@@ -84,7 +84,7 @@
             "parties": 301,
             "victims": 258
         },
-        "notes": "Final Data in TIMS (updated on November 2025)"
+        "notes": "Final Data in TIMS (updated on December 2025)"
     },
     "2015": {
         "year": 2015,
@@ -113,7 +113,7 @@
             "parties": 338,
             "victims": 308
         },
-        "notes": "Final Data in TIMS (updated on November 2025)"
+        "notes": "Final Data in TIMS (updated on December 2025)"
     },
     "2016": {
         "year": 2016,
@@ -142,7 +142,7 @@
             "parties": 723,
             "victims": 652
         },
-        "notes": "Final Data in TIMS (updated on November 2025)"
+        "notes": "Final Data in TIMS (updated on December 2025)"
     },
     "2017": {
         "year": 2017,
@@ -171,7 +171,7 @@
             "parties": 625,
             "victims": 418
         },
-        "notes": "Final Data in TIMS (updated on November 2025)"
+        "notes": "Final Data in TIMS (updated on December 2025)"
     },
     "2018": {
         "year": 2018,
@@ -200,7 +200,7 @@
             "parties": 629,
             "victims": 415
         },
-        "notes": "Final Data in TIMS (updated on November 2025)"
+        "notes": "Final Data in TIMS (updated on December 2025)"
     },
     "2019": {
         "year": 2019,
@@ -229,7 +229,7 @@
             "parties": 690,
             "victims": 490
         },
-        "notes": "Final Data in TIMS (updated on November 2025)"
+        "notes": "Final Data in TIMS (updated on December 2025)"
     },
     "2020": {
         "year": 2020,
@@ -258,7 +258,7 @@
             "parties": 620,
             "victims": 463
         },
-        "notes": "Final Data in TIMS (updated on November 2025)"
+        "notes": "Final Data in TIMS (updated on December 2025)"
     },
     "2021": {
         "year": 2021,
@@ -287,7 +287,7 @@
             "parties": 505,
             "victims": 369
         },
-        "notes": "Final Data in TIMS (updated on November 2025)"
+        "notes": "Final Data in TIMS (updated on December 2025)"
     },
     "2022": {
         "year": 2022,
@@ -316,7 +316,7 @@
             "parties": 600,
             "victims": 457
         },
-        "notes": "Final Data in TIMS (updated on November 2025)"
+        "notes": "Final Data in TIMS (updated on December 2025)"
     },
     "2023": {
         "year": 2023,
@@ -345,7 +345,7 @@
             "parties": 673,
             "victims": 484
         },
-        "notes": "Final Data in TIMS (updated on November 2025)"
+        "notes": "Final Data in TIMS (updated on December 2025)"
     },
     "2024": {
         "year": 2024,
@@ -374,7 +374,7 @@
             "parties": 602,
             "victims": 464
         },
-        "notes": "Provisional Data in TIMS (updated on November 2025)"
+        "notes": "Provisional Data in TIMS (updated on December 2025)"
     },
     "2025": {
         "year": 2025,
@@ -403,6 +403,6 @@
             "parties": 333,
             "victims": 246
         },
-        "notes": "Provisional Data in TIMS (updated on November 2025)"
+        "notes": "Provisional Data in TIMS (updated on December 2025)"
     }
 }
