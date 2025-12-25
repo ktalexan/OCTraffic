@@ -331,7 +331,7 @@ class octraffic:
         """
 
         # First, check if the series is labeled:
-        if cb_dict[var_name]["is_labeled"] == 1:
+        if cb_dict[var_name]["labeled"] == 1:
             # Get the label type
             var_type = cb_dict[var_name]["label_type"]
             # Check if the type is correct
@@ -442,18 +442,19 @@ class octraffic:
         for cname in df.columns:
             if cname in cb:
                 attrs = cb[cname]
-                df[cname].attrs["label"] = attrs.get("label")
-                df[cname].attrs["description"] = attrs.get("description")
-                df[cname].attrs["var_order"] = attrs.get("var_order")
-                df[cname].attrs["var_class"] = attrs.get("var_class")
-                df[cname].attrs["var_category"] = attrs.get("var_category")
-                df[cname].attrs["var_type"] = attrs.get("var_type")
-                df[cname].attrs["has_source"] = attrs.get("has_source")
-                is_labeled = attrs.get("is_labeled")
-                df[cname].attrs["is_labeled"] = "Yes" if is_labeled == 1 else "No"
+                df[cname].attrs["alias"] = attrs.get("var_alias")
+                df[cname].attrs["description"] = attrs.get("var_desc")
+                df[cname].attrs["order"] = attrs.get("order")
+                df[cname].attrs["class"] = attrs.get("var_class")
+                df[cname].attrs["category"] = attrs.get("var_cat")
+                df[cname].attrs["type"] = attrs.get("var_type")
+                df[cname].attrs["source"] = attrs.get("source")
+                is_labeled = attrs.get("labeled")
+                df[cname].attrs["labeled"] = "Yes" if is_labeled == 1 else "No"
+                df[cname].attrs["fc_include"] = attrs.get("fc_include")
                 df[cname].attrs["ts_include"] = attrs.get("ts_include")
                 df[cname].attrs["ts_stats"] = attrs.get("ts_stats")
-                df[cname].attrs["var_notes"] = attrs.get("var_notes")
+                df[cname].attrs["notes"] = attrs.get("notes")
         return df
 
 
