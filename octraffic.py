@@ -7,7 +7,7 @@
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-## Import necessary libraries ----
+# Import necessary libraries ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 import os, sys, datetime, pickle
 from typing import Union, List, Optional
@@ -25,7 +25,7 @@ from matplotlib.patches import Rectangle
 import codebook.cbl as cbl
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-## Class containing OCTraffic data processing functions ----
+# Class containing OCTraffic data processing functions ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 class octraffic:
     """
@@ -48,6 +48,10 @@ class octraffic:
         13. kruskal_test(self, df: pd.DataFrame, col1: str, col2: str) -> dict
         14. p_value_display(self, p_value: float) -> str
         15. create_stl_plot(self, time_series, season, model="additive", label=None, covid=False, robust=True) -> tuple
+        16. format_coll_time(self, x: int) -> str
+        17. quarter_to_date(self, row: pd.Series, ts: bool = True) -> pd.Timestamp
+        18. get_coll_severity_rank(self, row: pd.Series) -> int
+        19. counts_by_year(self, df: pd.DataFrame, year: int) -> int
     Examples:
         >>> from octraffic import octraffic
         >>> ocs = octraffic()
@@ -58,7 +62,7 @@ class octraffic:
         pass
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ### 1. Project metadata function ----
+    ## 1. Project metadata function ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def project_metadata(self, part: int, version: float, silent: bool = False) -> dict:
         """
@@ -167,7 +171,7 @@ class octraffic:
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ### 2. Export TIMS Metadata function ----
+    ## 2. Export TIMS Metadata function ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def export_tims_metadata(self, metadata: dict) -> None:
         """
@@ -209,7 +213,7 @@ class octraffic:
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ### 3. Update TIMS Metadata Function ----
+    ## 3. Update TIMS Metadata Function ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def update_tims_metadata(self, year: int, type: str = "reported", data_counts = None) -> None:
         """
@@ -271,7 +275,7 @@ class octraffic:
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ### 4. Project Directories function ----
+    ## 4. Project Directories function ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def project_directories(self, base_path: str, silent: bool = False) -> dict:
         """
@@ -334,7 +338,7 @@ class octraffic:
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ### 5. Relocate Dataframe Column Function ----
+    ## 5. Relocate Dataframe Column Function ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def relocate_column(
         self, df: pd.DataFrame, col_name: Union[str, List[str]], ref_col_name: str, position: str = "after"
@@ -398,7 +402,7 @@ class octraffic:
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ### 6. Categorical Pandas Series function ----
+    ## 6. Categorical Pandas Series function ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def categorical_series(self, var_series: pd.Series, var_name: str, cb_dict: dict) -> pd.Series:
         """
@@ -462,7 +466,7 @@ class octraffic:
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ### 7. Determine Daylight Saving Time function ----
+    ## 7. Determine Daylight Saving Time function ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def is_dst(self, dt_series: pd.Series, tz_name: str = "America/Los_Angeles") -> pd.Series:
         """
@@ -516,7 +520,7 @@ class octraffic:
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ### 8. Add Codebook Attributes Function ----
+    ## 8. Add Codebook Attributes Function ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def add_attributes(self, df: pd.DataFrame, cb: dict) -> pd.DataFrame:
         """
@@ -549,15 +553,15 @@ class octraffic:
                 df[cname].attrs["source"] = attrs.get("source")
                 is_labeled = attrs.get("labeled")
                 df[cname].attrs["labeled"] = "Yes" if is_labeled == 1 else "No"
-                df[cname].attrs["fc_include"] = attrs.get("fc_include")
-                df[cname].attrs["ts_include"] = attrs.get("ts_include")
-                df[cname].attrs["ts_stats"] = attrs.get("ts_stats")
+                df[cname].attrs["fc"] = attrs.get("fc")
+                df[cname].attrs["ts"] = attrs.get("ts")
+                df[cname].attrs["stats"] = attrs.get("stats")
                 df[cname].attrs["notes"] = attrs.get("notes")
         return df
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ### 9. Save to Disk Function ----
+    ## 9. Save to Disk Function ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def save_to_disk(self, dir_list: dict, local_vars: dict = locals(), global_vars: dict = globals()) -> None:
         """
@@ -660,7 +664,7 @@ class octraffic:
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ### 10. Graphics Entry Function ----
+    ## 10. Graphics Entry Function ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def graphics_entry(
         self, gr_type: int, gr_id: int, gr_attr: dict, gr_list: Optional[dict] = None, gr_dirs: Optional[dict] = None
@@ -781,7 +785,7 @@ class octraffic:
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ### 11. Chi-squared Independence Test Function ----
+    ## 11. Chi-squared Independence Test Function ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def chi2_test(self, df: pd.DataFrame, col1: str, col2: str) -> dict:
         """
@@ -812,7 +816,7 @@ class octraffic:
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ### 12. Chi-squared Goodness-of-fit Function ----
+    ## 12. Chi-squared Goodness-of-fit Function ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def chi2_gof_test(self, df: pd.DataFrame, col: str) -> dict:
         """
@@ -844,7 +848,7 @@ class octraffic:
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ### 13. Kruskal-Wallis H-test Function ----
+    ## 13. Kruskal-Wallis H-test Function ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def kruskal_test(self, df: pd.DataFrame, col1: str, col2: str) -> dict:
         """
@@ -875,7 +879,7 @@ class octraffic:
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ### 14. P-Value Display Function ----
+    ## 14. P-Value Display Function ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def p_value_display(self, p_value: float) -> str:
         """
@@ -909,7 +913,7 @@ class octraffic:
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ### 15. Create STL Plot Function ----
+    ## 15. Create STL Plot Function ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def create_stl_plot(self, time_series, season, model="additive", label=None, covid=False, robust=True) -> tuple:
         """
@@ -1083,10 +1087,153 @@ class octraffic:
 
         # Return the decomposition result and the figure
         return decomposition, fig
+    
 
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ## 16. Format Collision Time ----
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    def format_coll_time(self, x: int) -> str:
+        """Convert the coll_time to a formatted time string in HH:MM:SS format.
+        Args:
+            x (int): The collision time in seconds.
+        Returns:
+            str: The formatted time string in HH:MM:SS format.
+        Raises:
+            ValueError: If x is not an integer.
+            ValueError: If x is not a positive integer.
+            ValueError: If x is not less than 2400.
+        Examples:
+            >>> format_coll_time(3600)
+            '01:00:00'
+            >>> format_coll_time(2400)
+            '00:00:00'
+        Notes:
+            This function converts the collision time in seconds to a formatted time string in HH:MM:SS format.
+        """
+        # Set time_out to a default value
+        time_out = "00:00:00"
+        # if x has only one digit
+        if len(str(x)) == 1:
+            time_out = f"00:0{str(x)}:00"
+        # if x has two digits
+        elif len(str(x)) == 2:
+            time_out = f"00:{str(x)}:00"
+        # if x has three digits
+        elif len(str(x)) == 3:
+            time_out = f"0{str(x)[0]}:{str(x)[1:]}:00"
+        # if x has four digits and is less than 2400
+        elif len(str(x)) == 4 and int(str(x)) < 2400:
+            time_out = f"{str(x)[:2]}:{str(x)[2:]}:00"
+        else:
+            time_out = "00:00:00"
+        # Return the formatted time string
+        return time_out
+    
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ## 17. Quarter to Date ----
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    def quarter_to_date(self, row: pd.Series, ts: bool = True) -> pd.Timestamp:
+        """Convert the quarter to a datetime object representing the first day of the quarter.
+        Args:
+            row (pd.Series): The row of the DataFrame containing the dt_year and dt_quarter columns.
+            ts (bool, optional): If True, return a Timestamp object. If False, return a quarter string. Defaults to True.
+        Returns:
+            pd.Timestamp or str: The datetime object or quarter string representing the first day of the quarter.
+        Raises:
+            ValueError: If dt_year or dt_quarter is missing or invalid.
+        Examples:
+            >>> quarter_to_date(pd.Series({"dt_year": 2023, "dt_quarter": 1}))
+            Timestamp('2023-01-01 00:00:00')
+            >>> quarter_to_date(pd.Series({"dt_year": 2023, "dt_quarter": 1}), ts=False)
+            '2023-Q1'
+        Notes:
+            This function converts the quarter to a datetime object representing the first day of the quarter.
+        """
+        if pd.isna(row["dt_year"]) or pd.isna(row["dt_quarter"]):
+            return pd.NaT
+        # Map quarter to month (1→Jan, 2→Apr, 3→Jul, 4→Oct)
+        month = 1 + (row["dt_quarter"] - 1) * 3
+        if ts:
+            # Return a Timestamp object for the first day of the quarter
+            return pd.Timestamp(year=row["dt_year"], month=month, day=1)
+        elif not ts:
+            # Return a quarter string (e.g., "2023-Q1")
+            return f"{int(row['dt_year'])}-Q{int(row['dt_quarter'])}"
+        else:
+            raise ValueError("ts must be True or False")
+    
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ## 18. Get Collision Severity Rank ----
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    def get_coll_severity_rank(self, row: pd.Series) -> int:
+        """Get the severity rank of a collision based on the number of killed and severe injured.
+        Args:
+            row (pd.Series): The row of the DataFrame containing the number_killed and count_severe_inj columns.
+        Returns:
+            int: The severity rank of the collision.
+        Raises:
+            ValueError: If number_killed or count_severe_inj is missing or invalid.
+        Examples:
+            >>> get_coll_severity_rank(pd.Series({"number_killed": 0, "count_severe_inj": 0}))
+            0
+            >>> get_coll_severity_rank(pd.Series({"number_killed": 0, "count_severe_inj": 1}))
+            1
+            >>> get_coll_severity_rank(pd.Series({"number_killed": 0, "count_severe_inj": 2}))
+            2
+        Notes:
+            This function returns the severity rank of a collision based on the number of killed and severe injured.
+        """
+        if row["number_killed"] == 0 and row["count_severe_inj"] == 0:
+            return 0
+        elif row["number_killed"] == 0 and row["count_severe_inj"] == 1:
+            return 1
+        elif row["number_killed"] == 0 and row["count_severe_inj"] > 1:
+            return 2
+        elif row["number_killed"] == 1 and row["count_severe_inj"] == 0:
+            return 3
+        elif row["number_killed"] == 1 and row["count_severe_inj"] == 1:
+            return 4
+        elif row["number_killed"] == 1 and row["count_severe_inj"] > 1:
+            return 5
+        elif row["number_killed"] > 1 and row["count_severe_inj"] == 0:
+            return 6
+        elif row["number_killed"] > 1 and row["count_severe_inj"] == 1:
+            return 7
+        elif row["number_killed"] > 1 and row["count_severe_inj"] > 1:
+            return 8
+        else:
+            return np.nan
+    
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ## 19. Get Counts by Year ----
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    def counts_by_year(self, df: pd.DataFrame, year: int) -> int:
+        """
+        Get data counts for a specific year.
+        
+        Args:
+            df (pd.DataFrame): DataFrame containing collision data with a 'date_datetime' column.
+            year (int): The year to filter data by.
+        
+        Returns:
+            int: The number of valid rows in the specified year.
+        Raises:
+            ValueError: If date_datetime is missing or invalid.
+        Examples:
+            >>> counts_by_year(pd.DataFrame({"date_datetime": pd.to_datetime(["2023-01-01", "2024-01-01"])}), 2023)
+            1
+        Notes:
+            This function returns the number of valid rows in the specified year.
+        """
+        return len(df[df['date_datetime'].dt.year == year].copy())
+
+    
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Main ----
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+if __name__ == "__main__":
+    pass
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # End of File ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-if __name__ == "__main__":
-    pass

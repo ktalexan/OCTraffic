@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Project: OCSWITRS Data Processing
-# Title: Part 2 - Raw Data Processing
+# Project: OCTraffic Data Processing
+# Title: Part 2 - Raw Data Processing ----
 # Author: Dr. Kostas Alexandridis, GISP
-# Version: 2025.2, Date: September 2025
+# Version: 2025.2, Date: December 2025
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-print("\nOC SWITRS GIS Data Processing - Part 2 - Raw Data Processing\n")
+print("\nOCTraffic Data Processing - Part 2 - Raw Data Processing\n")
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -32,8 +32,11 @@ from arcpy import metadata as md
 
 # important as it "enhances" Pandas by importing these classes (from ArcGIS API for Python)
 from arcgis.features import GeoAccessor, GeoSeriesAccessor
-import ocswitrs as ocs
+from octraffic import octraffic
 import codebook.cbl as cbl
+
+# Initialize the OCTraffic object
+ocs = octraffic()
 
 # Load environment variables from .env file
 load_dotenv()
@@ -64,6 +67,8 @@ latex_vars_path = os.path.join(prj_dirs["metadata"], "latex_vars.json")
 with open(latex_vars_path, encoding="utf-8") as json_file:
     latex_vars = json.load(json_file)
 
+# Print the latex variables dictionary formatted with 4 spaces
+print(json.dumps(latex_vars, indent=4))
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # 2. Raw Data Import (Initialization) ----
@@ -105,8 +110,8 @@ boundaries = pd.DataFrame.spatial.from_featureclass(os.path.join(prj_dirs["agp_g
 # Add attributes to the boundaries data frame
 boundaries.attrs = {
     "name": "boundaries",
-    "label": "OCSWITRS Boundaries",
-    "description": "Spatially enabled dataframe containing the Orange County boundaries for the OCSWITRS dataset.",
+    "label": "OCTraffic Boundaries",
+    "description": "Spatially enabled dataframe containing the Orange County boundaries for the OCTraffic dataset.",
     "version": prj_meta["version"],
     "updated": datetime.date.today().strftime("%m/%d/%Y")
 }
@@ -117,8 +122,8 @@ cities = pd.DataFrame.spatial.from_featureclass(os.path.join(prj_dirs["agp_gdb_s
 # Add attributes to the cities data frame
 cities.attrs = {
     "name": "cities",
-    "label": "OCSWITRS Cities",
-    "description": "Spatially enabled dataframe containing the Orange County cities for the OCSWITRS dataset.",
+    "label": "OCTraffic Cities",
+    "description": "Spatially enabled dataframe containing the Orange County cities for the OCTraffic dataset.",
     "version": prj_meta["version"],
     "updated": datetime.date.today().strftime("%m/%d/%Y")
 }
@@ -129,8 +134,8 @@ roads = pd.DataFrame.spatial.from_featureclass(os.path.join(prj_dirs["agp_gdb_su
 # Add attributes to the roads data frame
 roads.attrs = {
     "name": "roads",
-    "label": "OCSWITRS Roads",
-    "description": "Spatially enabled dataframe containing the Orange County roads for the OCSWITRS dataset.",
+    "label": "OCTraffic Roads",
+    "description": "Spatially enabled dataframe containing the Orange County roads for the OCTraffic dataset.",
     "version": prj_meta["version"],
     "updated": datetime.date.today().strftime("%m/%d/%Y")
 }
@@ -141,8 +146,8 @@ blocks = pd.DataFrame.spatial.from_featureclass(os.path.join(prj_dirs["agp_gdb_s
 # Add attributes to the blocks data frame
 blocks.attrs = {
     "name": "blocks",
-    "label": "OCSWITRS Census Blocks",
-    "description": "Spatially enabled dataframe containing the Orange County census blocks for the OCSWITRS dataset.",
+    "label": "OCTraffic Census Blocks",
+    "description": "Spatially enabled dataframe containing the Orange County census blocks for the OCTraffic dataset.",
     "version": prj_meta["version"],
     "updated": datetime.date.today().strftime("%m/%d/%Y")
 }
@@ -336,6 +341,8 @@ if (
 ):
     print("Error: The number of columns in the data frames does not match the raw_cols dictionary.")
     sys.exit()
+else:
+    print("- The number of columns in the data frames matches the raw_cols dictionary.")
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -377,8 +384,8 @@ print("\n3.1. Variable Names and Columns")
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 print("- Crashes Data Frame")
 
-# get the row names of the df_cb where the column "raw_data" is 1, and the column in_crashes is 1
-list_sel = df_cb[(df_cb["raw_data"] == 1) & (df_cb["in_crashes"] == 1)].index.tolist()
+# get the row names of the df_cb where the "fc" column has a subdictionary with a "crashes" key equal to 1 and the "raw" column is 1
+list_sel = df_cb[df_cb["fc"].apply(lambda x: x["crashes"] == 1) & (df_cb["raw"] == 1)].index.tolist()
 
 old_name = None  # Initialize with a default value
 new_name = None  # Initialize with a default value
@@ -386,7 +393,7 @@ new_name = None  # Initialize with a default value
 # Loop through the list of selected names and rename the columns in the crashes data frame
 for new_name in list_sel:
     # get the old name from the codebook
-    old_name = df_cb.loc[new_name, "raw_name"]
+    old_name = df_cb.loc[new_name, "var_raw"]
     if old_name in crashes.columns:
         # rename the column in the crashes data frame
         crashes.rename(columns={old_name: new_name}, inplace=True)
@@ -404,8 +411,8 @@ del list_sel, old_name, new_name
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 print("- Parties Data Frame")
 
-# get the row names of the df_cb where the column "raw_data" is 1, and the column in_parties is 1
-list_sel = df_cb[(df_cb["raw_data"] == 1) & (df_cb["in_parties"] == 1)].index.tolist()
+# get the row names of the df_cb where the "fc" column has a subdictionary with a "parties" key equal to 1 and the "raw" column is 1
+list_sel = df_cb[df_cb["fc"].apply(lambda x: x["parties"] == 1) & (df_cb["raw"] == 1)].index.tolist()
 
 old_name = None  # Initialize with a default value
 new_name = None  # Initialize with a default value
@@ -413,7 +420,7 @@ new_name = None  # Initialize with a default value
 # Loop through the list of selected names and rename the columns in the crashes data frame
 for new_name in list_sel:
     # get the old name from the codebook
-    old_name = df_cb.loc[new_name, "raw_name"]
+    old_name = df_cb.loc[new_name, "var_raw"]
     if old_name in parties.columns:
         # rename the column in the crashes data frame
         parties.rename(columns={old_name: new_name}, inplace=True)
@@ -431,8 +438,8 @@ del list_sel, old_name, new_name
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 print("- Victims Data Frame")
 
-# get the row names of the df_cb where the column "raw_data" is 1, and the column in_victims is 1
-list_sel = df_cb[(df_cb["raw_data"] == 1) & (df_cb["in_victims"] == 1)].index.tolist()
+# get the row names of the df_cb where the "fc" column has a subdictionary with a "victims" key equal to 1 and the "raw" column is 1
+list_sel = df_cb[df_cb["fc"].apply(lambda x: x["victims"] == 1) & (df_cb["raw"] == 1)].index.tolist()
 
 old_name = None  # Initialize with a default value
 new_name = None  # Initialize with a default value
@@ -440,7 +447,7 @@ new_name = None  # Initialize with a default value
 # Loop through the list of selected names and rename the columns in the crashes data frame
 for new_name in list_sel:
     # get the old name from the codebook
-    old_name = df_cb.loc[new_name, "raw_name"]
+    old_name = df_cb.loc[new_name, "var_raw"]
     if old_name in victims.columns:
         # rename the column in the crashes data frame
         victims.rename(columns={old_name: new_name}, inplace=True)
@@ -802,32 +809,8 @@ if not pd.api.types.is_integer_dtype(crashes["coll_time"]):
 else:
     print("- coll_time is already an integer")
 
-
-# Define a function to convert the coll_time to a formatted time string
-def format_coll_time(x):
-    """Convert the coll_time to a formatted time string in HH:MM:SS format."""
-    # Set time_out to a default value
-    time_out = "00:00:00"
-    # if x has only one digit
-    if len(str(x)) == 1:
-        time_out = f"00:0{str(x)}:00"
-    # if x has two digits
-    elif len(str(x)) == 2:
-        time_out = f"00:{str(x)}:00"
-    # if x has three digits
-    elif len(str(x)) == 3:
-        time_out = f"0{str(x)[0]}:{str(x)[1:]}:00"
-    # if x has four digits and is less than 2400
-    elif len(str(x)) == 4 and int(str(x)) < 2400:
-        time_out = f"{str(x)[:2]}:{str(x)[2:]}:00"
-    else:
-        time_out = "00:00:00"
-    # Return the formatted time string
-    return time_out
-
-
 # Create a temporary column to store the formatted time string
-crashes["coll_time_temp"] = crashes["coll_time"].apply(format_coll_time)
+crashes["coll_time_temp"] = crashes["coll_time"].apply(ocs.format_coll_time)
 
 # Convert the coll_date and coll_time_temp columns to a datetime object with time zone "America/Los_Angeles"
 crashes["date_datetime"] = pd.to_datetime(
@@ -862,23 +845,8 @@ print("- Creating quarter column")
 # Create a quarter column from the date_quarter column
 crashes["dt_quarter"] = crashes["date_datetime"].dt.quarter
 
-
-# Create a datetime representing the start of each quarter
-def quarter_to_date(row, ts=True):
-    if pd.isna(row["dt_year"]) or pd.isna(row["dt_quarter"]):
-        return pd.NaT
-    # Map quarter to month (1→Jan, 2→Apr, 3→Jul, 4→Oct)
-    month = 1 + (row["dt_quarter"] - 1) * 3
-    if ts:
-        # Return a Timestamp object for the first day of the quarter
-        return pd.Timestamp(year=row["dt_year"], month=month, day=1)
-    elif not ts:
-        # Return a quarter string (e.g., "2023-Q1")
-        return f"{int(row['dt_year'])}-Q{int(row['dt_quarter'])}"
-
-
 # Apply the function to create date_quarter column
-crashes["date_quarter"] = crashes.apply(quarter_to_date, axis=1)
+crashes["date_quarter"] = crashes.apply(ocs.quarter_to_date, axis=1)
 
 # Convert the dt_quarter column to categorical
 crashes["dt_quarter"] = ocs.categorical_series(var_series=crashes["dt_quarter"], var_name="dt_quarter", cb_dict=cb)
@@ -1093,9 +1061,9 @@ print("\n6.1. Factoring Collision Severity")
 # Convert the collision severity column to integer
 crashes["coll_severity"] = crashes["coll_severity"].astype(int)
 
-# using the codebook's "recode_original" key for the coll_severity column, recode the values of the coll_severity column to the new values. Specifically, the values of the coll_severity column are represented as the keys of the cb["coll_severity"]["recode_original"] dictionary (if converted to integers), and the new values are represented as the values of the cb["coll_severity"]["recode_original"] dictionary.
+# using the codebook's "recode" key for the coll_severity column, recode the values of the coll_severity column to the new values. Specifically, the values of the coll_severity column are represented as the keys of the cb["coll_severity"]["recode"] dictionary (if converted to integers), and the new values are represented as the values of the cb["coll_severity"]["recode"] dictionary.
 crashes["coll_severity"] = crashes["coll_severity"].map(
-    {int(k): v for k, v in cb["coll_severity"]["recode_original"].items()}
+    {int(k): v for k, v in cb["coll_severity"]["recode"].items()}
 )
 
 # Convert the coll_severity column to categorical
@@ -1142,32 +1110,9 @@ ocs.relocate_column(df=crashes, col_name="coll_severity_bin", ref_col_name="coll
 print("\n6.3. Ranked Collision Severity")
 
 # Generate a new column in the crashes data frame called coll_severity_rank that ranks the collision severity based on the number of killed and severe injuries
-# Function to rank the collision severity based on the number of killed and severe injuries
-def get_coll_severity_rank(row):
-    if row["number_killed"] == 0 and row["count_severe_inj"] == 0:
-        return 0
-    elif row["number_killed"] == 0 and row["count_severe_inj"] == 1:
-        return 1
-    elif row["number_killed"] == 0 and row["count_severe_inj"] > 1:
-        return 2
-    elif row["number_killed"] == 1 and row["count_severe_inj"] == 0:
-        return 3
-    elif row["number_killed"] == 1 and row["count_severe_inj"] == 1:
-        return 4
-    elif row["number_killed"] == 1 and row["count_severe_inj"] > 1:
-        return 5
-    elif row["number_killed"] > 1 and row["count_severe_inj"] == 0:
-        return 6
-    elif row["number_killed"] > 1 and row["count_severe_inj"] == 1:
-        return 7
-    elif row["number_killed"] > 1 and row["count_severe_inj"] > 1:
-        return 8
-    else:
-        return np.nan
-
 
 # Apply the function to the crashes data frame to create the coll_severity_rank column
-crashes["coll_severity_rank"] = crashes.apply(get_coll_severity_rank, axis=1)
+crashes["coll_severity_rank"] = crashes.apply(ocs.get_coll_severity_rank, axis=1)
 
 # Create a numeric version of the coll_severity_rank column
 crashes["coll_severity_rank_num"] = crashes["coll_severity_rank"].astype(int)
@@ -1303,7 +1248,7 @@ print("\n8.1. Primary Crash Factor")
 
 # Map the values, set unmapped to 999
 crashes["primary_coll_factor"] = (
-    crashes["primary_coll_factor"].map(cb["primary_coll_factor"]["recode_original"]).fillna(999).astype(int)
+    crashes["primary_coll_factor"].map(cb["primary_coll_factor"]["recode"]).fillna(999).astype(int)
 )
 # Set 999 values to NaN
 crashes.loc[crashes["primary_coll_factor"] == 999, "primary_coll_factor"] = np.nan
@@ -1320,7 +1265,7 @@ crashes["primary_coll_factor"] = ocs.categorical_series(
 print("\n8.2. Collision Type")
 
 # Recode the collision type to numeric
-crashes["type_of_coll"] = crashes["type_of_coll"].map(cb["type_of_coll"]["recode_original"]).fillna(999).astype(int)
+crashes["type_of_coll"] = crashes["type_of_coll"].map(cb["type_of_coll"]["recode"]).fillna(999).astype(int)
 # Set 999 values to NaN
 crashes.loc[crashes["type_of_coll"] == 999, "type_of_coll"] = np.nan
 
@@ -1336,7 +1281,7 @@ crashes["type_of_coll"] = ocs.categorical_series(
 print("\n8.3. Pedestrian Crash")
 
 # Recode the pedestrian crash to numeric
-crashes["ped_accident"] = crashes["ped_accident"].map(cb["ped_accident"]["recode_original"]).fillna(0).astype(int)
+crashes["ped_accident"] = crashes["ped_accident"].map(cb["ped_accident"]["recode"]).fillna(0).astype(int)
 
 # Convert the ped_accident column to categorical
 crashes["ped_accident"] = ocs.categorical_series(
@@ -1350,7 +1295,7 @@ crashes["ped_accident"] = ocs.categorical_series(
 print("\n8.4. Bicycle Crash")
 
 # Recode the bicycle crash to numeric
-crashes["bic_accident"] = crashes["bic_accident"].map(cb["bic_accident"]["recode_original"]).fillna(0).astype(int)
+crashes["bic_accident"] = crashes["bic_accident"].map(cb["bic_accident"]["recode"]).fillna(0).astype(int)
 
 # Convert the bic_accident column to categorical
 crashes["bic_accident"] = ocs.categorical_series(
@@ -1364,7 +1309,7 @@ crashes["bic_accident"] = ocs.categorical_series(
 print("\n8.5. Motorcycle Crash")
 
 # Recode the motorcycle crash (mc_accident) to numeric
-crashes["mc_accident"] = crashes["mc_accident"].map(cb["mc_accident"]["recode_original"]).fillna(0).astype(int)
+crashes["mc_accident"] = crashes["mc_accident"].map(cb["mc_accident"]["recode"]).fillna(0).astype(int)
 
 # Convert the mc_accident column to categorical
 crashes["mc_accident"] = ocs.categorical_series(var_series=crashes["mc_accident"], var_name="mc_accident", cb_dict=cb)
@@ -1376,7 +1321,7 @@ crashes["mc_accident"] = ocs.categorical_series(var_series=crashes["mc_accident"
 print("\n8.6. Truck Crash")
 
 # Recode the truck crash (truck_accident) to numeric
-crashes["truck_accident"] = crashes["truck_accident"].map(cb["truck_accident"]["recode_original"]).fillna(0).astype(int)
+crashes["truck_accident"] = crashes["truck_accident"].map(cb["truck_accident"]["recode"]).fillna(0).astype(int)
 
 # Convert the truck_accident column to categorical
 crashes["truck_accident"] = ocs.categorical_series(
@@ -1395,7 +1340,7 @@ print("\n8.7. Hit and Run")
 print("- Creating Hit and Run (type of)")
 
 # Recode the hit and run (hit_and_run) to numeric
-crashes["hit_and_run"] = crashes["hit_and_run"].map(cb["hit_and_run"]["recode_original"]).fillna(0).astype(int)
+crashes["hit_and_run"] = crashes["hit_and_run"].map(cb["hit_and_run"]["recode"]).fillna(0).astype(int)
 
 # Convert the hit_and_run column to categorical
 crashes["hit_and_run"] = ocs.categorical_series(var_series=crashes["hit_and_run"], var_name="hit_and_run", cb_dict=cb)
@@ -1425,7 +1370,7 @@ print("\n8.8. Alcohol Involved")
 
 # Recode the alcohol involved (alcohol_involved) to numeric
 crashes["alcohol_involved"] = (
-    crashes["alcohol_involved"].map(cb["alcohol_involved"]["recode_original"]).fillna(0).astype(int)
+    crashes["alcohol_involved"].map(cb["alcohol_involved"]["recode"]).fillna(0).astype(int)
 )
 
 # Convert the alcohol_involved column to categorical
@@ -1452,7 +1397,7 @@ crashes["chp_shift"] = ocs.categorical_series(var_series=crashes["chp_shift"], v
 print("\n8.10. Special Conditions")
 
 # Recode the special conditions (special_cond) to numeric
-crashes["special_cond"] = crashes["special_cond"].map(cb["special_cond"]["recode_original"]).fillna(np.nan).astype(int)
+crashes["special_cond"] = crashes["special_cond"].map(cb["special_cond"]["recode"]).fillna(np.nan).astype(int)
 
 # Convert the special_cond column to categorical
 crashes["special_cond"] = ocs.categorical_series(
@@ -1479,7 +1424,7 @@ print("\n8.12. CHP Beat Type")
 
 # Recode the CHP beat type (chp_beat_type) to numeric
 crashes["chp_beat_type"] = (
-    crashes["chp_beat_type"].map(cb["chp_beat_type"]["recode_original"]).fillna(np.nan).astype(int)
+    crashes["chp_beat_type"].map(cb["chp_beat_type"]["recode"]).fillna(np.nan).astype(int)
 )
 
 # Convert the chp_beat_type column to categorical
@@ -1508,7 +1453,7 @@ crashes["chp_beat_class"] = ocs.categorical_series(
 print("\n8.14. Direction")
 
 # Recode the direction (direction) to numeric
-crashes["direction"] = crashes["direction"].map(cb["direction"]["recode_original"]).fillna(999).astype(int)
+crashes["direction"] = crashes["direction"].map(cb["direction"]["recode"]).fillna(999).astype(int)
 # Set 999 values to NaN
 crashes.loc[crashes["direction"] == 999, "direction"] = np.nan
 
@@ -1522,7 +1467,7 @@ crashes["direction"] = ocs.categorical_series(var_series=crashes["direction"], v
 print("\n8.15. Intersection")
 
 # Recode the intersection (intersection) to numeric
-crashes["intersection"] = crashes["intersection"].map(cb["intersection"]["recode_original"]).fillna(999).astype(int)
+crashes["intersection"] = crashes["intersection"].map(cb["intersection"]["recode"]).fillna(999).astype(int)
 # Set 999 values to NaN
 crashes.loc[crashes["intersection"] == 999, "intersection"] = np.nan
 
@@ -1538,12 +1483,12 @@ crashes["intersection"] = ocs.categorical_series(
 print("\n8.16. Weather Conditions")
 
 # Recode the weather_1 to numeric
-crashes["weather_1"] = crashes["weather_1"].map(cb["weather_1"]["recode_original"]).fillna(999).astype(int)
+crashes["weather_1"] = crashes["weather_1"].map(cb["weather_1"]["recode"]).fillna(999).astype(int)
 # Set 999 values to NaN
 crashes.loc[crashes["weather_1"] == 999, "weather_1"] = np.nan
 
 # Recode the weather_2 to numeric
-crashes["weather_2"] = crashes["weather_2"].map(cb["weather_2"]["recode_original"]).fillna(999).astype(int)
+crashes["weather_2"] = crashes["weather_2"].map(cb["weather_2"]["recode"]).fillna(999).astype(int)
 # Set 999 values to NaN
 crashes.loc[crashes["weather_2"] == 999, "weather_2"] = np.nan
 
@@ -1571,7 +1516,8 @@ ocs.relocate_column(df=crashes, col_name="weather_comb", ref_col_name="weather_2
 print("\n8.17. Road Surface")
 
 # Recode the road surface (road_surface) to numeric
-crashes["road_surface"] = crashes["road_surface"].map(cb["road_surface"]["recode_original"]).fillna(999).astype(int)
+crashes["road_surface"] = crashes["road_surface"].map(cb["road_surface"]["recode"]).fillna(999).astype(int)
+
 # Set 999 values to NaN
 crashes.loc[crashes["road_surface"] == 999, "road_surface"] = np.nan
 
@@ -1587,12 +1533,12 @@ crashes["road_surface"] = ocs.categorical_series(
 print("\n8.18. Road Condition")
 
 # Recode the road condition 1 (road_cond_1) to numeric
-crashes["road_cond_1"] = crashes["road_cond_1"].map(cb["road_cond_1"]["recode_original"]).fillna(999).astype(int)
+crashes["road_cond_1"] = crashes["road_cond_1"].map(cb["road_cond_1"]["recode"]).fillna(999).astype(int)
 # Set 999 values to NaN
 crashes.loc[crashes["road_cond_1"] == 999, "road_cond_1"] = np.nan
 
 # Recode the road condition 2 (road_cond_2) to numeric
-crashes["road_cond_2"] = crashes["road_cond_2"].map(cb["road_cond_2"]["recode_original"]).fillna(999).astype(int)
+crashes["road_cond_2"] = crashes["road_cond_2"].map(cb["road_cond_2"]["recode"]).fillna(999).astype(int)
 # Set 999 values to NaN
 crashes.loc[crashes["road_cond_2"] == 999, "road_cond_2"] = np.nan
 
@@ -1609,7 +1555,7 @@ crashes["road_cond_2"] = ocs.categorical_series(var_series=crashes["road_cond_2"
 print("\n8.19. Lighting")
 
 # Recode the lighting (lighting) to numeric
-crashes["lighting"] = crashes["lighting"].map(cb["lighting"]["recode_original"]).fillna(999).astype(int)
+crashes["lighting"] = crashes["lighting"].map(cb["lighting"]["recode"]).fillna(999).astype(int)
 # Set 999 values to NaN
 crashes.loc[crashes["lighting"] == 999, "lighting"] = np.nan
 
@@ -1624,7 +1570,7 @@ print("\n8.20. Control Device")
 
 # Recode the control device (control_device) to numeric
 crashes["control_device"] = (
-    crashes["control_device"].map(cb["control_device"]["recode_original"]).fillna(999).astype(int)
+    crashes["control_device"].map(cb["control_device"]["recode"]).fillna(999).astype(int)
 )
 # Set 999 values to NaN
 crashes.loc[crashes["control_device"] == 999, "control_device"] = np.nan
@@ -1641,7 +1587,7 @@ crashes["control_device"] = ocs.categorical_series(
 print("\n8.21. State Highway Indicator")
 
 # Recode the state highway indicator (state_hwy_ind) to numeric
-crashes["state_hwy_ind"] = crashes["state_hwy_ind"].map(cb["state_hwy_ind"]["recode_original"]).fillna(999).astype(int)
+crashes["state_hwy_ind"] = crashes["state_hwy_ind"].map(cb["state_hwy_ind"]["recode"]).fillna(999).astype(int)
 # Set 999 values to NaN
 crashes.loc[crashes["state_hwy_ind"] == 999, "state_hwy_ind"] = np.nan
 
@@ -1657,7 +1603,7 @@ crashes["state_hwy_ind"] = ocs.categorical_series(
 print("\n8.22. Side of Highway")
 
 # Recode the side of highway (side_of_hwy) to numeric
-crashes["side_of_hwy"] = crashes["side_of_hwy"].map(cb["side_of_hwy"]["recode_original"]).fillna(999).astype(int)
+crashes["side_of_hwy"] = crashes["side_of_hwy"].map(cb["side_of_hwy"]["recode"]).fillna(999).astype(int)
 # Set 999 values to NaN
 crashes.loc[crashes["side_of_hwy"] == 999, "side_of_hwy"] = np.nan
 
@@ -1671,7 +1617,7 @@ crashes["side_of_hwy"] = ocs.categorical_series(var_series=crashes["side_of_hwy"
 print("\n8.23. Tow Away")
 
 # Recode the tow away (tow_away) to numeric
-crashes["tow_away"] = crashes["tow_away"].map(cb["tow_away"]["recode_original"]).fillna(999).astype(int)
+crashes["tow_away"] = crashes["tow_away"].map(cb["tow_away"]["recode"]).fillna(999).astype(int)
 # Set 999 values to NaN
 crashes.loc[crashes["tow_away"] == 999, "tow_away"] = np.nan
 
@@ -1686,7 +1632,7 @@ print("\n8.24. PCF Code of Violation")
 
 # Recode the PCF code of violation (pcf_code_of_viol) to numeric
 crashes["pcf_code_of_viol"] = (
-    crashes["pcf_code_of_viol"].map(cb["pcf_code_of_viol"]["recode_original"]).fillna(999).astype(int)
+    crashes["pcf_code_of_viol"].map(cb["pcf_code_of_viol"]["recode"]).fillna(999).astype(int)
 )
 # Set 999 values to NaN
 crashes.loc[crashes["pcf_code_of_viol"] == 999, "pcf_code_of_viol"] = np.nan
@@ -1704,7 +1650,7 @@ print("\n8.25. PCF Violation Category")
 
 # Recode the PCF violation category (pcf_viol_category) to numeric
 crashes["pcf_viol_category"] = (
-    crashes["pcf_viol_category"].map(cb["pcf_viol_category"]["recode_original"]).fillna(999).astype(int)
+    crashes["pcf_viol_category"].map(cb["pcf_viol_category"]["recode"]).fillna(999).astype(int)
 )
 # Set 999 values to NaN
 crashes.loc[crashes["pcf_viol_category"] == 999, "pcf_viol_category"] = np.nan
@@ -1721,7 +1667,7 @@ crashes["pcf_viol_category"] = ocs.categorical_series(
 print("\n8.26. MVIW")
 
 ## Recode the MVIW (mviw) to numeric
-crashes["mviw"] = crashes["mviw"].map(cb["mviw"]["recode_original"]).fillna(999).astype(int)
+crashes["mviw"] = crashes["mviw"].map(cb["mviw"]["recode"]).fillna(999).astype(int)
 # Set 999 values to NaN
 crashes.loc[crashes["mviw"] == 999, "mviw"] = np.nan
 
@@ -1735,7 +1681,7 @@ crashes["mviw"] = ocs.categorical_series(var_series=crashes["mviw"], var_name="m
 print("\n8.27. Pedestrian Action")
 
 # Recode the pedestrian action (ped_action) to numeric
-crashes["ped_action"] = crashes["ped_action"].map(cb["ped_action"]["recode_original"]).fillna(999).astype(int)
+crashes["ped_action"] = crashes["ped_action"].map(cb["ped_action"]["recode"]).fillna(999).astype(int)
 # Set 999 values to NaN
 crashes.loc[crashes["ped_action"] == 999, "ped_action"] = np.nan
 
@@ -1750,7 +1696,7 @@ print("\n8.28. Not Private Property")
 
 # Recode the not private property (not_private_property) to numeric
 crashes["not_private_property"] = (
-    crashes["not_private_property"].map(cb["not_private_property"]["recode_original"]).fillna(0).astype(int)
+    crashes["not_private_property"].map(cb["not_private_property"]["recode"]).fillna(0).astype(int)
 )
 
 # Convert the not_private_property column to categorical
@@ -1766,7 +1712,7 @@ print("\n8.29. State Wide Vehicle Type at Fault")
 
 # Recode the state wide vehicle type at fault (stwd_veh_type_at_fault) to numeric
 crashes["stwd_veh_type_at_fault"] = (
-    crashes["stwd_veh_type_at_fault"].map(cb["stwd_veh_type_at_fault"]["recode_original"]).fillna(999).astype(int)
+    crashes["stwd_veh_type_at_fault"].map(cb["stwd_veh_type_at_fault"]["recode"]).fillna(999).astype(int)
 )
 # Set 999 values to NaN
 crashes.loc[crashes["stwd_veh_type_at_fault"] == 999, "stwd_veh_type_at_fault"] = np.nan
@@ -1784,7 +1730,7 @@ print("\n8.30. CHP Vehicle Type at Fault")
 
 # Recode the CHP vehicle type at fault (chp_veh_type_at_fault) to numeric
 crashes["chp_veh_type_at_fault"] = (
-    crashes["chp_veh_type_at_fault"].map(cb["chp_veh_type_at_fault"]["recode_original"]).fillna(999).astype(int)
+    crashes["chp_veh_type_at_fault"].map(cb["chp_veh_type_at_fault"]["recode"]).fillna(999).astype(int)
 )
 # Set 999 values to NaN
 crashes.loc[crashes["chp_veh_type_at_fault"] == 999, "chp_veh_type_at_fault"] = np.nan
@@ -1801,7 +1747,7 @@ crashes["chp_veh_type_at_fault"] = ocs.categorical_series(
 print("\n8.31. Primary and Secondary Ramp")
 
 # Recode the primary ramp (primary_ramp) to numeric
-crashes["primary_ramp"] = crashes["primary_ramp"].map(cb["primary_ramp"]["recode_original"]).fillna(999).astype(int)
+crashes["primary_ramp"] = crashes["primary_ramp"].map(cb["primary_ramp"]["recode"]).fillna(999).astype(int)
 # Set 999 values to NaN
 crashes.loc[crashes["primary_ramp"] == 999, "primary_ramp"] = np.nan
 
@@ -1812,7 +1758,7 @@ crashes["primary_ramp"] = ocs.categorical_series(
 
 # Recode the secondary ramp (secondary_ramp) to numeric
 crashes["secondary_ramp"] = (
-    crashes["secondary_ramp"].map(cb["secondary_ramp"]["recode_original"]).fillna(999).astype(int)
+    crashes["secondary_ramp"].map(cb["secondary_ramp"]["recode"]).fillna(999).astype(int)
 )
 # Set 999 values to NaN
 crashes.loc[crashes["secondary_ramp"] == 999, "secondary_ramp"] = np.nan
@@ -1835,7 +1781,7 @@ print("\n9. Party Characteristics")
 print("\n9.1. Party Type")
 
 # Recode the party type to numeric
-parties["party_type"] = parties["party_type"].map(cb["party_type"]["recode_original"]).fillna(999).astype(int)
+parties["party_type"] = parties["party_type"].map(cb["party_type"]["recode"]).fillna(999).astype(int)
 # Set 999 values to NaN
 parties.loc[parties["party_type"] == 999, "party_type"] = np.nan
 
@@ -1849,7 +1795,7 @@ parties["party_type"] = ocs.categorical_series(var_series=parties["party_type"],
 print("\n9.2. At Fault")
 
 # Recode the at fault (at_fault) to numeric
-parties["at_fault"] = parties["at_fault"].map(cb["at_fault"]["recode_original"]).fillna(999).astype(int)
+parties["at_fault"] = parties["at_fault"].map(cb["at_fault"]["recode"]).fillna(999).astype(int)
 # Set 999 values to NaN
 parties.loc[parties["at_fault"] == 999, "at_fault"] = np.nan
 
@@ -1863,7 +1809,7 @@ parties["at_fault"] = ocs.categorical_series(var_series=parties["at_fault"], var
 print("\n9.3. Party Sex")
 
 # Recode the party sex (party_sex) to numeric
-parties["party_sex"] = parties["party_sex"].map(cb["party_sex"]["recode_original"]).fillna(999).astype(int)
+parties["party_sex"] = parties["party_sex"].map(cb["party_sex"]["recode"]).fillna(999).astype(int)
 # Set 999 values to NaN
 parties.loc[parties["party_sex"] == 999, "party_sex"] = np.nan
 
@@ -1882,11 +1828,11 @@ parties["party_age"] = parties["party_age"].astype(int)
 parties.loc[parties["party_age"] >= 998, "party_age"] = np.nan
 
 # Create a new column for party age group (party_age_group)
-bins = cb["party_age_group"]["recode_original"]
+bins = cb["party_age_group"]["recode"]
 bins.append(np.inf)
 parties["party_age_group"] = pd.cut(
     parties["party_age"],
-    bins=cb["party_age_group"]["recode_original"],
+    bins=cb["party_age_group"]["recode"],
     labels=[v for k, v in cb["party_age_group"]["labels"].items()],
     include_lowest=True,
     right=False,
@@ -1902,7 +1848,7 @@ ocs.relocate_column(df=parties, col_name="party_age_group", ref_col_name="party_
 print("\n9.5. Party Race")
 
 # Recode the party_race to numeric
-parties["party_race"] = parties["party_race"].map(cb["party_race"]["recode_original"]).fillna(999).astype(int)
+parties["party_race"] = parties["party_race"].map(cb["party_race"]["recode"]).fillna(999).astype(int)
 # Set 999 values to NaN
 parties.loc[parties["party_race"] == 999, "party_race"] = np.nan
 
@@ -1916,7 +1862,7 @@ parties["party_race"] = ocs.categorical_series(var_series=parties["party_race"],
 print("\n9.6. Inattention")
 
 # Recode the parties.inattention to numeric
-parties["inattention"] = parties["inattention"].map(cb["inattention"]["recode_original"]).fillna(999).astype(int)
+parties["inattention"] = parties["inattention"].map(cb["inattention"]["recode"]).fillna(999).astype(int)
 # Set 999 values to NaN
 parties.loc[parties["inattention"] == 999, "inattention"] = np.nan
 
@@ -1931,7 +1877,7 @@ print("\n9.7. Party Sobriety")
 
 # Recode the dfParty party sobriety (party_sobriety) to numeric
 parties["party_sobriety"] = (
-    parties["party_sobriety"].map(cb["party_sobriety"]["recode_original"]).fillna(999).astype(int)
+    parties["party_sobriety"].map(cb["party_sobriety"]["recode"]).fillna(999).astype(int)
 )
 # Set 999 values to NaN
 parties.loc[parties["party_sobriety"] == 999, "party_sobriety"] = np.nan
@@ -1965,7 +1911,7 @@ print("\n9.8. Party Drug Physical")
 
 # Recode the parties party drug physical (party_drug_physical) to numeric
 parties["party_drug_physical"] = (
-    parties["party_drug_physical"].map(cb["party_drug_physical"]["recode_original"]).fillna(999).astype(int)
+    parties["party_drug_physical"].map(cb["party_drug_physical"]["recode"]).fillna(999).astype(int)
 )
 # Set 999 values to NaN
 parties.loc[parties["party_drug_physical"] == 999, "party_drug_physical"] = np.nan
@@ -1998,7 +1944,7 @@ ocs.relocate_column(df=parties, col_name="dui_drug_ind", ref_col_name="party_dru
 print("\n9.9. Direction of Travel")
 
 # Recode the parties direction of travel (dir_of_travel) to numeric
-parties["dir_of_travel"] = parties["dir_of_travel"].map(cb["dir_of_travel"]["recode_original"]).fillna(999).astype(int)
+parties["dir_of_travel"] = parties["dir_of_travel"].map(cb["dir_of_travel"]["recode"]).fillna(999).astype(int)
 # Set 999 values to NaN
 parties.loc[parties["dir_of_travel"] == 999, "dir_of_travel"] = np.nan
 
@@ -2020,7 +1966,7 @@ print("- Creating Party Safety Equipment 1")
 
 # Recode the parties party safety equipment 1 (party_safety_eq_1) to numeric
 parties["party_safety_eq_1"] = (
-    parties["party_safety_eq_1"].map(cb["party_safety_eq_1"]["recode_original"]).fillna(999).astype(int)
+    parties["party_safety_eq_1"].map(cb["party_safety_eq_1"]["recode"]).fillna(999).astype(int)
 )
 # Set 999 values to NaN
 parties.loc[parties["party_safety_eq_1"] == 999, "party_safety_eq_1"] = np.nan
@@ -2037,7 +1983,7 @@ print("- Creating Party Safety Equipment 2")
 
 # Recode the parties party safety equipment 2 (party_safety_eq_2) to numeric
 parties["party_safety_eq_2"] = (
-    parties["party_safety_eq_2"].map(cb["party_safety_eq_2"]["recode_original"]).fillna(999).astype(int)
+    parties["party_safety_eq_2"].map(cb["party_safety_eq_2"]["recode"]).fillna(999).astype(int)
 )
 # Set 999 values to NaN
 parties.loc[parties["party_safety_eq_2"] == 999, "party_safety_eq_2"] = np.nan
@@ -2054,7 +2000,7 @@ parties["party_safety_eq_2"] = ocs.categorical_series(
 print("\n9.11. Financial Responsibility")
 
 # Recode the parties financial responsibility (finan_respons) to numeric
-parties["finan_respons"] = parties["finan_respons"].map(cb["finan_respons"]["recode_original"]).fillna(999).astype(int)
+parties["finan_respons"] = parties["finan_respons"].map(cb["finan_respons"]["recode"]).fillna(999).astype(int)
 # Set 999 values to NaN
 parties.loc[parties["finan_respons"] == 999, "finan_respons"] = np.nan
 
@@ -2075,7 +2021,7 @@ print("\n9.12. Party Special Information")
 print("- Creating Party Special Information 1")
 
 # Recode the parties special information 1 (sp_info_1) to numeric
-parties["sp_info_1"] = parties["sp_info_1"].map(cb["sp_info_1"]["recode_original"]).fillna(999).astype(int)
+parties["sp_info_1"] = parties["sp_info_1"].map(cb["sp_info_1"]["recode"]).fillna(999).astype(int)
 # Set 999 values to NaN
 parties.loc[parties["sp_info_1"] == 999, "sp_info_1"] = np.nan
 
@@ -2088,7 +2034,7 @@ parties["sp_info_1"] = ocs.categorical_series(var_series=parties["sp_info_1"], v
 print("- Creating Party Special Information 2")
 
 # Recode the parties special information 2 (sp_info_2) to numeric
-parties["sp_info_2"] = parties["sp_info_2"].map(cb["sp_info_2"]["recode_original"]).fillna(999).astype(int)
+parties["sp_info_2"] = parties["sp_info_2"].map(cb["sp_info_2"]["recode"]).fillna(999).astype(int)
 # Set 999 values to NaN
 parties.loc[parties["sp_info_2"] == 999, "sp_info_2"] = np.nan
 
@@ -2101,7 +2047,7 @@ parties["sp_info_2"] = ocs.categorical_series(var_series=parties["sp_info_2"], v
 print("- Creating Party Special Information 3")
 
 # Recode the parties special information 3 (sp_info_3) to numeric
-parties["sp_info_3"] = parties["sp_info_3"].map(cb["sp_info_3"]["recode_original"]).fillna(999).astype(int)
+parties["sp_info_3"] = parties["sp_info_3"].map(cb["sp_info_3"]["recode"]).fillna(999).astype(int)
 # Set 999 values to NaN
 parties.loc[parties["sp_info_3"] == 999, "sp_info_3"] = np.nan
 
@@ -2115,7 +2061,7 @@ parties["sp_info_3"] = ocs.categorical_series(var_series=parties["sp_info_3"], v
 print("\n9.13. OAF Violation Code")
 
 # Recode the parties OAF violation code (oaf_viol_code) to numeric
-parties["oaf_viol_code"] = parties["oaf_viol_code"].map(cb["oaf_viol_code"]["recode_original"]).fillna(999).astype(int)
+parties["oaf_viol_code"] = parties["oaf_viol_code"].map(cb["oaf_viol_code"]["recode"]).fillna(999).astype(int)
 # Set 999 values to NaN
 parties.loc[parties["oaf_viol_code"] == 999, "oaf_viol_code"] = np.nan
 
@@ -2131,7 +2077,7 @@ parties["oaf_viol_code"] = ocs.categorical_series(
 print("\n9.14. OAF Violation Category")
 
 # Recode the parties OAF violation category (oaf_viol_cat) to numeric
-parties["oaf_viol_cat"] = parties["oaf_viol_cat"].map(cb["oaf_viol_cat"]["recode_original"]).fillna(999).astype(int)
+parties["oaf_viol_cat"] = parties["oaf_viol_cat"].map(cb["oaf_viol_cat"]["recode"]).fillna(999).astype(int)
 # Set 999 values to NaN
 parties.loc[parties["oaf_viol_cat"] == 999, "oaf_viol_cat"] = np.nan
 
@@ -2152,7 +2098,7 @@ print("\n9.15. OAF Violation Section")
 print("- Creating OAF Violation Section 1")
 
 # Recode the parties OAF violation section 1 (oaf_1) to numeric
-parties["oaf_1"] = parties["oaf_1"].map(cb["oaf_1"]["recode_original"]).fillna(999).astype(int)
+parties["oaf_1"] = parties["oaf_1"].map(cb["oaf_1"]["recode"]).fillna(999).astype(int)
 # Set 999 values to NaN
 parties.loc[parties["oaf_1"] == 999, "oaf_1"] = np.nan
 
@@ -2165,7 +2111,7 @@ parties["oaf_1"] = ocs.categorical_series(var_series=parties["oaf_1"], var_name=
 print("- Creating OAF Violation Section 2")
 
 # Recode the parties OAF violation section 2 (oaf_2) to numeric
-parties["oaf_2"] = parties["oaf_2"].map(cb["oaf_2"]["recode_original"]).fillna(999).astype(int)
+parties["oaf_2"] = parties["oaf_2"].map(cb["oaf_2"]["recode"]).fillna(999).astype(int)
 # Set 999 values to NaN
 parties.loc[parties["oaf_2"] == 999, "oaf_2"] = np.nan
 
@@ -2179,7 +2125,7 @@ parties["oaf_2"] = ocs.categorical_series(var_series=parties["oaf_2"], var_name=
 print("\n9.16. Movement Preceding Accident")
 
 # Recode the parties movement preceding accident (move_pre_acc) to numeric
-parties["move_pre_acc"] = parties["move_pre_acc"].map(cb["move_pre_acc"]["recode_original"]).fillna(999).astype(int)
+parties["move_pre_acc"] = parties["move_pre_acc"].map(cb["move_pre_acc"]["recode"]).fillna(999).astype(int)
 # Set 999 values to NaN
 parties.loc[parties["move_pre_acc"] == 999, "move_pre_acc"] = np.nan
 
@@ -2213,11 +2159,11 @@ parties["vehicle_year"] = parties["vehicle_year"].fillna(999).astype(int)
 parties.loc[parties["vehicle_year"] == 999, "vehicle_year"] = np.nan
 
 # Create a new column vehicle_year_group and recode the vehicle year to numeric by decades
-bins = cb["vehicle_year_group"]["recode_original"]
+bins = cb["vehicle_year_group"]["recode"]
 bins.append(np.inf)
 parties["vehicle_year_group"] = pd.cut(
     parties["vehicle_year"],
-    bins=cb["vehicle_year_group"]["recode_original"],
+    bins=cb["vehicle_year_group"]["recode"],
     labels=[v for k, v in cb["vehicle_year_group"]["labels"].items()],
     include_lowest=True,
     right=False,
@@ -2234,7 +2180,7 @@ print("\n9.18. Vehicle Type")
 
 # Recode the parties state wide vehicle type (stwd_vehicle_type) to numeric
 parties["stwd_vehicle_type"] = (
-    parties["stwd_vehicle_type"].map(cb["stwd_vehicle_type"]["recode_original"]).fillna(999).astype(int)
+    parties["stwd_vehicle_type"].map(cb["stwd_vehicle_type"]["recode"]).fillna(999).astype(int)
 )
 # Set 999 values to NaN
 parties.loc[parties["stwd_vehicle_type"] == 999, "stwd_vehicle_type"] = np.nan
@@ -2252,7 +2198,7 @@ print("\n9.19. CHP Vehicle Towing")
 
 # Recode the parties CHP vehicle towing (chp_veh_type_towing) to numeric
 parties["chp_veh_type_towing"] = (
-    parties["chp_veh_type_towing"].map(cb["chp_veh_type_towing"]["recode_original"]).fillna(999).astype(int)
+    parties["chp_veh_type_towing"].map(cb["chp_veh_type_towing"]["recode"]).fillna(999).astype(int)
 )
 # Set 999 values to NaN
 parties.loc[parties["chp_veh_type_towing"] == 999, "chp_veh_type_towing"] = np.nan
@@ -2270,7 +2216,7 @@ print("\n9.20. CHP Vehicle Type Towed")
 
 # Recode the parties CHP vehicle type towed (chp_veh_type_towed) to numeric
 parties["chp_veh_type_towed"] = (
-    parties["chp_veh_type_towed"].map(cb["chp_veh_type_towed"]["recode_original"]).fillna(999).astype(int)
+    parties["chp_veh_type_towed"].map(cb["chp_veh_type_towed"]["recode"]).fillna(999).astype(int)
 )
 # Set 999 values to NaN
 parties.loc[parties["chp_veh_type_towed"] == 999, "chp_veh_type_towed"] = np.nan
@@ -2293,7 +2239,7 @@ print("- Creating Special Info F")
 
 # Recode the parties special info F (special_info_f) to numeric
 parties["special_info_f"] = (
-    parties["special_info_f"].map(cb["special_info_f"]["recode_original"]).fillna(999).astype(int)
+    parties["special_info_f"].map(cb["special_info_f"]["recode"]).fillna(999).astype(int)
 )
 # Set 999 values to NaN
 parties.loc[parties["special_info_f"] == 999, "special_info_f"] = np.nan
@@ -2310,7 +2256,7 @@ print("- Creating Special Info G")
 
 # Recode the parties special info G (special_info_g) to numeric
 parties["special_info_g"] = (
-    parties["special_info_g"].map(cb["special_info_g"]["recode_original"]).fillna(999).astype(int)
+    parties["special_info_g"].map(cb["special_info_g"]["recode"]).fillna(999).astype(int)
 )
 # Set 999 values to NaN
 parties.loc[parties["special_info_g"] == 999, "special_info_g"] = np.nan
@@ -2347,7 +2293,7 @@ victims["victim_role"] = ocs.categorical_series(var_series=victims["victim_role"
 print("\n10.2. Victim Sex")
 
 # Recode the victims victim sex (victim_sex) to numeric
-victims["victim_sex"] = victims["victim_sex"].map(cb["victim_sex"]["recode_original"]).fillna(999).astype(int)
+victims["victim_sex"] = victims["victim_sex"].map(cb["victim_sex"]["recode"]).fillna(999).astype(int)
 # Set 999 values to NaN
 victims.loc[victims["victim_sex"] == 999, "victim_sex"] = np.nan
 
@@ -2366,11 +2312,11 @@ victims["victim_age"] = victims["victim_age"].astype(int)
 victims.loc[victims["victim_age"] >= 998, "victim_age"] = np.nan
 
 # Create a new column for victim age group (victim_age_group)
-bins = cb["victim_age_group"]["recode_original"]
+bins = cb["victim_age_group"]["recode"]
 bins.append(np.inf)
 victims["victim_age_group"] = pd.cut(
     victims["victim_age"],
-    bins=cb["victim_age_group"]["recode_original"],
+    bins=cb["victim_age_group"]["recode"],
     labels=[v for k, v in cb["victim_age_group"]["labels"].items()],
     include_lowest=True,
     right=False,
@@ -2387,14 +2333,14 @@ print("\n10.4. Victim Degree of Injury")
 
 # Create a binary variable for the victim degree of injury
 victims["victim_degree_of_injury_bin"] = (
-    victims["victim_degree_of_injury"].map(cb["victim_degree_of_injury_bin"]["recode_original"]).fillna(999).astype(int)
+    victims["victim_degree_of_injury"].map(cb["victim_degree_of_injury_bin"]["recode"]).fillna(999).astype(int)
 )
 # Set 999 values to NaN
 victims.loc[victims["victim_degree_of_injury_bin"] == 999, "victim_degree_of_injury_bin"] = np.nan
 
 # Recode the victims victim degree of injury (victim_degree_of_injury) to numeric
 victims["victim_degree_of_injury"] = (
-    victims["victim_degree_of_injury"].map(cb["victim_degree_of_injury"]["recode_original"]).fillna(999).astype(int)
+    victims["victim_degree_of_injury"].map(cb["victim_degree_of_injury"]["recode"]).fillna(999).astype(int)
 )
 # Set 999 values to NaN
 victims.loc[victims["victim_degree_of_injury"] == 999, "victim_degree_of_injury"] = np.nan
@@ -2422,7 +2368,7 @@ print("\n10.5. Victim Seating Position")
 
 # Recode the victims victim seating position (victim_seating_position) to numeric
 victims["victim_seating_position"] = (
-    victims["victim_seating_position"].map(cb["victim_seating_position"]["recode_original"]).fillna(999).astype(int)
+    victims["victim_seating_position"].map(cb["victim_seating_position"]["recode"]).fillna(999).astype(int)
 )
 # Set 999 values to NaN
 victims.loc[victims["victim_seating_position"] == 999, "victim_seating_position"] = np.nan
@@ -2445,7 +2391,7 @@ print("- Creating Victim Safety Equipment 1")
 
 # Recode the victims victim safety equipment 1 (victim_safety_eq_1) to numeric
 victims["victim_safety_eq_1"] = (
-    victims["victim_safety_eq_1"].map(cb["victim_safety_eq_1"]["recode_original"]).fillna(999).astype(int)
+    victims["victim_safety_eq_1"].map(cb["victim_safety_eq_1"]["recode"]).fillna(999).astype(int)
 )
 # Set 999 values to NaN
 victims.loc[victims["victim_safety_eq_1"] == 999, "victim_safety_eq_1"] = np.nan
@@ -2462,7 +2408,7 @@ print("- Creating Victim Safety Equipment 2")
 
 # Recode the victims victim safety equipment 2 (victim_safety_eq_2) to numeric
 victims["victim_safety_eq_2"] = (
-    victims["victim_safety_eq_2"].map(cb["victim_safety_eq_2"]["recode_original"]).fillna(999).astype(int)
+    victims["victim_safety_eq_2"].map(cb["victim_safety_eq_2"]["recode"]).fillna(999).astype(int)
 )
 # Set 999 values to NaN
 victims.loc[victims["victim_safety_eq_2"] == 999, "victim_safety_eq_2"] = np.nan
@@ -2480,7 +2426,7 @@ print("\n10.7. Victim Ejected")
 
 # Recode the victims victim ejected (victim_ejected) to numeric
 victims["victim_ejected"] = (
-    victims["victim_ejected"].map(cb["victim_ejected"]["recode_original"]).fillna(999).astype(int)
+    victims["victim_ejected"].map(cb["victim_ejected"]["recode"]).fillna(999).astype(int)
 )
 # Set 999 values to NaN
 victims.loc[victims["victim_ejected"] == 999, "victim_ejected"] = np.nan
@@ -2799,7 +2745,7 @@ collisions["combined_ind"] = (
 
 # Recode the collisions combined_ind column to numeric
 collisions["combined_ind"] = (
-    collisions["combined_ind"].astype(str).map(cb["combined_ind"]["recode_original"]).fillna(999).astype(int)
+    collisions["combined_ind"].astype(str).map(cb["combined_ind"]["recode"]).fillna(999).astype(int)
 )
 # Set 999 values to NaN
 collisions.loc[collisions["combined_ind"] == 999, "combined_ind"] = np.nan
@@ -2868,8 +2814,8 @@ print("- Define the Dataset Attributes")
 # Crashes Dataframe Attributes
 crashes.attrs = {
     "name": "crashes",
-    "label": "OCSWITRS Crashes Data",
-    "description": f"Dataframe containing the OCSWITRS crashes data ({prj_meta['date_start'].year} - {prj_meta['date_end'].year})",
+    "label": "OCTraffic Crashes Data",
+    "description": f"Dataframe containing the OCTraffic crashes data ({prj_meta['date_start'].year} - {prj_meta['date_end'].year})",
     "version": prj_meta["version"],
     "updated": datetime.date.today().strftime("%m/%d/%Y")
 }
@@ -2877,8 +2823,8 @@ crashes.attrs = {
 # Parties Dataframe Attributes
 parties.attrs = {
     "name": "parties",
-    "label": "OCSWITRS Parties Data",
-    "description": f"Dataframe containing the OCSWITRS parties data ({prj_meta['date_start'].year} - {prj_meta['date_end'].year})",
+    "label": "OCTraffic Parties Data",
+    "description": f"Dataframe containing the OCTraffic parties data ({prj_meta['date_start'].year} - {prj_meta['date_end'].year})",
     "version": prj_meta["version"],
     "updated": datetime.date.today().strftime("%m/%d/%Y")
 }
@@ -2886,8 +2832,8 @@ parties.attrs = {
 # Victims Dataframe Attributes
 victims.attrs = {
     "name": "victims",
-    "label": "OCSWITRS Victims Data",
-    "description": f"Dataframe containing the OCSWITRS victims data ({prj_meta['date_start'].year} - {prj_meta['date_end'].year})",
+    "label": "OCTraffic Victims Data",
+    "description": f"Dataframe containing the OCTraffic victims data ({prj_meta['date_start'].year} - {prj_meta['date_end'].year})",
     "version": prj_meta["version"],
     "updated": datetime.date.today().strftime("%m/%d/%Y")
 }
@@ -2895,8 +2841,8 @@ victims.attrs = {
 # Collisions Dataframe Attributes
 collisions.attrs = {
     "name": "collisions",
-    "label": "OCSWITRS Collisions Data",
-    "description": f"Dataframe containing the OCSWITRS collisions data ({prj_meta['date_start'].year} - {prj_meta['date_end'].year})",
+    "label": "OCTraffic Collisions Data",
+    "description": f"Dataframe containing the OCTraffic collisions data ({prj_meta['date_start'].year} - {prj_meta['date_end'].year})",
     "version": prj_meta["version"],
     "updated": datetime.date.today().strftime("%m/%d/%Y")
 }
@@ -2990,28 +2936,14 @@ latex_vars["victimsCount"] = len_victims_new
 latex_vars["collisionsCount"] = len_collisions_new
 
 # Get the counts of crashes, parties, victims, and collisions by year
-def counts_by_year(df: pd.DataFrame, year: int) -> pd.DataFrame:
-    """
-    Get data counts for a specific year.
-    
-    Args:
-        df (pd.DataFrame): DataFrame containing collision data with a 'date_datetime' column.
-        year (int): The year to filter data by.
-        
-    Returns:
-        int: The number of valid rows in the specified year.
-    """
-    return len(df[df['date_datetime'].dt.year == year].copy())
-
-
 date_field = datetime.datetime.now().strftime("%Y-%m-%d")
 
 # Loop through the years in the project metadata and calculate counts for each year
 for year in prj_meta.get("years", []):
     #print(f"Processing year: {year}")
-    crashes_year = counts_by_year(crashes, year)
-    parties_year = counts_by_year(parties, year)
-    victims_year = counts_by_year(victims, year)
+    crashes_year = ocs.counts_by_year(crashes, year)
+    parties_year = ocs.counts_by_year(parties, year)
+    victims_year = ocs.counts_by_year(victims, year)
     # Update the project metadata with the counts for the year as the geocoded data
     prj_meta["tims"][str(year)]["geocoded"]["crashes"] = crashes_year
     prj_meta["tims"][str(year)]["geocoded"]["parties"] = parties_year
@@ -3075,12 +3007,20 @@ collisions_agp.spatial.project(3857, transformation_name=None)
 
 # Define the path to the raw geodatabase
 gdb_raw = prj_dirs["agp_gdb_raw"]
+gdbmain_raw = prj_dirs["gdbmain_raw"]
+
 
 # Set the location for each spatial data frame
 crashes_agp_location = os.path.join(gdb_raw, "crashes")
 parties_agp_location = os.path.join(gdb_raw, "parties")
 victims_agp_location = os.path.join(gdb_raw, "victims")
 collisions_agp_location = os.path.join(gdb_raw, "collisions")
+
+# Set the location for each spatial data frame in the main geodatabase
+crashes_main_location = os.path.join(gdbmain_raw, "crashes")
+parties_main_location = os.path.join(gdbmain_raw, "parties")
+victims_main_location = os.path.join(gdbmain_raw, "victims")
+collisions_main_location = os.path.join(gdbmain_raw, "collisions")
 
 print("- Exporting the spatial data frames to the geodatabase")
 
@@ -3089,11 +3029,19 @@ print("  - Exporting Crashes data to the geodatabase")
 crashes_agp.spatial.to_featureclass(
     location=crashes_agp_location, overwrite=True, has_z=None, has_m=None, sanitize_columns=False
 )
+# Export the crashes spatial data frame to the main geodatabase
+crashes_agp.spatial.to_featureclass(
+    location=crashes_main_location, overwrite=True, has_z=None, has_m=None, sanitize_columns=False
+)
 
 print("  - Exporting Parties data to the geodatabase")
 # Export the parties spatial data frame to the geodatabase
 parties_agp.spatial.to_featureclass(
     location=parties_agp_location, overwrite=True, has_z=None, has_m=None, sanitize_columns=False
+)
+# Export the parties spatial data frame to the main geodatabase
+parties_agp.spatial.to_featureclass(
+    location=parties_main_location, overwrite=True, has_z=None, has_m=None, sanitize_columns=False
 )
 
 print("  - Exporting Victims data to the geodatabase")
@@ -3101,11 +3049,19 @@ print("  - Exporting Victims data to the geodatabase")
 victims_agp.spatial.to_featureclass(
     location=victims_agp_location, overwrite=True, has_z=None, has_m=None, sanitize_columns=False
 )
+# Export the victims spatial data frame to the main geodatabase
+victims_agp.spatial.to_featureclass(
+    location=victims_main_location, overwrite=True, has_z=None, has_m=None, sanitize_columns=False
+)
 
 print("  - Exporting Collisions data to the geodatabase")
 # Export the collisions spatial data frame to the geodatabase
 collisions_agp.spatial.to_featureclass(
     location=collisions_agp_location, overwrite=True, has_z=None, has_m=None, sanitize_columns=False
+)
+# Export the collisions spatial data frame to the main geodatabase
+collisions_agp.spatial.to_featureclass(
+    location=collisions_main_location, overwrite=True, has_z=None, has_m=None, sanitize_columns=False
 )
 
 
@@ -3175,4 +3131,4 @@ del f
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 print("\nLast Execution:", datetime.date.today().strftime("%Y-%m-%d"))
 print("\nEnd of Script")
-# Last Execution: 2025-10-21
+# Last Execution: 2025-12-25
