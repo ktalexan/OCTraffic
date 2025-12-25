@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Project: OCSWITRS Data Processing
-# Title: Part 0 - Update Metadata for OCSWITRS Datasets
+# Project: OCTraffic Data Processing
+# Title: Part 0 - Update Metadata for OCTraffic Datasets
 # Author: Dr. Kostas Alexandridis, GISP
-# Version: 2025.2, Date: September 2025
+# Version: 2025.2, Date: December 2025
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-print("\nOC SWITRS Data Processing - Part 0: Update Metadata for OCSWITRS Datasets\n")
+print("\nOCTraffic Data Processing - Part 0: Update Metadata for OCTraffic Datasets\n")
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # 1. Preliminaries ----
