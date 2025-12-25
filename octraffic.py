@@ -221,6 +221,7 @@ class octraffic:
             "data_ago": os.path.join(base_path, "data", "ago"),
             "data_archived": os.path.join(base_path, "data", "archived"),
             "data_processed": os.path.join(base_path, "data", "processed"),
+            "data_python": os.path.join(base_path, "data", "python"),
             "data_raw": os.path.join(base_path, "data", "raw"),
             "gis": os.path.join(base_path, "gis"),
             "gis_layers": os.path.join(base_path, "gis", "layers"),

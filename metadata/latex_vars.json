@@ -1,18 +1,18 @@
 {
     "prjVersion": 2025.2,
-    "prjUpdated": "November 05, 2025",
+    "prjUpdated": "December 24, 2025",
     "prjDateWhole": "June 30, 2025",
     "prjDateUs": "06/30/2025",
     "prjMonths": 162,
     "crashesOriginal": 179268,
     "partiesOriginal": 386281,
     "victimsOriginal": 310432,
-    "collisionsOriginal": 458436,
-    "crashesCount": 175647,
-    "partiesCount": 378898,
-    "victimsCount": 304776,
-    "collisionsCount": 449964,
-    "crashesFatalities": 2402,
-    "partiesFatalities": 4931,
-    "victimsFatalities": 4336
+    "collisionsOriginal": 0,
+    "crashesCount": 0,
+    "partiesCount": 0,
+    "victimsCount": 0,
+    "collisionsCount": 0,
+    "crashesFatalities": 0,
+    "partiesFatalities": 0,
+    "victimsFatalities": 0
 }
