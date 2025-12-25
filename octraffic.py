@@ -86,7 +86,7 @@ class octraffic:
         match part:
             case 0:
                 step = "Part 0: TIMS Metadata Update"
-                desc = "Updating the TIMS metadata for the OCSWITRS data processing project."
+                desc = "Updating the TIMS metadata for the OCTraffic data processing project."
             case 1:
                 step = "Part 1: Raw Data Merging"
                 desc = "Merging and verifying the raw SWITRS annual data files into single files."
@@ -95,13 +95,13 @@ class octraffic:
                 desc = "Processing the raw data files into data frames and generating additional variables."
             case 3:
                 step = "Part 3: Time Series Processing"
-                desc = "Generating and processing time series data from OCSWITRS collision data."
+                desc = "Generating and processing time series data from OCTraffic collision data."
             case 4:
                 step = "Part 4: Collision Data Analysis"
                 desc = "Analyzing the collision data and generating graphs and statistics."
             case 5:
                 step = "Part 5: Time Series Analysis"
-                desc = "Analyzing the OCSWITRS time series data and generating graphs and statistics."
+                desc = "Analyzing the OCTraffic time series data and generating graphs and statistics."
             case 6:
                 step = "Part 6: GIS Feature Class Processing"
                 desc = "Processing data frame tabular data into GIS feature classes, and performing geoprocessing operations and analysis."
