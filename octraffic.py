@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Project: OCTraffic Data Processing
-# Title: Create Project Functions
+# Title: Create Project Functions ----
 # Author: Dr. Kostas Alexandridis, GISP
 # Version: 2025.2, Date: 2025-12-24
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# 1. Import necessary libraries ----
+## Import necessary libraries ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 import os, sys, datetime, pickle
 from typing import Union, List, Optional
@@ -24,32 +24,53 @@ import matplotlib.dates as mdates
 from matplotlib.patches import Rectangle
 import codebook.cbl as cbl
 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+## Class containing OCTraffic data processing functions ----
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 class octraffic:
     """
     Class containing OCTraffic data processing functions.
+    Attributes:
+        None
+    Methods:
+        1. project_metadata(self, part: int, version: float, silent: bool = False) -> dict
+        2. export_tims_metadata(self, metadata: dict) -> None
+        3. update_tims_metadata(self, year: int, type: str = "reported", data_counts = None) -> None
+        4. project_directories(self, base_path: str, silent: bool = False) -> dict
+        5. relocate_column(self, df: pd.DataFrame, col_name: Union[str, List[str]], ref_col_name: str, position: str = "after") -> pd.DataFrame
+        6. categorical_series(self, var_series: pd.Series, var_name: str, cb_dict: dict) -> pd.Series
+        7. is_dst(self, dt_series: pd.Series, tz_name: str = "America/Los_Angeles") -> pd.Series
+        8. add_attributes(self, df: pd.DataFrame, cb: dict) -> pd.DataFrame
+        9. save_to_disk(self, dir_list: dict, local_vars: dict = locals(), global_vars: dict = globals()) -> None
+        10. graphics_entry(self, gr_type: int, gr_id: int, gr_attr: dict, gr_list: Optional[dict] = None, gr_dirs: Optional[dict] = None) -> None
+        11. chi2_test(self, df: pd.DataFrame, col1: str, col2: str) -> dict
+        12. chi2_gof_test(self, df: pd.DataFrame, col: str) -> dict
+        13. kruskal_test(self, df: pd.DataFrame, col1: str, col2: str) -> dict
+        14. p_value_display(self, p_value: float) -> str
+        15. create_stl_plot(self, time_series, season, model="additive", label=None, covid=False, robust=True) -> tuple
+    Examples:
+        >>> from octraffic import octraffic
+        >>> ocs = octraffic()
+        >>> ocs.create_stl_plot(time_series, season, model="additive", label=None, covid=False, robust=True)
     """
 
     def __init__(self):
         pass
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    # 2. Project metadata function ----
+    ### 1. Project metadata function ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def project_metadata(self, part: int, version: float, silent: bool = False) -> dict:
         """
         Function to generate project metadata for the OCTraffic data processing project.
-
         Args:
             part (int): The part number of the project.
             version (float): The version number of the project.
             silent (bool): If True, suppresses the print output. Default is False.
-
         Returns:
             metadata (dict): A dictionary containing the project metadata. The dictionary includes: name, title, description, version, author, years, date_start, date_end, date_updated, and TIMS metadata.
-
         Raises:
             ValueError: If part is not an integer, or if version is not numeric.
-
         Example:
             >>> metadata = project_metadata(1, 1.0)
         Notes:
@@ -146,20 +167,21 @@ class octraffic:
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    # 3. Export TIMS Metadata function ----
+    ### 2. Export TIMS Metadata function ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def export_tims_metadata(self, metadata: dict) -> None:
         """
         Exports the TIMS metadata to a JSON file.
-
         Args:
             metadata (dict): The metadata dictionary to export.
-
         Returns:
             None
-
         Raises:
             FileNotFoundError: If the metadata directory does not exist.
+        Example:
+            >>> export_tims_metadata(tims_metadata)
+        Notes:
+            This function exports the TIMS metadata to a JSON file located in the "metadata" directory.
         """
         tims_metadata = {}
         # Check if the metadata is in locals() and is a dictionary
@@ -187,20 +209,85 @@ class octraffic:
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    # 4. Project Directories function ----
+    ### 3. Update TIMS Metadata Function ----
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    def update_tims_metadata(self, year: int, type: str = "reported", data_counts = None) -> None:
+        """
+        Update the TIMS metadata file with the counts of crashes, parties, and victims for a given year and type.
+        Args:
+            year (int): The year for which the metadata is being updated.
+            type (str): The type of data being updated. Valid values are "reported", "geocoded", or "excluded".
+            data_counts (list, optional): A list containing the counts of crashes, parties, and victims.
+        Returns:
+            None
+        Raises:
+            ValueError: If the type is not one of the valid values.
+            FileNotFoundError: If the metadata file does not exist.
+        Example:
+            >>> update_tims_metadata(2024, "reported", [100, 200, 300])
+        Notes:
+            This function updates the TIMS metadata file with the counts of crashes, parties, and victims for a given year and type.
+        """    
+        # Types definition
+        types = ["reported", "geocoded", "excluded"]
+        if type not in types:
+            raise ValueError(f"Invalid type '{type}'. Valid types are: {', '.join(types)}")
+        
+        if data_counts is None:
+            data_counts = [0, 0, 0]  # Default to zero counts for crashes, parties, victims
+        
+        # Check if data_counts is a list of three integers
+        if not isinstance(data_counts, list) or len(data_counts) != 3 or not all(isinstance(x, int) for x in data_counts):
+            raise ValueError("data_counts must be a list of three integers: [crashes, parties, victims]")
+        
+        # Get the counts from the data_counts list
+        count_crashes = data_counts[0]
+        count_parties = data_counts[1]
+        count_victims = data_counts[2]
+
+
+        # Check if the TIMS metadata file exists
+        metadata_file = os.path.join(os.getcwd(), "metadata", "tims_metadata.json")
+        if not os.path.exists(metadata_file):
+            raise FileNotFoundError(f"Metadata file {metadata_file} does not exist.")
+        
+        # Load the TIMS metadata
+        with open(metadata_file, 'r') as f:
+            tims_metadata = json.load(f)
+        
+        # Update the metadata for the specified type
+        if type == "reported":
+            tims_metadata[str(year)]["reported"]["crashes"] = count_crashes
+        elif type == "geocoded":
+            tims_metadata[str(year)]["geocoded"]["parties"] = count_parties
+        elif type == "excluded":
+            tims_metadata[str(year)]["excluded"]["victims"] = count_victims
+        
+        # Save the updated metadata back to the file
+        with open(metadata_file, 'w') as f:
+            json.dump(tims_metadata, f, indent=4)
+        
+        print(f"TIMS metadata for {year} ({type}) updated successfully:\nCrashes: {count_crashes:,}, Parties: {count_parties:,}, Victims: {count_victims:,}")
+
+
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ### 4. Project Directories function ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def project_directories(self, base_path: str, silent: bool = False) -> dict:
         """
         Function to generate project directories for the OCTraffic data processing project.
-
         Args:
             base_path (str): The base path of the project.
-
+            silent (bool): If True, suppresses the print output. Default is False.
         Returns:
             prj_dirs (dict): A dictionary containing the project directories.
-
+        Raises:
+            ValueError: If base_path is not a string.
         Example:
-            >>> prj_dirs = projectDirectories("/path/to/project")
+            >>> prj_dirs = project_directories("/path/to/project")
+        Notes:
+            This function creates a dictionary of project directories based on the base path.
+            The function also checks if the base path exists and raises an error if it does not.
         """
         prj_dirs = {
             "root": base_path,
@@ -247,22 +334,29 @@ class octraffic:
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    # 5. Relocate Dataframe Column Function ----
+    ### 5. Relocate Dataframe Column Function ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def relocate_column(
         self, df: pd.DataFrame, col_name: Union[str, List[str]], ref_col_name: str, position: str = "after"
     ) -> None:
         """
         Relocates a column in a DataFrame to a new position relative to another column.
-
         Args:
             df (pd.DataFrame): The DataFrame to modify.
             col_name (Union[str, List[str]]): The name of the column to relocate.
             ref_col_name (str): The name of the reference column.
-            position (str): "before" or "after" the reference column.
-
+            position (str): "before" or "after" the reference column. Default is "after".
         Returns:
             pd.DataFrame: The modified DataFrame with the relocated column.
+        Raises:
+            ValueError: If the reference column does not exist in the DataFrame.
+            ValueError: If the column names are not strings.
+        Example:
+            >>> df = pd.DataFrame({"A": [1, 2, 3], "B": [4, 5, 6], "C": [7, 8, 9]})
+            >>> relocate_column(df, "C", "B", "after")
+            >>> print(df)
+        Notes:
+            This function relocates a column in a DataFrame to a new position relative to another column.
         """
 
         # Make sure the ref_col_name exists in the DataFrame
@@ -304,30 +398,28 @@ class octraffic:
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    # 6. Categorical Pandas Series function ----
+    ### 6. Categorical Pandas Series function ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def categorical_series(self, var_series: pd.Series, var_name: str, cb_dict: dict) -> pd.Series:
         """
         Function that converts a pandas series to categorical or ordered categorical type.
         Requires importing the 'cbl' module for the variable labels, and the 'CategoricalDtype' from pandas.
-
         Args:
             var_series (pandas series): The data to be converted.
             var_name (str): The name of the series.
             codebook (dict): The codebook containing the variable labels and types.
-
         Returns:
             categoricalSeries (pandas series): The converted series.
-
         Raises:
             TypeError: If var_series is not a pandas series.
             ValueError: If var_name is not a string.
             ValueError: If codebook is not a dictionary.
             ValueError: If var_name is not in the codebook.
             ValueError: If var_type is not 'binary', 'categorical' or 'ordered'.
-
         Example:
             >>> categoricalSeries(dfCrashes["dtWeekDay"], "dtWeekDay", "categorical")
+        Notes:
+            This function converts a pandas series to categorical or ordered categorical type.
         """
 
         # First, check if the series is labeled:
@@ -370,27 +462,25 @@ class octraffic:
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    # 7. Daylight Saving Time function ----
+    ### 7. Determine Daylight Saving Time function ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def is_dst(self, dt_series: pd.Series, tz_name: str = "America/Los_Angeles") -> pd.Series:
         """
         Function to determine if a datetime series is in Daylight Saving Time (DST).
-
         Args:
-            dt_series (pandas series): The datetime series to check.
+            dt_series (pd.Series): The datetime series to check.
             tz_name (str): The timezone name. Default is "America/Los_Angeles".
-
         Returns:
-            dst_result (pandas series): The result of the check.
+            dst_result (pd.Series): The result of the check.
             0 if not in DST, 1 if in DST, -1 if unknown.
-
         Raises:
             ValueError: If dt_series is not a pandas series.
             ValueError: If tz_name is not a string.
             ValueError: If tz_name is not a valid timezone.
-
         Example:
             >>> isDst(dfCrashes["dtCrashDateTime"], "America/Los_Angeles")
+        Notes:
+            This function determines if a datetime series is in Daylight Saving Time (DST).
         """
         try:
             # Convert pandas Series to Python datetime objects with timezone info
@@ -426,18 +516,26 @@ class octraffic:
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    # 8. Add Codebook Attributes Function ----
+    ### 8. Add Codebook Attributes Function ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def add_attributes(self, df: pd.DataFrame, cb: dict) -> pd.DataFrame:
         """
         Adds column attributes to a DataFrame based on a codebook dictionary.
-
         Args:
             df (pd.DataFrame): The DataFrame to modify.
             cb (dict): Codebook dictionary where keys are column names and values are dicts of attributes.
-
         Returns:
             pd.DataFrame: The DataFrame with updated column attributes.
+        Raises:
+            ValueError: If df is not a pandas DataFrame.
+            ValueError: If cb is not a dictionary.
+        Example:
+            >>> df = pd.DataFrame({"A": [1, 2, 3], "B": [4, 5, 6], "C": [7, 8, 9]})
+            >>> cb = {"A": {"var_alias": "Column A", "var_desc": "Description of Column A"}, "B": {"var_alias": "Column B", "var_desc": "Description of Column B"}, "C": {"var_alias": "Column C", "var_desc": "Description of Column C"}}
+            >>> add_attributes(df, cb)
+            >>> print(df)
+        Notes:
+            This function adds column attributes to a DataFrame based on a codebook dictionary.
         """
         for cname in df.columns:
             if cname in cb:
@@ -459,25 +557,23 @@ class octraffic:
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    # 9. Save to Disk Function ----
+    ### 9. Save to Disk Function ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def save_to_disk(self, dir_list: dict, local_vars: dict = locals(), global_vars: dict = globals()) -> None:
         """
         Save the data frames, codebook, and graphics list to disk.
-
         Args:
             dir_list (dict): A dictionary containing project directories.
             local_vars (dict): A dictionary containing local variables. Default is locals().
             global_vars (dict): A dictionary containing global variables. Default is globals().
-
         Returns:
             None
-
         Raises:
             FileNotFoundError: If the specified directories do not exist.
-
         Example:
             >>> save_to_disk(prj_dirs)
+        Notes:
+            This function saves the data frames, codebook, and graphics list to disk.
         """
 
         print("1. Saving the data frames to disk")
@@ -564,31 +660,29 @@ class octraffic:
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    # 10. Graphics Entry Function ----
+    ### 10. Graphics Entry Function ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def graphics_entry(
         self, gr_type: int, gr_id: int, gr_attr: dict, gr_list: Optional[dict] = None, gr_dirs: Optional[dict] = None
     ) -> dict:
         """
         Adds a table or graphic entry to the specified list.
-
         Args:
             gr_type (int): The type of entry (1 = Table, 2 = Graphic).
             gr_id (int): The entry id.
             gr_attr (dict): A dictionary of attributes for the entry.
             gr_list (dict): The dictionary to add the entry to. Should have 'tables' and 'graphics' keys.
             gr_dirs (dict, optional): Project directories, required for graphics.
-
         Returns:
             dict: The updated list_name dictionary.
-
         Raises:
             ValueError: If entry_type is not 1 or 2.
-
         Examples:
             >>> tables_graphics = {"tables": [], "graphics": []}
             >>> attr = {"name": "Summary", "description": "desc", "caption": "cap", "method": "describe", "fileFormat": "csv", "file": "summary.csv", "status": "draft"}
             >>> graphics_entry(tables_graphics, 1, 1, attr)
+        Notes:
+            This function adds a table or graphic entry to the specified list.
         """
         # Check if the gr_list is empty or not
         if not gr_list or not isinstance(gr_list, dict):
@@ -687,19 +781,25 @@ class octraffic:
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    # 11. Chi-squared Independence Test Function ----
+    ### 11. Chi-squared Independence Test Function ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def chi2_test(self, df: pd.DataFrame, col1: str, col2: str) -> dict:
         """
         Perform a Chi-squared test of independence on two categorical variables.
-
         Args:
             df (pd.DataFrame): The DataFrame containing the data.
             col1 (str): The name of the first categorical column.
             col2 (str): The name of the second categorical column.
-
         Returns:
-            float: The p-value from the Chi-squared test.
+            dict: A dictionary containing the test name, statistic, p-value, p-value display, and number of observations.
+        Raises:
+            ValueError: If df is not a pandas DataFrame.
+            ValueError: If col1 or col2 is not a string.
+        Example:
+            >>> df = pd.DataFrame({"A": [1, 2, 3], "B": [4, 5, 6], "C": [7, 8, 9]})
+            >>> chi2_test(df, "A", "B")
+        Notes:
+            This function performs a Chi-squared test of independence on two categorical variables.
         """
         contingency_table = pd.crosstab(df[col1], df[col2])
         test = stats.chi2_contingency(contingency_table)
@@ -712,7 +812,7 @@ class octraffic:
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    # 12. Chi-squared Goodness-of-fit Function ----
+    ### 12. Chi-squared Goodness-of-fit Function ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def chi2_gof_test(self, df: pd.DataFrame, col: str) -> dict:
         """
@@ -721,7 +821,15 @@ class octraffic:
             df (pd.DataFrame): The DataFrame containing the data.
             col (str): The name of the categorical column.
         Returns:
-            float: The p-value from the Chi-squared test.
+            dict: A dictionary containing the test name, statistic, p-value, p-value display, and number of observations.
+        Raises:
+            ValueError: If df is not a pandas DataFrame.
+            ValueError: If col is not a string.
+        Example:
+            >>> df = pd.DataFrame({"A": [1, 2, 3], "B": [4, 5, 6], "C": [7, 8, 9]})
+            >>> chi2_gof_test(df, "A")
+        Notes:
+            This function performs a Chi-squared Goodness-of-Fit test on a categorical variable.
         """
         # Create observed and expected counts for the df[col] column
         observed = df[col].value_counts().values
@@ -736,27 +844,25 @@ class octraffic:
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    # 13. Kruskal-Wallis H-test Function ----
+    ### 13. Kruskal-Wallis H-test Function ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def kruskal_test(self, df: pd.DataFrame, col1: str, col2: str) -> dict:
         """
         Perform a Kruskal-Wallis H-test for independent samples on VictimCount grouped by Severity.
-
         Args:
             df (pd.DataFrame): The DataFrame containing 'victim_count' and 'severity' columns.
             col1 (str): The name of the column containing the values to compare (e.g., 'victim_count').
             col2 (str): The name of the column containing the grouping variable (e.g., 'severity').
-
         Returns:
-            float: The p-value from the Kruskal-Wallis test.
-            str: Formatted p-value string.
-
+            dict: A dictionary containing the test name, statistic, p-value, p-value display, and number of observations.
         Raises:
+            ValueError: If df is not a pandas DataFrame.
+            ValueError: If col1 or col2 is not a string.
             KeyError: If required columns are missing.
-
         Examples:
-            >>> kruskal_test_victim_count_severity(df3)
-            (0.034, '<0.05')
+            >>> kruskal_test(df, "victim_count", "severity")
+        Notes:
+            This function performs a Kruskal-Wallis H-test for independent samples on VictimCount grouped by Severity.
         """
         groups = [group[col1].values for name, group in df.groupby(col2, observed=True)]
         test = stats.kruskal(*groups)
@@ -769,18 +875,17 @@ class octraffic:
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    # 14. P-Value Display Function ----
+    ### 14. P-Value Display Function ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def p_value_display(self, p_value: float) -> str:
         """
         Displays the p-value in a readable format.
-
         Args:
             p_value (float): The p-value to display.
-
         Returns:
             str: Formatted p-value string.
-
+        Raises:
+            ValueError: If p_value is not a float.
         Examples:
             >>> p_value_display_v2(0.0005)
             '<0.001'
@@ -790,6 +895,8 @@ class octraffic:
             '<0.05'
             >>> p_value_display_v2(0.08)
             '0.08'
+        Notes:
+            This function displays the p-value in a readable format.
         """
         if p_value < 0.001:
             return "<0.001"
@@ -802,12 +909,11 @@ class octraffic:
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    # 15. Create STL Plot Function ----
+    ### 15. Create STL Plot Function ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    def create_stl_plot(self, time_series, season, model="additive", label=None, covid=False, robust=True):
+    def create_stl_plot(self, time_series, season, model="additive", label=None, covid=False, robust=True) -> tuple:
         """
         Create a Seasonal-Trend decomposition using LOESS (STL).
-
         Args:
             time_series (pandas.Series): Time series data with DatetimeIndex
             season (str): The periodicity of the data (quarterly, monthly, weekly, daily)
@@ -815,15 +921,14 @@ class octraffic:
             label (str): Label for the time series (optional)
             covid (bool): Whether to show COVID-19 period annotation (March 2020 - March 2022)
             robust (bool): Whether to use the robust estimation (helps with outliers)
-
         Returns:
             tuple: (decomposition_result, figure)
-
         Raises:
             ValueError: If season is not one of the specified options.
-
         Example:
             >>> decomposition, fig = create_stl_plot(ts, 'monthly', robust=True)
+        Notes:
+            This function creates a Seasonal-Trend decomposition using LOESS (STL).
         """
         # Check the seasonality and set the period and model accordingly
         period = None
@@ -980,64 +1085,8 @@ class octraffic:
         return decomposition, fig
 
 
-    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    # 16. Export TIMS Metadata Function ----
-    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    def update_tims_metadata(self, year: int, type: str = "reported", data_counts = None):
-        """
-        Update the TIMS metadata file with the counts of crashes, parties, and victims for a given year and type.
-        Args:
-            year (int): The year for which the metadata is being updated.
-            type (str): The type of data being updated. Valid values are "reported", "geocoded", or "excluded".
-            data_counts (list, optional): A list containing the counts of crashes, parties, and victims.
-        Returns:
-            None
-        Raises:
-            ValueError: If the type is not one of the valid values.
-            FileNotFoundError: If the metadata file does not exist.
-        """    
-        # Types definition
-        types = ["reported", "geocoded", "excluded"]
-        if type not in types:
-            raise ValueError(f"Invalid type '{type}'. Valid types are: {', '.join(types)}")
-        
-        if data_counts is None:
-            data_counts = [0, 0, 0]  # Default to zero counts for crashes, parties, victims
-        
-        # Check if data_counts is a list of three integers
-        if not isinstance(data_counts, list) or len(data_counts) != 3 or not all(isinstance(x, int) for x in data_counts):
-            raise ValueError("data_counts must be a list of three integers: [crashes, parties, victims]")
-        
-        # Get the counts from the data_counts list
-        count_crashes = data_counts[0]
-        count_parties = data_counts[1]
-        count_victims = data_counts[2]
-
-
-        # Check if the TIMS metadata file exists
-        metadata_file = os.path.join(os.getcwd(), "metadata", "tims_metadata.json")
-        if not os.path.exists(metadata_file):
-            raise FileNotFoundError(f"Metadata file {metadata_file} does not exist.")
-        
-        # Load the TIMS metadata
-        with open(metadata_file, 'r') as f:
-            tims_metadata = json.load(f)
-        
-        # Update the metadata for the specified type
-        if type == "reported":
-            tims_metadata[str(year)]["reported"]["crashes"] = count_crashes
-        elif type == "geocoded":
-            tims_metadata[str(year)]["geocoded"]["parties"] = count_parties
-        elif type == "excluded":
-            tims_metadata[str(year)]["excluded"]["victims"] = count_victims
-        
-        # Save the updated metadata back to the file
-        with open(metadata_file, 'w') as f:
-            json.dump(tims_metadata, f, indent=4)
-        
-        print(f"TIMS metadata for {year} ({type}) updated successfully:\nCrashes: {count_crashes:,}, Parties: {count_parties:,}, Victims: {count_victims:,}")
-
-
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # End of File ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+if __name__ == "__main__":
+    pass
