@@ -2137,7 +2137,7 @@ class octraffic:
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ## 29. Set Layer Time ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    def set_layer_time(self, layer:arcpy.mapping.Layer) -> None:
+    def set_layer_time(self, layer) -> None:
         """
         Set the time properties for a layer in the map.
         Args:

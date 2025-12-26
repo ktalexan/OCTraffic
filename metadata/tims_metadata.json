@@ -365,14 +365,14 @@
             "victims": 18708
         },
         "geocoded": {
-            "crashes": 12239,
-            "parties": 25985,
-            "victims": 17980
+            "crashes": 12384,
+            "parties": 26289,
+            "victims": 18231
         },
         "excluded": {
-            "crashes": 314,
-            "parties": 602,
-            "victims": 464
+            "crashes": 319,
+            "parties": 612,
+            "victims": 477
         },
         "notes": "Provisional Data in TIMS (updated on December 2025)"
     },
@@ -394,14 +394,14 @@
             "victims": 12413
         },
         "geocoded": {
-            "crashes": 5281,
-            "parties": 11144,
-            "victims": 7676
+            "crashes": 8247,
+            "parties": 17407,
+            "victims": 12048
         },
         "excluded": {
-            "crashes": 170,
-            "parties": 333,
-            "victims": 246
+            "crashes": 256,
+            "parties": 510,
+            "victims": 365
         },
         "notes": "Provisional Data in TIMS (updated on December 2025)"
     }

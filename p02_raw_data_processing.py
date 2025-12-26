@@ -3096,10 +3096,10 @@ print("\n14. Final Column Processing")
 
 # Create a dictionary with the processed columns for each dataset (as per the codebook)
 proc_cols = {
-    "crashes": [col for col in crashes.columns if cb[col]["in_crashes"] == 1],
-    "parties": [col for col in parties.columns if cb[col]["in_parties"] == 1],
-    "victims": [col for col in victims.columns if cb[col]["in_victims"] == 1],
-    "collisions": [col for col in collisions.columns if cb[col]["in_collisions"] == 1],
+    "crashes": [col for col in crashes.columns if cb[col]["fc"]["crashes"] == 1],
+    "parties": [col for col in parties.columns if cb[col]["fc"]["parties"] == 1],
+    "victims": [col for col in victims.columns if cb[col]["fc"]["victims"] == 1],
+    "collisions": [col for col in collisions.columns if cb[col]["fc"]["collisions"] == 1],
 }
 
 # Export the processed columns to a JSON file
@@ -3130,4 +3130,4 @@ del f
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 print("\nLast Execution:", datetime.date.today().strftime("%Y-%m-%d"))
 print("\nEnd of Script")
-# Last Execution: 2025-12-25
+# Last Execution: 2025-12-26
