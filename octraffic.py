@@ -10,19 +10,23 @@
 # Import necessary libraries ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 import os, sys, datetime, pickle
+import textwrap
 from typing import Union, List, Optional
 import json, pytz
 import pandas as pd
 from pandas.api.types import CategoricalDtype
 import numpy as np
-import scipy.stats as stats
+from scipy import stats
 import statsmodels.api as sm
+from statsmodels.nonparametric.smoothers_lowess import lowess
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FuncFormatter, MultipleLocator
 import matplotlib.dates as mdates
-from matplotlib.patches import Rectangle
+from matplotlib.patches import Rectangle, Patch
+import seaborn as sns
 import codebook.cbl as cbl
 import arcpy
+
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
