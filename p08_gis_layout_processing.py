@@ -136,63 +136,6 @@ df_cb.attrs["name"] = "Codebook"
 print(df_cb.head())
 
 
-### JSON CIM Exports ----
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-print("\n- JSON CIM Exports")
-
-# Creating a function to export the CIM JSON files to disk.
-def export_cim(cim_type, cim_object, cim_name):
-    """Export a CIM object to a file in both native (MAPX, PAGX, LYRX) and JSON CIM formats."""
-    match cim_type:
-        # When the CIM object is a map
-        case "map":
-            # Export the CIM object to a MAPX file
-            print(f"Exporting {cim_name} map to MAPX...")
-            cim_object.exportToMAPX(os.path.join(prj_dirs.get("maps"), cim_name + ".mapx"))
-            print(arcpy.GetMessages())
-            # Export the CIM object to a JSON file
-            print(f"Exporting {cim_name} map to JSON...\n")
-            with open(os.path.join(prj_dirs.get("maps"), cim_name + ".mapx"), "r", encoding = "utf-8") as f:
-                data = f.read()
-            with open(os.path.join(prj_dirs.get("maps"), cim_name + ".json"), "w", encoding = "utf-8") as f:
-                f.write(data)
-        # When the CIM object is a layout
-        case "layout":
-            # Export the CIM object to a PAGX file
-            print(f"Exporting {cim_name} layout to PAGX...")
-            cim_object.exportToPAGX(os.path.join(prj_dirs.get("layouts"), cim_name + ".pagx"))
-            print(arcpy.GetMessages())
-            # Export the CIM object to a JSON file
-            print(f"Exporting {cim_name} layout to JSON...\n")
-            with open(os.path.join(prj_dirs.get("layouts"), cim_name + ".pagx"), "r", encoding = "utf-8") as f:
-                data = f.read()
-            with open(os.path.join(prj_dirs.get("layouts"), cim_name + ".json"), "w", encoding = "utf-8") as f:
-                f.write(data)
-        # When the CIM object is a layer
-        case "layer":
-            # Export the CIM object to a LYRX file
-            print(f"Exporting {cim_name} layer to LYRX...")
-            # Reformat the name of the output file
-            cim_new_name = "default_layer_name"  # Initialize cim_new_name with a default value
-            for m in aprx.listMaps():
-                for l in m.listLayers():
-                    if l == cim_object:
-                        cim_new_name = (
-                            m.name.title() + "Map-" + l.name.replace("OCTraffic ", "")
-                        )
-            # Save the layer to a LYRX file
-            arcpy.management.SaveToLayerFile(
-                cim_object, os.path.join(prj_dirs.get("layers"), cim_new_name + ".lyrx")
-            )
-            print(arcpy.GetMessages())
-            # Export the CIM object to a JSON file
-            print(f"Exporting {cim_name} layer to JSON...\n")
-            with open(os.path.join(prj_dirs.get("layers"), cim_new_name + ".lyrx"), "r", encoding = "utf-8") as f:
-                data = f.read()
-            with open(os.path.join(prj_dirs.get("layers"), cim_new_name + ".json"), "w", encoding = "utf-8") as f:
-                f.write(data)
-
-
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ## 1.3. ArcGIS Pro Workspace ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -855,298 +798,16 @@ print("- Layout Configuration")
 # - Dual map frames: 12 x 4 inches (landscape) (two 6 x 4 inches frames)
 # - Four map frames: 12 x 8 inches (landscape) (four 6 x 4 inches frames)
 
-# Function to setup layout configuration
-def layout_configuration(nmf):
-    # Match the number of map frames in layout
-    lyt_config = {}
-    # Set the layout configuration based on the number of map frames
-    match nmf:
-        case 1:
-            lyt_config = {
-                "page_width": 11.0,
-                "page_height": 8.5,
-                "page_units": "INCH",
-                "rows": 1,
-                "cols": 1,
-                "nmf": 1,
-                "mf1": {
-                    "coords": [(0.0, 8.5), (11.0, 8.5), (0.0, 0.0), (11.0, 0.0)],
-                    "width": 11.0,
-                    "height": 8.5,
-                    "anchor": "BOTTOM_LEFT_CORNER",
-                    "coordX": 0.0,
-                    "coordY": 0.0,
-                    "geometry": arcpy.Point(0.0, 0.0),
-                },
-                "t1": {
-                    "width": 1.9184,
-                    "height": 0.3414,
-                    "anchor": "TOP_LEFT_CORNER",
-                    "coordX": 0.25,
-                    "coordY": 8.25,
-                    "geometry": arcpy.Point(0.25, 8.25),
-                },
-                "na": {
-                    "width": 0.3606,
-                    "height": 0.75,
-                    "anchor": "BOTTOM_RIGHT_CORNER",
-                    "coordX": 10.75,
-                    "coordY": 0.25,
-                    "geometry": arcpy.Point(10.75, 0.25),
-                },
-                "sb": {
-                    "width": 4.5,
-                    "height": 0.5,
-                    "anchor": "BOTTOM_MID_POINT",
-                    "coordX": 5.5,
-                    "coordY": 0.25,
-                    "geometry": arcpy.Point(5.5, 0.25),
-                },
-                "cr": {
-                    "width": 0.0,
-                    "height": 0.0,
-                    "anchor": "BOTTOM_LEFT_CORNER",
-                    "coordX": 0.0,
-                    "coordY": 0.0,
-                    "geometry": arcpy.Point(0.0, 0.0),
-                },
-                "lg1": {
-                    "width": 4.5,
-                    "height": 2.0,
-                    "anchor": "BOTTOM_LEFT_CORNER",
-                    "coordX": 0.25,
-                    "coordY": 0.25,
-                    "geometry": arcpy.Point(0.25, 0.25),
-                },
-            }
-        case 2:
-            lyt_config = {
-                "page_width": 22.0,
-                "page_height": 8.5,
-                "page_units": "INCH",
-                "rows": 1,
-                "cols": 2,
-                "nmf": 2,
-                "mf1": {
-                    "coords": [(0.0, 8.5), (11.0, 8.5), (0.0, 0.0), (11.0, 0.0)],
-                    "width": 11.0,
-                    "height": 8.5,
-                    "anchor": "BOTTOM_LEFT_CORNER",
-                    "coordX": 0.0,
-                    "coordY": 0.0,
-                    "geometry": arcpy.Point(0.0, 0.0),
-                },
-                "mf2": {
-                    "coords": [(11.0, 8.5), (22.0, 8.5), (11.0, 0.0), (22.0, 0.0)],
-                    "width": 11.0,
-                    "height": 8.5,
-                    "anchor": "BOTTOM_LEFT_CORNER",
-                    "coordX": 11.0,
-                    "coordY": 0.0,
-                    "geometry": arcpy.Point(11.0, 0.0),
-                },
-                "t1": {
-                    "width": 1.9184,
-                    "height": 0.3414,
-                    "anchor": "TOP_LEFT_CORNER",
-                    "coordX": 0.25,
-                    "coordY": 8.25,
-                    "geometry": arcpy.Point(0.25, 8.25),
-                },
-                "t2": {
-                    "width": 1.9184,
-                    "height": 0.3414,
-                    "anchor": "TOP_LEFT_CORNER",
-                    "coordX": 11.25,
-                    "coordY": 8.25,
-                    "geometry": arcpy.Point(11.25, 8.25),
-                },
-                "na": {
-                    "width": 0.3606,
-                    "height": 0.75,
-                    "anchor": "BOTTOM_RIGHT_CORNER",
-                    "coordX": 21.75,
-                    "coordY": 0.25,
-                    "geometry": arcpy.Point(21.75, 0.25),
-                },
-                "sb": {
-                    "width": 4.5,
-                    "height": 0.5,
-                    "anchor": "BOTTOM_MID_POINT",
-                    "coordX": 16.5,
-                    "coordY": 0.25,
-                    "geometry": arcpy.Point(16.5, 0.25),
-                },
-                "cr": {
-                    "width": 0.0,
-                    "height": 0.0,
-                    "anchor": "BOTTOM_LEFT_CORNER",
-                    "coordX": 0.0,
-                    "coordY": 0.0,
-                    "geometry": arcpy.Point(0.0, 0.0),
-                },
-                "lg1": {
-                    "width": 4.5,
-                    "height": 2.0,
-                    "anchor": "BOTTOM_LEFT_CORNER",
-                    "coordX": 0.25,
-                    "coordY": 0.25,
-                    "geometry": arcpy.Point(0.25, 0.25),
-                },
-                "lg2": {
-                    "width": 4.5,
-                    "height": 2.0,
-                    "anchor": "BOTTOM_LEFT_CORNER",
-                    "coordX": 11.25,
-                    "coordY": 0.25,
-                    "geometry": arcpy.Point(11.25, 0.25),
-                },
-            }
-        case 4:
-            lyt_config = {
-                "page_width": 22.0,
-                "page_height": 17.0,
-                "page_units": "INCH",
-                "rows": 2,
-                "cols": 2,
-                "nmf": 4,
-                "mf1": {
-                    "coords": [(0.0, 17.0), (11.0, 17.0), (0.0, 8.5), (11.0, 8.5)],
-                    "width": 11.0,
-                    "height": 8.5,
-                    "anchor": "BOTTOM_LEFT_CORNER",
-                    "coordX": 0.0,
-                    "coordY": 8.5,
-                    "geometry": arcpy.Point(0.0, 8.5),
-                },
-                "mf2": {
-                    "coords": [(11.0, 17.0), (22.0, 17.0), (11.0, 8.5), (22.0, 8.5)],
-                    "width": 11.0,
-                    "height": 8.5,
-                    "anchor": "BOTTOM_LEFT_CORNER",
-                    "coordX": 11.0,
-                    "coordY": 8.5,
-                    "geometry": arcpy.Point(11.0, 8.5),
-                },
-                "mf3": {
-                    "coords": [(0.0, 8.5), (11.0, 8.5), (0.0, 0.0), (11.0, 0.0)],
-                    "width": 11.0,
-                    "height": 8.5,
-                    "anchor": "BOTTOM_LEFT_CORNER",
-                    "coordX": 0.0,
-                    "coordY": 0.0,
-                    "geometry": arcpy.Point(0.0, 0.0),
-                },
-                "mf4": {
-                    "coords": [(11.0, 8.5), (22.0, 8.5), (11.0, 0.0), (22.0, 0.0)],
-                    "width": 11.0,
-                    "height": 8.5,
-                    "anchor": "BOTTOM_LEFT_CORNER",
-                    "coordX": 11.0,
-                    "coordY": 0.0,
-                    "geometry": arcpy.Point(11.0, 0.0),
-                },
-                "t1": {
-                    "width": 1.9184,
-                    "height": 0.3414,
-                    "anchor": "TOP_LEFT_CORNER",
-                    "coordX": 0.25,
-                    "coordY": 16.75,
-                    "geometry": arcpy.Point(0.25, 16.75),
-                },
-                "t2": {
-                    "width": 1.9184,
-                    "height": 0.3414,
-                    "anchor": "TOP_LEFT_CORNER",
-                    "coordX": 11.25,
-                    "coordY": 16.75,
-                    "geometry": arcpy.Point(11.25, 16.75),
-                },
-                "t3": {
-                    "width": 1.9184,
-                    "height": 0.3414,
-                    "anchor": "TOP_LEFT_CORNER",
-                    "coordX": 0.25,
-                    "coordY": 8.25,
-                    "geometry": arcpy.Point(0.25, 8.25),
-                },
-                "t4": {
-                    "width": 1.9184,
-                    "height": 0.3414,
-                    "anchor": "TOP_LEFT_CORNER",
-                    "coordX": 11.25,
-                    "coordY": 8.25,
-                    "geometry": arcpy.Point(11.25, 8.25),
-                },
-                "na": {
-                    "width": 0.3606,
-                    "height": 0.75,
-                    "anchor": "BOTTOM_RIGHT_CORNER",
-                    "coordX": 21.75,
-                    "coordY": 0.25,
-                    "geometry": arcpy.Point(21.75, 0.25),
-                },
-                "sb": {
-                    "width": 4.5,
-                    "height": 0.5,
-                    "anchor": "BOTTOM_MID_POINT",
-                    "coordX": 16.75,
-                    "coordY": 0.25,
-                    "geometry": arcpy.Point(16.75, 0.25),
-                },
-                "cr": {
-                    "width": 0.5,
-                    "height": 0.5,
-                    "anchor": "BOTTOM_LEFT_CORNER",
-                    "coordX": 0.0,
-                    "coordY": 0.0,
-                    "geometry": arcpy.Point(0.0, 0.0),
-                },
-                "lg1": {
-                    "width": 4.5,
-                    "height": 2.0,
-                    "anchor": "BOTTOM_LEFT_CORNER",
-                    "coordX": 0.25,
-                    "coordY": 8.75,
-                    "geometry": arcpy.Point(0.25, 8.75),
-                },
-                "lg2": {
-                    "width": 4.5,
-                    "height": 2.0,
-                    "anchor": "BOTTOM_LEFT_CORNER",
-                    "coordX": 11.25,
-                    "coordY": 8.75,
-                    "geometry": arcpy.Point(11.25, 8.75),
-                },
-                "lg3": {
-                    "width": 4.5,
-                    "height": 2.0,
-                    "anchor": "BOTTOM_LEFT_CORNER",
-                    "coordX": 0.25,
-                    "coordY": 0.25,
-                    "geometry": arcpy.Point(0.25, 0.25),
-                },
-                "lg4": {
-                    "width": 4.5,
-                    "height": 2.0,
-                    "anchor": "BOTTOM_LEFT_CORNER",
-                    "coordX": 11.25,
-                    "coordY": 0.25,
-                    "geometry": arcpy.Point(11.25, 0.25),
-                },
-            }
-    return lyt_config
-
 # Apply the layout configuration to all layouts
 
 # Define layout configurations for each map
-maps_lyt_config = layout_configuration(4)
-injuries_lyt_config = layout_configuration(2)
-hotspots_lyt_config = layout_configuration(4)
-roads_lyt_config = layout_configuration(4)
-points_lyt_config = layout_configuration(2)
-densities_lyt_config = layout_configuration(2)
-areas_lyt_config = layout_configuration(2)
+maps_lyt_config = ocs.layout_configuration(4)
+injuries_lyt_config = ocs.layout_configuration(2)
+hotspots_lyt_config = ocs.layout_configuration(4)
+roads_lyt_config = ocs.layout_configuration(4)
+points_lyt_config = ocs.layout_configuration(2)
+densities_lyt_config = ocs.layout_configuration(2)
+areas_lyt_config = ocs.layout_configuration(2)
 
 # Add the layout configurations to a new dictionary
 lyt_dict = {
@@ -1938,7 +1599,7 @@ print("\n3.8. Export Maps Layout")
 # Get maps layout CIM
 maps_layout_cim = maps_layout.getDefinition("V3")  # Maps layout CIM
 # Export maps layout to disk
-export_cim("layout", maps_layout, maps_layout.name)
+ocs.export_cim("layout", maps_layout, maps_layout.name)
 
 
 ### Export Layout Image ----
@@ -2419,7 +2080,7 @@ print("\n4.8. Export Injuries Layout")
 injuries_layout_cim = injuries_layout.getDefinition("V3")  # Injuries layout CIM
 
 # Export injuries layout to disk
-export_cim("layout", injuries_layout, injuries_layout.name)
+ocs.export_cim("layout", injuries_layout, injuries_layout.name)
 
 
 ### Export Layout Image ----
@@ -3044,7 +2705,7 @@ print("\n5.8. Export Hotspots Layout")
 # Get hotspots layout CIM
 hotspots_layout_cim = hotspots_layout.getDefinition("V3")  # Find Hotspots layout CIM
 # Export hotspots layout to disk
-export_cim("layout", hotspots_layout, hotspots_layout.name)
+ocs.export_cim("layout", hotspots_layout, hotspots_layout.name)
 
 
 ### Export Layout Image ----
@@ -3711,7 +3372,7 @@ print("\n6.8. Export Road Hotspots Layout")
 roads_layout_cim = roads_layout.getDefinition("V3")  # Roads layout CIM
 
 # Export roads layout to disk
-export_cim("layout", roads_layout, roads_layout.name)
+ocs.export_cim("layout", roads_layout, roads_layout.name)
 
 
 ### Export Layout Image ----
@@ -4166,7 +3827,7 @@ print("\n7.8. Export Points Hotspots Layout")
 points_layout_cim = points_layout.getDefinition("V3")  # Points layout CIM
 
 # Export points layout to disk
-export_cim("layout", points_layout, points_layout.name)
+ocs.export_cim("layout", points_layout, points_layout.name)
 
 
 ### Export Layout Image ----
@@ -4620,7 +4281,7 @@ print("\n8.8. Export Densities Layout")
 densities_layout_cim = densities_layout.getDefinition("V3")  # Density layout CIM
 
 # Export densities layout to disk
-export_cim("layout", densities_layout, densities_layout.name)
+ocs.export_cim("layout", densities_layout, densities_layout.name)
 
 
 ### Export Layout Image ----
@@ -5073,7 +4734,7 @@ print("\n9.8. Export City Areas Layout")
 areas_layout_cim = areas_layout.getDefinition("V3")  # Areas layout CIM
 
 # Export city areas layout to disk
-export_cim("layout", areas_layout, areas_layout.name)
+ocs.export_cim("layout", areas_layout, areas_layout.name)
 
 
 ### Export Layout Image ----
@@ -5263,7 +4924,7 @@ print("- Layout CIM")
 maps_layout_cim = maps_layout.getDefinition("V3")
 
 # Export the layout CIM to disk
-export_cim("layout", maps_layout, maps_layout.name)
+ocs.export_cim("layout", maps_layout, maps_layout.name)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -5402,7 +5063,7 @@ print("- Layout CIM")
 injuries_layout_cim = injuries_layout.getDefinition("V3")
 
 # Export the layout CIM to disk
-export_cim("layout", injuries_layout, injuries_layout.name)
+ocs.export_cim("layout", injuries_layout, injuries_layout.name)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -5561,7 +5222,7 @@ print("- Layout CIM")
 hotspots_layout_cim = hotspots_layout.getDefinition("V3")
 
 # Export the layout CIM to disk
-export_cim("layout", hotspots_layout, hotspots_layout.name)
+ocs.export_cim("layout", hotspots_layout, hotspots_layout.name)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -5711,7 +5372,7 @@ print("- Layout CIM")
 roads_layout_cim = roads_layout.getDefinition("V3")
 
 # Export the layout CIM to disk
-export_cim("layout", roads_layout, roads_layout.name)
+ocs.export_cim("layout", roads_layout, roads_layout.name)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -5848,7 +5509,7 @@ print("- Layout CIM")
 points_layout_cim = points_layout.getDefinition("V3")
 
 # Export the layout CIM to disk
-export_cim("layout", points_layout, points_layout.name)
+ocs.export_cim("layout", points_layout, points_layout.name)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -5987,7 +5648,7 @@ print("- Layout CIM")
 densities_layout_cim = densities_layout.getDefinition("V3")
 
 # Export the layout CIM to disk
-export_cim("layout", densities_layout, densities_layout.name)
+ocs.export_cim("layout", densities_layout, densities_layout.name)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -6116,7 +5777,7 @@ print("- Layout CIM")
 areas_layout_cim = areas_layout.getDefinition("V3")
 
 # Export the layout CIM to disk
-export_cim("layout", areas_layout, areas_layout.name)
+ocs.export_cim("layout", areas_layout, areas_layout.name)
 
 
 ### Save Project ----

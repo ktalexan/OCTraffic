@@ -22,6 +22,8 @@ from matplotlib.ticker import FuncFormatter, MultipleLocator
 import matplotlib.dates as mdates
 from matplotlib.patches import Rectangle
 import codebook.cbl as cbl
+import arcpy
+
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Class containing OCTraffic data processing functions ----
@@ -56,6 +58,12 @@ class octraffic:
         22. plot_collision_type_bar(self, df: pd.DataFrame, fig: matplotlib.figure.Figure=None, ax: matplotlib.axes.Axes=None) -> tuple
         23. plot_fatalities_by_type_and_year(self, df: pd.DataFrame, fig: matplotlib.figure.Figure=None, ax: matplotlib.axes.Axes=None) -> tuple
         24. compute_monthly_stats(self, ts_month: pd.DataFrame) -> pd.DataFrame
+        25. create_monthly_fatalities_figure(self, ts_month: pd.DataFrame) -> tuple
+        26. create_victims_severity_plot(self,data: pd.DataFrame, save_path: str = None, show_plot: bool = True) -> tuple
+        27. create_age_pyramid_plot(self, collisions: pd.DataFrame) -> tuple
+        28. export_cim(self, cim_type: str, cim_object: object, cim_name: str) -> None
+        29. set_layer_time(self, layer: arcpy.mapping.Layer) -> None
+        30. layout_configuration(self, nmf: int) -> dict
     Examples:
         >>> from octraffic import octraffic
         >>> ocs = octraffic()
@@ -1600,6 +1608,868 @@ class octraffic:
         return desc
 
     
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ## 25. Create monthly fatalities figure ----
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    def create_monthly_fatalities_figure(self, ts_month: pd.DataFrame) -> tuple:
+        """
+        Creates a time series plot of monthly fatal crashes with LOESS smoothing and CI.
+        Args:
+            ts_month (pd.DataFrame): DataFrame containing monthly time series data with crashes
+        Returns:
+            fig, ax: The figure and axes objects for further customization if needed
+        Raises:
+            ValueError: If the input data is not in the expected format
+        Example:
+            >>> fig, ax = create_monthly_fatalities_figure(ts_month)
+            >>> fig.show()
+            >>> ax.show()
+        Notes:
+            This function creates a time series plot of monthly fatal crashes with LOESS smoothing and CI.
+        """
+        # Define the time series data for Figure 4 (monthly number of killed victims)
+        fig4_data = ts_month["crashes"][["date_month", "number_killed_sum"]]
+        fig4_data.columns = ["time", "fatalities"]
+
+        # Create the time series overlay plot for the monthly number of killed victims
+        fig4, ax = plt.subplots(figsize = (12, 8))
+
+        # Set initial y-limits based on data to avoid the Rectangle error
+        y_max_value = fig4_data["fatalities"].max()
+        ax.set_ylim(0, y_max_value)
+
+        # First, add the Covid-19 restrictions area of interest annotation layer (behind everything else)
+        covid_start = pd.to_datetime("2020-03-01")
+        covid_end = pd.to_datetime("2022-03-01")
+        covid_start_num = float(mdates.date2num(covid_start))
+        covid_end_num = float(mdates.date2num(covid_end))
+        rect = Rectangle(
+            (covid_start_num, 0), covid_end_num - covid_start_num, float(ax.get_ylim()[1]), facecolor = "green", alpha = 0.2
+        )
+        ax.add_patch(rect)
+
+        # Add the covid-19 reference lines (left and right)
+        ax.axvline(x = covid_start_num, linewidth = 0.5, linestyle = "dashed", color = "darkgreen")
+        ax.axvline(x = covid_end_num, linewidth = 0.5, linestyle = "dashed", color = "darkgreen")
+
+        # Add the covid-19 reference text annotation
+        covid_mid_dt = covid_start + (covid_end - covid_start) / 2
+        covid_mid_num = float(mdates.date2num(covid_mid_dt))
+        ax.annotate(
+            "COVID-19\nRestrictions",
+            xy = (covid_mid_num, 2),
+            xycoords = "data",
+            ha = "center",
+            fontsize = 10,
+            fontweight = "bold",
+            fontstyle = "italic",
+            color = "darkgreen",
+        )
+
+        # Add the time series line for the number of killed victims
+        ax.plot(fig4_data["time"], fig4_data["fatalities"], color = "navy", linewidth = 1.5, alpha = 0.6)
+
+        # Add the smoothed LOESS trend line for the number of killed victims
+        # Compute LOWESS
+        lowess_result = lowess(fig4_data["fatalities"], mdates.date2num(fig4_data["time"]), frac = 0.2, return_sorted = True)
+
+        # Calculate 95% confidence intervals for LOESS
+        lowess_x = lowess_result[:, 0]
+        lowess_y = lowess_result[:, 1]
+        residuals = []
+
+        # Calculate residuals for each point
+        for i, date_num in enumerate(mdates.date2num(fig4_data["time"])):
+            # Find closest point in lowess_result
+            idx = (np.abs(lowess_x - date_num)).argmin()
+            residuals.append(fig4_data["fatalities"].iloc[i] - lowess_y[idx])
+
+        # Calculate standard error and confidence interval
+        std_error = np.std(residuals)
+
+        # Calculate the standard error of the mean (SEM)
+        n_points = len(residuals)
+        sem = std_error / np.sqrt(n_points)
+        mean_ci_width = 1.96 * sem  # 1.96 for 95% confidence
+
+        # Create upper and lower bounds for mean CI
+        mean_ci_upper = lowess_y + mean_ci_width
+        mean_ci_lower = lowess_y - mean_ci_width
+
+        # Plot the 95% CI for the mean as a filled area
+        ax.fill_between(
+            mdates.num2date(lowess_x), mean_ci_lower, mean_ci_upper, color = "orange", alpha = 0.4, label = "95% CI for Mean"
+        )
+
+        # Plot the smoothed trend line
+        ax.plot(mdates.num2date(lowess_result[:, 0]), lowess_result[:, 1], color = "darkred", linewidth = 3)
+
+        # Set the graph labels
+        ax.set_xlabel("Date", fontsize = 16)
+        ax.set_ylabel("Number of Killed Victims", fontsize = 16)
+
+        # Format the date axis
+        # ax.xaxis.set_major_formatter(mdates.DateFormatter("%b\n%Y"))
+        ax.xaxis.set_major_locator(mdates.YearLocator())
+
+        # General graph theme (approximating HighChart theme from R)
+        sns.set_style("whitegrid")
+        ax.tick_params(axis = "y", which = "major", labelsize = 14)
+        ax.tick_params(axis = "x", which = "major", labelsize = 14)
+        ax.spines["bottom"].set_color("black")
+        ax.spines["bottom"].set_linewidth(0.5)
+
+        # Show all ticks by 5 on the axis, but keep gridlines only at 5, 15, 25
+        ax.xaxis.grid(False)  # No vertical gridlines
+        ax.yaxis.grid(False)  # First disable all gridlines
+
+        # Calculate y-axis range and create tick marks every 5 units
+        y_max = int(ax.get_ylim()[1])
+        all_ticks = np.arange(0, y_max, 5)
+        gridline_positions = [5, 15, 25]
+
+        # Set all tick positions with marks every 5 units
+        ax.set_yticks(all_ticks)
+
+        # Draw gridlines only at specific positions (5, 15, 25) - thin and dashed
+        for pos in gridline_positions:
+            ax.axhline(y = pos, color = 'gray', linestyle = '--', linewidth = 0.7, alpha = 0.7, zorder = 0)
+
+        # Set up the legend
+        legend_elements = [
+            plt.Line2D([0], [0], color = "navy", lw = 1, alpha = 0.6, label = "Number of Killed Victims"),
+            plt.Line2D([0], [0], color = "darkred", lw = 2, label = "Fatalities Trend (Lowess)"),
+            Patch(facecolor = "orange", alpha = 0.1, label = "95% CI for Mean"),
+        ]
+        ax.legend(
+            handles = legend_elements,
+            loc = "upper left",
+            bbox_to_anchor = (0.02, 0.98),
+            frameon = True,
+            facecolor = "whitesmoke",
+            edgecolor = "gray",
+            fontsize = 12,
+        )
+
+        # Display the time series plot for the monthly number of victims killed
+        plt.tight_layout()
+
+        # Return the figure and axes for further customization if needed
+        return fig4, ax
+
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ## 26. Create the victims vs severity overlay plot function ----
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    def create_victims_severity_plot(self,data: pd.DataFrame, save_path: str = None, show_plot: bool = True) -> tuple:
+        """Creates a time series overlay plot of victims vs collision severity.
+        This function creates a dual-axis plot showing the number of victims and
+        mean collision severity over time, including LOESS trend lines and
+        COVID-19 period highlighting.
+        Args:
+            data: A pandas DataFrame containing the time series data with columns:
+                time: datetime values for the x-axis
+                victims: number of victims values
+                severity: collision severity values
+                z_victims: standardized victims count
+                z_severity: standardized severity values
+            save_path: Optional path to save the figure. If None, the figure is not saved.
+            show_plot: Boolean indicating whether to display the plot. Default is True.
+        Returns:
+            tuple: (fig, ax1, ax2) containing the figure and axis objects
+        Raises:
+            ValueError: If the required columns are not in the data
+        Example:
+            >>> create_victims_severity_plot(data)
+        Notes:
+            The function creates a dual-axis plot showing the number of victims and
+            mean collision severity over time, including LOESS trend lines and
+            COVID-19 period highlighting.
+        """
+        # Verify the required columns exist
+        required_cols = ["time", "victims", "severity", "z_victims", "z_severity"]
+        for col in required_cols:
+            if col not in data.columns:
+                raise ValueError(f"Required column '{col}' not found in input data")  # Create the time series overlay plot
+        fig, ax1 = plt.subplots(figsize = (12, 8))
+
+        # Remove all gridlines for cleaner look
+        ax1.grid(False)
+
+        # Convert date columns to matplotlib date format if they aren't already
+        if not pd.api.types.is_datetime64_any_dtype(data["time"]):
+            data["time"] = pd.to_datetime(data["time"])
+
+        # Add the Covid-19 restrictions area of interest annotation layer
+        covid_start = pd.to_datetime("2020-03-01")
+        covid_end = pd.to_datetime("2022-03-01")
+
+        # Convert to numerical format that matplotlib can use - ensure float types
+        covid_start_num = float(mdates.date2num(covid_start))
+        covid_end_num = float(mdates.date2num(covid_end))
+
+        # Create the shaded background for COVID period
+        ax1.axvspan(covid_start_num, covid_end_num, alpha = 0.2, color = "green")
+
+        # Add the covid-19 reference lines (left and right)
+        ax1.axvline(x = covid_start_num, linewidth = 0.5, linestyle = "dashed", color = "darkgreen")
+        ax1.axvline(
+            x = covid_end_num, linewidth = 0.5, linestyle = "dashed", color = "darkgreen"
+        )  # Add the covid-19 reference text annotation
+        covid_mid = covid_start + (covid_end - covid_start) / 2
+        covid_mid_num = float(mdates.date2num(covid_mid))
+
+        # Calculate proper position for the text annotation at bottom of plot
+        # First, get current data view limits rather than axis limits
+        # which might not be set until after plotting
+        ymin = min(data["z_victims"].min(), data["z_severity"].min()) - 0.5
+
+        ax1.text(
+            x = covid_mid_num,
+            y = ymin + 0.25,
+            s = "COVID-19\nRestrictions",
+            fontweight = "bold",
+            fontstyle = "italic",
+            color = "darkgreen",
+            size = 11,
+            horizontalalignment = "center",
+            verticalalignment = "bottom",
+        )
+
+        # Add the time series line for the number of victims (primary axis)
+        ax1.plot(data["time"], data["z_victims"], color = "royalblue", linewidth = 0.85, alpha = 0.4, label = "Number of Victims")
+
+        # Create a second y-axis for severity
+        ax2 = ax1.twinx()
+        ax2.plot(
+            data["time"], data["z_severity"], color = "darkorange", linewidth = 0.85, alpha = 0.4, label = "Mean Severity Rank"
+        )  # Add LOESS trend lines (equivalent to R's geom_smooth)
+        # For victims trend (using statsmodels lowess)
+        # Convert datetime to float for lowess calculation
+        time_numeric = mdates.date2num(data["time"].values)  # Calculate LOESS trend for victims
+        lowess_victims = sm.nonparametric.lowess(data["z_victims"].values, time_numeric, frac = 0.2)
+
+        # Calculate 95% confidence intervals for the LOESS mean estimates
+        # Use standard error of the mean (SEM) rather than standard deviation of residuals
+        residuals_victims = data["z_victims"].values - np.interp(time_numeric, lowess_victims[:, 0], lowess_victims[:, 1])
+        sem_victims = np.std(residuals_victims) / np.sqrt(len(residuals_victims))
+        ci_width_victims = 1.96 * sem_victims  # 95% CI is 1.96 * standard error of mean
+
+        # Create upper and lower bounds for victims confidence interval around the trend line
+        upper_victims = lowess_victims[:, 1] + ci_width_victims
+        lower_victims = lowess_victims[:, 1] - ci_width_victims
+
+        # Add shaded confidence interval for victims trend
+        ax1.fill_between(mdates.num2date(lowess_victims[:, 0]), lower_victims, upper_victims, color = "navy", alpha = 0.2)
+
+        # Plot the victims trend line on top of confidence interval
+        ax1.plot(
+            mdates.num2date(lowess_victims[:, 0]),
+            lowess_victims[:, 1],
+            color = "navy",
+            linewidth = 2.5,
+            label = "Victims Loess\nRegression Trend (95% CI)",
+        )
+
+        # For severity trend
+        lowess_severity = sm.nonparametric.lowess(
+            data["z_severity"].values, time_numeric, frac = 0.2
+        )  # Calculate 95% confidence intervals for severity LOESS
+        # Use standard error of the mean (SEM) rather than standard deviation of residuals
+        residuals_severity = data["z_severity"].values - np.interp(
+            time_numeric, lowess_severity[:, 0], lowess_severity[:, 1]
+        )
+        sem_severity = np.std(residuals_severity) / np.sqrt(len(residuals_severity))
+        ci_width_severity = 1.96 * sem_severity  # 95% CI is 1.96 * standard error of mean
+
+        # Create upper and lower bounds for severity confidence interval around the trend line
+        upper_severity = lowess_severity[:, 1] + ci_width_severity
+        lower_severity = lowess_severity[:, 1] - ci_width_severity
+
+        # Add shaded confidence interval for severity trend
+        ax2.fill_between(mdates.num2date(lowess_severity[:, 0]), lower_severity, upper_severity, color = "maroon", alpha = 0.2)
+
+        # Plot the severity trend line on top of confidence interval
+        ax2.plot(
+            mdates.num2date(lowess_severity[:, 0]),
+            lowess_severity[:, 1],
+            color = "maroon",
+            linewidth = 2.5,
+            label = "Severity Loess\nRegression Trend (95% CI)",
+        )  # Configure date formatting on x-axis
+        ax1.xaxis.set_major_formatter(mdates.DateFormatter("%Y"))
+        ax1.xaxis.set_major_locator(mdates.YearLocator())
+        ax1.xaxis.set_minor_locator(mdates.MonthLocator([1, 4, 7, 10]))  # Show ticks at Jan, Apr, Jul, Oct
+
+        # Style the x-axis ticks
+        ax1.tick_params(axis = "x", which = "major", length = 8, width = 1.2, color = "black", bottom = True)
+        ax1.tick_params(axis = "x", which = "minor", length = 4, width = 0.8, color = "gray", bottom = True)
+
+        # Add light grid lines for major (year) ticks only on the x-axis
+        ax1.grid(axis = "x", which = "major", linestyle = "--", linewidth = 0.5, color = "gray", alpha = 0.7)
+
+        # Define function to convert z-scores back to original scale
+        def z_to_original(z, original_mean, original_std):
+            return z * original_std + original_mean
+
+        # Set up formatters for the y-axes to convert z-scores back to original values
+        victims_mean = data["victims"].mean()
+        victims_std = data["victims"].std()
+        severity_mean = data["severity"].mean()
+        severity_std = data["severity"].std()
+
+        # Function to format y-axis ticks for victims
+        def victims_formatter(x, pos):
+            return f"{z_to_original(x, victims_mean, victims_std):.0f}"
+
+        # Function to format y-axis ticks for severity
+        def severity_formatter(x, pos):
+            return f"{z_to_original(x, severity_mean, severity_std):.2f}"
+
+        # Apply formatters to axes
+        ax1.yaxis.set_major_formatter(FuncFormatter(victims_formatter))
+        ax2.yaxis.set_major_formatter(FuncFormatter(severity_formatter))
+
+        # Set axis labels
+        ax1.set_xlabel("Date", fontsize = 15, color = "black")
+        ax1.set_ylabel("Number of Victims", fontsize = 15, color = "navy", fontweight = "bold")
+        ax2.set_ylabel("Mean Severity Rank", fontsize = 15, color = "maroon", fontweight = "bold")
+
+        # Style the axes and ticks
+        ax1.tick_params(axis = "x", colors = "black", labelsize = 13)
+        ax1.tick_params(axis = "y", colors = "navy", labelsize = 13)
+        ax2.tick_params(axis = "y", colors = "maroon", labelsize = 13)  # Create a combined legend
+        lines1, labels1 = ax1.get_legend_handles_labels()
+        lines2, labels2 = ax2.get_legend_handles_labels()
+        lines = lines1 + lines2
+        labels = labels1 + labels2  # Add legend with custom styling
+        legend = ax1.legend(
+            lines,
+            labels,
+            loc = "upper left",
+            frameon = True,
+            fontsize = 11,
+            title = "Time Series Legend",
+            title_fontsize = 12,
+            bbox_to_anchor = (0.01, 0.99),
+            framealpha = 1,
+            edgecolor = "gray",
+            facecolor = "whitesmoke",
+            ncol = 2,
+        )
+        legend.get_title().set_fontweight("bold")
+
+        # Set a clean background style similar to theme_hc in R
+        ax1.set_facecolor("white")
+        ax1.spines["top"].set_visible(False)
+        ax1.spines["right"].set_visible(False)
+        ax1.spines["bottom"].set_color("black")
+        ax1.spines["left"].set_color("black")
+        ax2.spines["top"].set_visible(False)
+        ax2.spines["right"].set_color("maroon")
+        ax2.spines["left"].set_visible(False)
+
+        # Remove gridlines for the second y-axis (severity axis)
+        ax2.grid(False)
+
+        # Adjust the layout
+        plt.tight_layout()
+
+        # Save the figure if path is provided
+        if save_path is not None:
+            plt.savefig(save_path, dpi = 300)
+
+        # Show the plot if requested
+        if show_plot:
+            plt.show()
+
+        return fig, ax1, ax2
+    
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ## 27. Age Pyramid Plot ----
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    def create_age_pyramid_plot(self, collisions:pd.DataFrame) -> plt.Figure:
+        """
+        Creates an age pyramid plot for parties and victims of collisions.
+        Args:
+            collisions (pd.DataFrame): DataFrame containing collision data with party_age and victim_age columns
+        Returns:
+            matplotlib.figure.Figure: The age pyramid plot
+        Raises:
+            ValueError: If required columns are missing from the dataframe
+        Examples:
+            >>> fig = create_age_pyramid_plot(collisions_df)
+            >>> plt.show()
+        Notes:
+            The age pyramid plot is a horizontal bar chart that shows the distribution of parties and victims by age.
+        """
+        # Select the party and victim age from the collision data
+        fig9a_data = collisions[["party_age", "victim_age"]]
+
+        # Create a table of the party and victim age
+        party_counts = fig9a_data["party_age"].value_counts().reset_index()
+        party_counts.columns = ["Age", "Freq"]
+        party_counts["Type"] = "Party"
+
+        victim_counts = fig9a_data["victim_age"].value_counts().reset_index()
+        victim_counts.columns = ["Age", "Freq"]
+        victim_counts["Type"] = "Victim"
+
+        # Combine the data
+        fig9a_data = pd.concat([party_counts, victim_counts])
+
+        # Convert the age column to integers
+        fig9a_data["Age"] = fig9a_data["Age"].astype(int)
+
+        # Remove all rows that are NA
+        fig9a_data = fig9a_data.dropna(subset = ["Age", "Freq"])
+
+        # Remove all rows with age > 100
+        fig9a_data = fig9a_data[fig9a_data["Age"] <= 100]
+
+        # Create figure for the plot
+        fig, ax = plt.subplots(figsize = (12, 10))
+
+        # Plot party data (negative values)
+        party_data = fig9a_data[fig9a_data["Type"] == "Party"]
+        victim_data = fig9a_data[fig9a_data["Type"] == "Victim"]
+
+        # Create bar plots
+        ax.barh(party_data["Age"], -party_data["Freq"], color = "royalblue", label = "Party Age")
+        ax.barh(victim_data["Age"], victim_data["Freq"], color = "darkorange", label = "Victim Age")
+
+        # Format x-axis labels with commas and no negative signs
+        def abs_comma(x, pos):
+            return '{:,}'.format(int(abs(x)))
+
+        ax.xaxis.set_major_formatter(FuncFormatter(abs_comma))  # Set axis limits
+        max_freq = max(fig9a_data["Freq"].max(), fig9a_data["Freq"].max())
+        ax.set_xlim(-max_freq, max_freq)
+        ax.set_ylim(0, 100)
+        ax.set_yticks(range(0, 101, 20))
+
+        # Labels and titles
+        ax.set_xlabel("Collisions", fontsize = 14)
+        ax.set_ylabel("Age", fontsize = 14)
+        ax.set_title("Median Age Pyramid for Parties and Victims of Collisions", fontsize = 14)
+        
+        # Style adjustments
+        ax.tick_params(axis = "both", which = "major", labelsize = 12, colors = "black")
+        ax.spines["left"].set_visible(True)
+        ax.spines["right"].set_visible(False)
+        ax.spines["top"].set_visible(False)
+        ax.legend(loc = "upper right", fontsize = 12)
+
+        # Remove vertical gridlines
+        ax.grid(axis = "x", visible = False)
+        ax.grid(axis = "y", linestyle = "--", alpha = 0.7, linewidth = 0.7, color = "gray")
+
+        return fig
+    
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ## 28. Export CIM Object to JSON ----
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    def export_cim(self, cim_type:str, cim_object:object, cim_name:str) -> None:
+        """Export a CIM object to a file in both native (MAPX, PAGX, LYRX) and JSON CIM formats.
+        Args:
+            cim_type (str): Type of CIM object to export ("map", "layout", or "style").
+            cim_object (object): CIM object to export.
+            cim_name (str): Name of the CIM object to export.
+        Returns:
+            None
+        Raises:
+            ValueError: If cim_type is not "map", "layout", or "style".
+        Examples:
+            >>> export_cim("map", map_object, "map_name")
+            >>> export_cim("layout", layout_object, "layout_name")
+            >>> export_cim("style", style_object, "style_name")
+        Notes:
+            The CIM object must be a valid CIM object.
+        """
+        match cim_type:
+            # When the CIM object is a map
+            case "map":
+                # Export the CIM object to a MAPX file
+                print(f"Exporting {cim_name} map to MAPX...")
+                cim_object.exportToMAPX(os.path.join(prj_dirs.get("maps", ""), cim_name + ".mapx"))
+                print(arcpy.GetMessages())
+                # Export the CIM object to a JSON file
+                print(f"Exporting {cim_name} map to JSON...\n")
+                with open(os.path.join(prj_dirs.get("maps", ""), cim_name + ".mapx"), "r", encoding = "utf-8") as f:
+                    data = f.read()
+                with open(os.path.join(prj_dirs.get("maps", ""), cim_name + ".json"), "w", encoding = "utf-8") as f:
+                    f.write(data)
+            # When the CIM object is a layout
+            case "layout":
+                # Export the CIM object to a PAGX file
+                print(f"Exporting {cim_name} layout to PAGX...")
+                cim_object.exportToPAGX(os.path.join(prj_dirs.get("layouts", ""), cim_name + ".pagx"))
+                print(arcpy.GetMessages())
+                # Export the CIM object to a JSON file
+                print(f"Exporting {cim_name} layout to JSON...\n")
+                with open(os.path.join(prj_dirs.get("layouts", ""), cim_name + ".pagx"), "r", encoding = "utf-8") as f:
+                    data = f.read()
+                with open(os.path.join(prj_dirs.get("layouts", ""), cim_name + ".json"), "w", encoding = "utf-8") as f:
+                    f.write(data)
+            # When the CIM object is a layer
+            case "layer":
+                # Export the CIM object to a LYRX file
+                print(f"Exporting {cim_name} layer to LYRX...")
+                # Reformat the name of the output file
+                cim_new_name = "default_layer_name"  # Initialize cim_new_name with a default value
+                for m in aprx.listMaps():
+                    for l in m.listLayers():
+                        if l == cim_object:
+                            cim_new_name = (
+                                m.name.title() + "Map-" + l.name.replace("OCTraffic ", "")
+                            )
+                # Save the layer to a LYRX file
+                arcpy.management.SaveToLayerFile(
+                    cim_object, os.path.join(prj_dirs.get("layers", ""), cim_new_name + ".lyrx")
+                )
+                print(arcpy.GetMessages())
+                # Export the CIM object to a JSON file
+                print(f"Exporting {cim_name} layer to JSON...\n")
+                with open(os.path.join(prj_dirs.get("layers", ""), cim_new_name + ".lyrx"), "r", encoding = "utf-8") as f:
+                    data = f.read()
+                with open(os.path.join(prj_dirs.get("layers", ""), cim_new_name + ".json"), "w", encoding = "utf-8") as f:
+                    f.write(data)
+    
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ## 29. Set Layer Time ----
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    def set_layer_time(self, layer:arcpy.mapping.Layer) -> None:
+        """
+        Set the time properties for a layer in the map.
+        Args:
+            layer (arcpy.mapping.Layer): The layer to set the time properties for.
+        Returns:
+            None
+        Raises:
+            ValueError: If the layer is not time-enabled.
+        Examples:
+            >>> set_layer_time(layer)
+        Notes:
+            The layer must be a valid layer in the map.
+        """
+        # Check if the layer is time-enabled
+        if not layer.isTimeEnabled:
+            # Enable time for the layer
+            layer.enableTime("date_datetime", "", "TRUE", None)
+            # Set the start time for the layer
+            layer.time.startTime = time_settings["st"]
+            # Set the end time for the layer
+            layer.time.endTime = time_settings["et"]
+            # Set the time field for the layer
+            layer.time.startTimeField = time_settings["stf"]
+            # Set the time step interval for the layer
+            layer.time.timeStepInterval = time_settings["tsi"]
+            # Set the time step interval units for the layer
+            layer.time.timeStepIntervalUnits = time_settings["tsiu"]
+            # Set the time zone for the layer
+            layer.time.timeZone = time_settings["tz"]
+        # Re assign step interval and time units
+        if layer.isTimeEnabled:
+            layer.time.timeStepInterval = 1.0
+            layer.time.timeStepIntervalUnits = "months"
+    
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ## 30. Layout Configuration ----
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    def layout_configuration(self, nmf:int) -> dict:
+        """
+        Set the layout configuration based on the number of map frames.
+        Args:
+            nmf (int): The number of map frames in the layout.
+        Returns:
+            dict: The layout configuration.
+        Raises:
+            ValueError: If the number of map frames is not supported.
+        Examples:
+            >>> layout_configuration(1)
+        Notes:
+            The layout configuration is set based on the number of map frames.
+        """
+        # Match the number of map frames in layout
+        lyt_config = {}
+        # Set the layout configuration based on the number of map frames
+        match nmf:
+            case 1:
+                lyt_config = {
+                    "page_width": 11.0,
+                    "page_height": 8.5,
+                    "page_units": "INCH",
+                    "rows": 1,
+                    "cols": 1,
+                    "nmf": 1,
+                    "mf1": {
+                        "coords": [(0.0, 8.5), (11.0, 8.5), (0.0, 0.0), (11.0, 0.0)],
+                        "width": 11.0,
+                        "height": 8.5,
+                        "anchor": "BOTTOM_LEFT_CORNER",
+                        "coordX": 0.0,
+                        "coordY": 0.0,
+                        "geometry": arcpy.Point(0.0, 0.0),
+                    },
+                    "t1": {
+                        "width": 1.9184,
+                        "height": 0.3414,
+                        "anchor": "TOP_LEFT_CORNER",
+                        "coordX": 0.25,
+                        "coordY": 8.25,
+                        "geometry": arcpy.Point(0.25, 8.25),
+                    },
+                    "na": {
+                        "width": 0.3606,
+                        "height": 0.75,
+                        "anchor": "BOTTOM_RIGHT_CORNER",
+                        "coordX": 10.75,
+                        "coordY": 0.25,
+                        "geometry": arcpy.Point(10.75, 0.25),
+                    },
+                    "sb": {
+                        "width": 4.5,
+                        "height": 0.5,
+                        "anchor": "BOTTOM_MID_POINT",
+                        "coordX": 5.5,
+                        "coordY": 0.25,
+                        "geometry": arcpy.Point(5.5, 0.25),
+                    },
+                    "cr": {
+                        "width": 0.0,
+                        "height": 0.0,
+                        "anchor": "BOTTOM_LEFT_CORNER",
+                        "coordX": 0.0,
+                        "coordY": 0.0,
+                        "geometry": arcpy.Point(0.0, 0.0),
+                    },
+                    "lg1": {
+                        "width": 4.5,
+                        "height": 2.0,
+                        "anchor": "BOTTOM_LEFT_CORNER",
+                        "coordX": 0.25,
+                        "coordY": 0.25,
+                        "geometry": arcpy.Point(0.25, 0.25),
+                    },
+                }
+            case 2:
+                lyt_config = {
+                    "page_width": 22.0,
+                    "page_height": 8.5,
+                    "page_units": "INCH",
+                    "rows": 1,
+                    "cols": 2,
+                    "nmf": 2,
+                    "mf1": {
+                        "coords": [(0.0, 8.5), (11.0, 8.5), (0.0, 0.0), (11.0, 0.0)],
+                        "width": 11.0,
+                        "height": 8.5,
+                        "anchor": "BOTTOM_LEFT_CORNER",
+                        "coordX": 0.0,
+                        "coordY": 0.0,
+                        "geometry": arcpy.Point(0.0, 0.0),
+                    },
+                    "mf2": {
+                        "coords": [(11.0, 8.5), (22.0, 8.5), (11.0, 0.0), (22.0, 0.0)],
+                        "width": 11.0,
+                        "height": 8.5,
+                        "anchor": "BOTTOM_LEFT_CORNER",
+                        "coordX": 11.0,
+                        "coordY": 0.0,
+                        "geometry": arcpy.Point(11.0, 0.0),
+                    },
+                    "t1": {
+                        "width": 1.9184,
+                        "height": 0.3414,
+                        "anchor": "TOP_LEFT_CORNER",
+                        "coordX": 0.25,
+                        "coordY": 8.25,
+                        "geometry": arcpy.Point(0.25, 8.25),
+                    },
+                    "t2": {
+                        "width": 1.9184,
+                        "height": 0.3414,
+                        "anchor": "TOP_LEFT_CORNER",
+                        "coordX": 11.25,
+                        "coordY": 8.25,
+                        "geometry": arcpy.Point(11.25, 8.25),
+                    },
+                    "na": {
+                        "width": 0.3606,
+                        "height": 0.75,
+                        "anchor": "BOTTOM_RIGHT_CORNER",
+                        "coordX": 21.75,
+                        "coordY": 0.25,
+                        "geometry": arcpy.Point(21.75, 0.25),
+                    },
+                    "sb": {
+                        "width": 4.5,
+                        "height": 0.5,
+                        "anchor": "BOTTOM_MID_POINT",
+                        "coordX": 16.5,
+                        "coordY": 0.25,
+                        "geometry": arcpy.Point(16.5, 0.25),
+                    },
+                    "cr": {
+                        "width": 0.0,
+                        "height": 0.0,
+                        "anchor": "BOTTOM_LEFT_CORNER",
+                        "coordX": 0.0,
+                        "coordY": 0.0,
+                        "geometry": arcpy.Point(0.0, 0.0),
+                    },
+                    "lg1": {
+                        "width": 4.5,
+                        "height": 2.0,
+                        "anchor": "BOTTOM_LEFT_CORNER",
+                        "coordX": 0.25,
+                        "coordY": 0.25,
+                        "geometry": arcpy.Point(0.25, 0.25),
+                    },
+                    "lg2": {
+                        "width": 4.5,
+                        "height": 2.0,
+                        "anchor": "BOTTOM_LEFT_CORNER",
+                        "coordX": 11.25,
+                        "coordY": 0.25,
+                        "geometry": arcpy.Point(11.25, 0.25),
+                    },
+                }
+            case 4:
+                lyt_config = {
+                    "page_width": 22.0,
+                    "page_height": 17.0,
+                    "page_units": "INCH",
+                    "rows": 2,
+                    "cols": 2,
+                    "nmf": 4,
+                    "mf1": {
+                        "coords": [(0.0, 17.0), (11.0, 17.0), (0.0, 8.5), (11.0, 8.5)],
+                        "width": 11.0,
+                        "height": 8.5,
+                        "anchor": "BOTTOM_LEFT_CORNER",
+                        "coordX": 0.0,
+                        "coordY": 8.5,
+                        "geometry": arcpy.Point(0.0, 8.5),
+                    },
+                    "mf2": {
+                        "coords": [(11.0, 17.0), (22.0, 17.0), (11.0, 8.5), (22.0, 8.5)],
+                        "width": 11.0,
+                        "height": 8.5,
+                        "anchor": "BOTTOM_LEFT_CORNER",
+                        "coordX": 11.0,
+                        "coordY": 8.5,
+                        "geometry": arcpy.Point(11.0, 8.5),
+                    },
+                    "mf3": {
+                        "coords": [(0.0, 8.5), (11.0, 8.5), (0.0, 0.0), (11.0, 0.0)],
+                        "width": 11.0,
+                        "height": 8.5,
+                        "anchor": "BOTTOM_LEFT_CORNER",
+                        "coordX": 0.0,
+                        "coordY": 0.0,
+                        "geometry": arcpy.Point(0.0, 0.0),
+                    },
+                    "mf4": {
+                        "coords": [(11.0, 8.5), (22.0, 8.5), (11.0, 0.0), (22.0, 0.0)],
+                        "width": 11.0,
+                        "height": 8.5,
+                        "anchor": "BOTTOM_LEFT_CORNER",
+                        "coordX": 11.0,
+                        "coordY": 0.0,
+                        "geometry": arcpy.Point(11.0, 0.0),
+                    },
+                    "t1": {
+                        "width": 1.9184,
+                        "height": 0.3414,
+                        "anchor": "TOP_LEFT_CORNER",
+                        "coordX": 0.25,
+                        "coordY": 16.75,
+                        "geometry": arcpy.Point(0.25, 16.75),
+                    },
+                    "t2": {
+                        "width": 1.9184,
+                        "height": 0.3414,
+                        "anchor": "TOP_LEFT_CORNER",
+                        "coordX": 11.25,
+                        "coordY": 16.75,
+                        "geometry": arcpy.Point(11.25, 16.75),
+                    },
+                    "t3": {
+                        "width": 1.9184,
+                        "height": 0.3414,
+                        "anchor": "TOP_LEFT_CORNER",
+                        "coordX": 0.25,
+                        "coordY": 8.25,
+                        "geometry": arcpy.Point(0.25, 8.25),
+                    },
+                    "t4": {
+                        "width": 1.9184,
+                        "height": 0.3414,
+                        "anchor": "TOP_LEFT_CORNER",
+                        "coordX": 11.25,
+                        "coordY": 8.25,
+                        "geometry": arcpy.Point(11.25, 8.25),
+                    },
+                    "na": {
+                        "width": 0.3606,
+                        "height": 0.75,
+                        "anchor": "BOTTOM_RIGHT_CORNER",
+                        "coordX": 21.75,
+                        "coordY": 0.25,
+                        "geometry": arcpy.Point(21.75, 0.25),
+                    },
+                    "sb": {
+                        "width": 4.5,
+                        "height": 0.5,
+                        "anchor": "BOTTOM_MID_POINT",
+                        "coordX": 16.75,
+                        "coordY": 0.25,
+                        "geometry": arcpy.Point(16.75, 0.25),
+                    },
+                    "cr": {
+                        "width": 0.5,
+                        "height": 0.5,
+                        "anchor": "BOTTOM_LEFT_CORNER",
+                        "coordX": 0.0,
+                        "coordY": 0.0,
+                        "geometry": arcpy.Point(0.0, 0.0),
+                    },
+                    "lg1": {
+                        "width": 4.5,
+                        "height": 2.0,
+                        "anchor": "BOTTOM_LEFT_CORNER",
+                        "coordX": 0.25,
+                        "coordY": 8.75,
+                        "geometry": arcpy.Point(0.25, 8.75),
+                    },
+                    "lg2": {
+                        "width": 4.5,
+                        "height": 2.0,
+                        "anchor": "BOTTOM_LEFT_CORNER",
+                        "coordX": 11.25,
+                        "coordY": 8.75,
+                        "geometry": arcpy.Point(11.25, 8.75),
+                    },
+                    "lg3": {
+                        "width": 4.5,
+                        "height": 2.0,
+                        "anchor": "BOTTOM_LEFT_CORNER",
+                        "coordX": 0.25,
+                        "coordY": 0.25,
+                        "geometry": arcpy.Point(0.25, 0.25),
+                    },
+                    "lg4": {
+                        "width": 4.5,
+                        "height": 2.0,
+                        "anchor": "BOTTOM_LEFT_CORNER",
+                        "coordX": 11.25,
+                        "coordY": 0.25,
+                        "geometry": arcpy.Point(11.25, 0.25),
+                    },
+                }
+        return lyt_config
+
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Main ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

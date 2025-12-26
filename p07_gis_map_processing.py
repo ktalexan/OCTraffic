@@ -133,60 +133,6 @@ df_cb.attrs["name"] = "Codebook"
 print(df_cb.head())
 
 
-### JSON CIM Exports ----
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-print("\n- JSON CIM Exports")
-
-
-# Creating a function to export the CIM JSON files to disk.
-def export_cim(cim_type, cim_object, cim_name):
-    """Export a CIM object to a file in both native (MAPX, PAGX, LYRX) and JSON CIM formats."""
-    match cim_type:
-        # When the CIM object is a map
-        case "map":
-            # Export the CIM object to a MAPX file
-            print(f"Exporting {cim_name} map to MAPX...")
-            cim_object.exportToMAPX(os.path.join(prj_dirs.get("maps", ""), cim_name + ".mapx"))
-            print(arcpy.GetMessages())
-            # Export the CIM object to a JSON file
-            print(f"Exporting {cim_name} map to JSON...\n")
-            with open(os.path.join(prj_dirs.get("maps", ""), cim_name + ".mapx"), "r", encoding = "utf-8") as f:
-                data = f.read()
-            with open(os.path.join(prj_dirs.get("maps", ""), cim_name + ".json"), "w", encoding = "utf-8") as f:
-                f.write(data)
-        # When the CIM object is a layout
-        case "layout":
-            # Export the CIM object to a PAGX file
-            print(f"Exporting {cim_name} layout to PAGX...")
-            cim_object.exportToPAGX(os.path.join(prj_dirs.get("layouts", ""), cim_name + ".pagx"))
-            print(arcpy.GetMessages())
-            # Export the CIM object to a JSON file
-            print(f"Exporting {cim_name} layout to JSON...\n")
-            with open(os.path.join(prj_dirs.get("layouts", ""), cim_name + ".pagx"), "r", encoding = "utf-8") as f:
-                data = f.read()
-            with open(os.path.join(prj_dirs.get("layouts", ""), cim_name + ".json"), "w", encoding = "utf-8") as f:
-                f.write(data)
-        # When the CIM object is a layer
-        case "layer":
-            # Export the CIM object to a LYRX file
-            print(f"Exporting {cim_name} layer to LYRX...")
-            # Reformat the name of the output file
-            cim_new_name = "default_layer_name"  # Initialize cim_new_name with a default value
-            for m in aprx.listMaps():
-                for l in m.listLayers():
-                    if l == cim_object:
-                        cim_new_name = m.name.title() + "Map-" + l.name.replace("OCTraffic ", "")
-            # Save the layer to a LYRX file
-            arcpy.management.SaveToLayerFile(cim_object, os.path.join(prj_dirs.get("layers", ""), cim_new_name + ".lyrx"))
-            print(arcpy.GetMessages())
-            # Export the CIM object to a JSON file
-            print(f"Exporting {cim_name} layer to JSON...\n")
-            with open(os.path.join(prj_dirs.get("layers", ""), cim_new_name + ".lyrx"), "r", encoding = "utf-8") as f:
-                data = f.read()
-            with open(os.path.join(prj_dirs.get("layers", ""), cim_new_name + ".json"), "w", encoding = "utf-8") as f:
-                f.write(data)
-
-
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ## 1.3. ArcGIS Pro Workspace ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -890,31 +836,6 @@ time_settings = {
 # tsi: time interval, tsiu: time units, tz: time zone
 
 
-# Define a function that enables time settings in data layers
-def set_layer_time(layer):
-    """Set the time properties for a layer in the map"""
-    # Check if the layer is time-enabled
-    if not layer.isTimeEnabled:
-        # Enable time for the layer
-        layer.enableTime("date_datetime", "", "TRUE", None)
-        # Set the start time for the layer
-        layer.time.startTime = time_settings["st"]
-        # Set the end time for the layer
-        layer.time.endTime = time_settings["et"]
-        # Set the time field for the layer
-        layer.time.startTimeField = time_settings["stf"]
-        # Set the time step interval for the layer
-        layer.time.timeStepInterval = time_settings["tsi"]
-        # Set the time step interval units for the layer
-        layer.time.timeStepIntervalUnits = time_settings["tsiu"]
-        # Set the time zone for the layer
-        layer.time.timeZone = time_settings["tz"]
-    # Re assign step interval and time units
-    if layer.isTimeEnabled:
-        layer.time.timeStepInterval = 1.0
-        layer.time.timeStepIntervalUnits = "months"
-
-
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ## 3.2 Collisions Map Layers ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -962,7 +883,7 @@ map_collisions_lyr_collisions.visible = False
 print("- Enable Time Settings")
 
 # Setup and enable time settings for the collisions map layers
-set_layer_time(map_collisions_lyr_collisions)
+ocs.set_layer_time(map_collisions_lyr_collisions)
 
 
 ### Layer Symbology ----
@@ -1118,7 +1039,7 @@ map_crashes_lyr_crashes.visible = False
 print("- Enable Time Settings")
 
 # Setup and enable time settings for the crashes map layers
-set_layer_time(map_crashes_lyr_crashes)
+ocs.set_layer_time(map_crashes_lyr_crashes)
 
 
 ### Layer Symbology ----
@@ -1275,7 +1196,7 @@ map_parties_lyr_parties.visible = False
 print("- Enable Time Settings")
 
 # Setup and enable time settings for the parties map layers
-set_layer_time(map_parties_lyr_parties)
+ocs.set_layer_time(map_parties_lyr_parties)
 
 
 ### Layer Symbology ----
@@ -1433,7 +1354,7 @@ map_victims_lyr_victims.visible = False
 print("- Enable Time Settings")
 
 # Setup and enable time settings for the victims map layers
-set_layer_time(map_victims_lyr_victims)
+ocs.set_layer_time(map_victims_lyr_victims)
 
 
 ### Layer Symbology ----

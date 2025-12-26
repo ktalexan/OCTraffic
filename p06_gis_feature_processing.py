@@ -135,59 +135,6 @@ print(df_cb.head())
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 print("\n- JSON CIM Exports")
 
-# Creating a function to export the CIM JSON files to disk.
-def export_cim(cim_type, cim_object, cim_name):
-    """Export a CIM object to a file in both native (MAPX, PAGX, LYRX) and JSON CIM formats."""
-    match cim_type:
-        # When the CIM object is a map
-        case "map":
-            # Export the CIM object to a MAPX file
-            print(f"Exporting {cim_name} map to MAPX...")
-            cim_object.exportToMAPX(os.path.join(prj_dirs.get("maps", ""), cim_name + ".mapx"))
-            print(arcpy.GetMessages())
-            # Export the CIM object to a JSON file
-            print(f"Exporting {cim_name} map to JSON...\n")
-            with open(os.path.join(prj_dirs.get("maps", ""), cim_name + ".mapx"), "r", encoding = "utf-8") as f:
-                data = f.read()
-            with open(os.path.join(prj_dirs.get("maps", ""), cim_name + ".json"), "w", encoding = "utf-8") as f:
-                f.write(data)
-        # When the CIM object is a layout
-        case "layout":
-            # Export the CIM object to a PAGX file
-            print(f"Exporting {cim_name} layout to PAGX...")
-            cim_object.exportToPAGX(os.path.join(prj_dirs.get("layouts", ""), cim_name + ".pagx"))
-            print(arcpy.GetMessages())
-            # Export the CIM object to a JSON file
-            print(f"Exporting {cim_name} layout to JSON...\n")
-            with open(os.path.join(prj_dirs.get("layouts", ""), cim_name + ".pagx"), "r", encoding = "utf-8") as f:
-                data = f.read()
-            with open(os.path.join(prj_dirs.get("layouts", ""), cim_name + ".json"), "w", encoding = "utf-8") as f:
-                f.write(data)
-        # When the CIM object is a layer
-        case "layer":
-            # Export the CIM object to a LYRX file
-            print(f"Exporting {cim_name} layer to LYRX...")
-            # Reformat the name of the output file
-            cim_new_name = "default_layer_name"  # Initialize cim_new_name with a default value
-            for m in aprx.listMaps():
-                for l in m.listLayers():
-                    if l == cim_object:
-                        cim_new_name = (
-                            m.name.title() + "Map-" + l.name.replace("OCTraffic ", "")
-                        )
-            # Save the layer to a LYRX file
-            arcpy.management.SaveToLayerFile(
-                cim_object, os.path.join(prj_dirs.get("layers", ""), cim_new_name + ".lyrx")
-            )
-            print(arcpy.GetMessages())
-            # Export the CIM object to a JSON file
-            print(f"Exporting {cim_name} layer to JSON...\n")
-            with open(os.path.join(prj_dirs.get("layers", ""), cim_new_name + ".lyrx"), "r", encoding = "utf-8") as f:
-                data = f.read()
-            with open(os.path.join(prj_dirs.get("layers", ""), cim_new_name + ".json"), "w", encoding = "utf-8") as f:
-                f.write(data)
-
-
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ## 1.3. ArcGIS Pro Workspace ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
