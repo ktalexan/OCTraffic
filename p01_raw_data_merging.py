@@ -3,7 +3,7 @@
 # Project: OCTraffic Data Processing
 # Title: Part 1 - Merging Raw Data ----
 # Author: Dr. Kostas Alexandridis, GISP
-# Version: 2025.2, Date: December 2025
+# Version: 2025.3, Date: December 2025
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 print("\nOCTraffic Data Processing - Part 1 - Merging Raw Data\n")
@@ -23,7 +23,6 @@ print("\n1.1. Referencing Libraries and Initialization")
 import os, datetime
 import json
 import pandas as pd
-import numpy as np
 from dotenv import load_dotenv
 from octraffic import octraffic
 
@@ -33,6 +32,10 @@ ocs = octraffic()
 # Load environment variables from .env file
 load_dotenv()
 
+# Part and Version
+part = 1
+version = 2025.3
+
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ## 1.2. Project and Workspace Variables ----
@@ -41,11 +44,11 @@ print("\n1.2. Project and Workspace Variables")
 
 # Create a dictionary with the project metadata
 print("\nCreating project metadata")
-prj_meta = ocs.project_metadata(part=1, version=2025.2, silent=False)
+prj_meta = ocs.project_metadata(part = part, version = version, silent = False)
 
 # Create a dictionary with the project directories
 print("\nCreating project directories")
-prj_dirs = ocs.project_directories(base_path=os.getcwd(), silent=False)
+prj_dirs = ocs.project_directories(base_path = os.getcwd(), silent = False)
 
 # Set the current working directory to the project root
 os.chdir(prj_dirs["root"])
@@ -65,7 +68,7 @@ print("\n2.1. Importing Raw Data from Disk")
 
 print("- Creating a new Data Dictionary")
 # Create a new pandas data frame to store the data dictionary
-data_dict = pd.DataFrame(columns=["year", "date_start", "date_end", "count_crashes", "count_parties", "count_victims"])
+data_dict = pd.DataFrame(columns = ["year", "date_start", "date_end", "count_crashes", "count_parties", "count_victims"])
 
 # Set a mew index for the dataframe
 i = 1
@@ -86,16 +89,16 @@ for year in list(prj_meta["years"]):
         # Read the data from the CSV file
         data = pd.read_csv(
             os.path.join(prj_dirs["data_raw"], f"{level}_{year}.csv"),
-            encoding="utf-8",  # specify the encoding
-            sep=",",  # default delimiter
-            na_values=["", "NA", "N/A"],  # values to treat as NaN
-            low_memory=False,  # helpful for large files
+            encoding = "utf-8",  # specify the encoding
+            sep = ",",  # default delimiter
+            na_values = ["", "NA", "N/A"],  # values to treat as NaN
+            low_memory = False,  # helpful for large files
         )
         # If the level is "Crashes":
         if level == "Crashes":
             # Safely parse COLLISION_DATE to datetime and handle missing/invalid values
             if "COLLISION_DATE" in data.columns:
-                collision_dates = pd.to_datetime(data["COLLISION_DATE"], errors="coerce")
+                collision_dates = pd.to_datetime(data["COLLISION_DATE"], errors = "coerce")
                 if collision_dates.notna().any():
                     date_start = collision_dates.min()
                     date_end = collision_dates.max()
@@ -124,7 +127,7 @@ for year in list(prj_meta["years"]):
             data_dict.loc[i, "count_victims"] = count_victims
 
     # Update the tims metadata
-    ocs.update_tims_metadata(year, "reported", data_counts=[count_crashes, count_parties, count_victims])
+    ocs.update_tims_metadata(year, "reported", data_counts = [count_crashes, count_parties, count_victims])
 
     # Increment the index
     i += 1
@@ -154,13 +157,13 @@ for year in list(prj_meta["years"]):
     # Read the data from the CSV file
     data = pd.read_csv(
         os.path.join(prj_dirs["data_raw"], f"Crashes_{year}.csv"),
-        encoding="utf-8",  # specify the encoding
-        sep=",",  # default delimiter
-        na_values=["", "NA", "N/A"],  # values to treat as NaN
-        low_memory=False,  # helpful for large files
+        encoding = "utf-8",  # specify the encoding
+        sep = ",",  # default delimiter
+        na_values = ["", "NA", "N/A"],  # values to treat as NaN
+        low_memory = False,  # helpful for large files
     )
     # Add the data to the crashes dataframe
-    crashes = pd.concat([crashes, data], ignore_index=True)
+    crashes = pd.concat([crashes, data], ignore_index = True)
     # Remove the temporary variable
     del data
 
@@ -183,13 +186,13 @@ for year in list(prj_meta["years"]):
     # Read the data from the CSV file
     data = pd.read_csv(
         os.path.join(prj_dirs["data_raw"], f"Parties_{year}.csv"),
-        encoding="utf-8",  # specify the encoding
-        sep=",",  # default delimiter
-        na_values=["", "NA", "N/A"],  # values to treat as NaN
-        low_memory=False,  # helpful for large files
+        encoding = "utf-8",  # specify the encoding
+        sep = ",",  # default delimiter
+        na_values = ["", "NA", "N/A"],  # values to treat as NaN
+        low_memory = False,  # helpful for large files
     )
     # Add the data to the parties dataframe
-    parties = pd.concat([parties, data], ignore_index=True)
+    parties = pd.concat([parties, data], ignore_index = True)
     # Remove the temporary variable
     del data
 
@@ -213,13 +216,13 @@ for year in list(prj_meta["years"]):
     # Read the data from the CSV file
     data = pd.read_csv(
         os.path.join(prj_dirs["data_raw"], f"Victims_{year}.csv"),
-        encoding="utf-8",  # specify the encoding
-        sep=",",  # default delimiter
-        na_values=["", "NA", "N/A"],  # values to treat as NaN
-        low_memory=False,  # helpful for large files
+        encoding = "utf-8",  # specify the encoding
+        sep = ",",  # default delimiter
+        na_values = ["", "NA", "N/A"],  # values to treat as NaN
+        low_memory = False,  # helpful for large files
     )
     # Add the data to the victims dataframe
-    victims = pd.concat([victims, data], ignore_index=True)
+    victims = pd.concat([victims, data], ignore_index = True)
     # Remove the temporary variable
     del data
 
@@ -303,8 +306,8 @@ latex_vars_path = os.path.join(prj_dirs["metadata"], "latex_vars.json")
 
 # Export the dictionary to a JSON file
 try:
-    with open(latex_vars_path, "w", encoding="utf-8") as json_file:
-        json.dump(latex_vars, json_file, indent=4)
+    with open(latex_vars_path, "w", encoding = "utf-8") as json_file:
+        json.dump(latex_vars, json_file, indent = 4)
     print(f"- LaTeX variables dictionary saved to {latex_vars_path}")
 except Exception as e:
     print(f"- Error saving LaTeX variables dictionary: {e}")
@@ -315,4 +318,4 @@ except Exception as e:
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 print("\nLast Execution:", datetime.datetime.now().strftime("%Y-%m-%d"))
 print("\nEnd of Script")
-# Last Execution: 2025-12-24
+# Last Execution: 2025-12-26

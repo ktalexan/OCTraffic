@@ -3,7 +3,7 @@
 # Project: OCTraffic Data Processing
 # Title: Part 0 - Update Metadata for OCTraffic Datasets ----
 # Author: Dr. Kostas Alexandridis, GISP
-# Version: 2025.2, Date: December 2025
+# Version: 2025.3, Date: December 2025
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 print("\nOCTraffic Data Processing - Part 0: Update Metadata for OCTraffic Datasets\n")
@@ -21,7 +21,6 @@ print("\n1.1. Referencing Libraries and Initialization")
 # Importing necessary libraries
 import os, datetime
 import json
-import pandas as pd
 from dotenv import load_dotenv
 from octraffic import octraffic
 
@@ -30,6 +29,10 @@ ocs = octraffic()
 
 # Loading environment variables from .env file
 load_dotenv()
+
+# Part and Version
+part = 0
+version = 2025.3
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -53,7 +56,7 @@ print("\n1.3. Project and Workspace Variables")
 
 # Create a dictionary with the project metadata
 print("\nCreating project metadata")
-prj_meta = ocs.project_metadata(part=0, version=2025.2, silent=False)
+prj_meta = ocs.project_metadata(part = part, version = version, silent = False)
 
 # Create a dictionary with the project directories
 print("\nCreating project directories")
@@ -143,7 +146,7 @@ for year_key in prj_meta["tims"].keys():
     
     # Count rows in crashes file
     try:
-        with open(crashes_path, "r", encoding="utf-8") as f:
+        with open(crashes_path, "r", encoding = "utf-8") as f:
             row_count = sum(1 for line in f) - 1  # Subtract 1 for header
         prj_meta["tims"][year_key]["reported"]["crashes"] = row_count
         print(f"Crashes rows: {row_count:,}")
@@ -153,7 +156,7 @@ for year_key in prj_meta["tims"].keys():
 
     # Count rows in parties file
     try:
-        with open(parties_path, "r", encoding="utf-8") as f:
+        with open(parties_path, "r", encoding = "utf-8") as f:
             row_count = sum(1 for line in f) - 1  # Subtract 1 for header
         prj_meta["tims"][year_key]["reported"]["parties"] = row_count
         print(f"Parties rows: {row_count:,}")
@@ -163,7 +166,7 @@ for year_key in prj_meta["tims"].keys():
 
     # Count rows in victims file
     try:
-        with open(victims_path, "r", encoding="utf-8") as f:
+        with open(victims_path, "r", encoding = "utf-8") as f:
             row_count = sum(1 for line in f) - 1  # Subtract 1 for header
         prj_meta["tims"][year_key]["reported"]["victims"] = row_count
         print(f"Victims rows: {row_count:,}")
@@ -174,17 +177,17 @@ for year_key in prj_meta["tims"].keys():
 
 # print the prj_meta["tims"] as a json string with indentation of 4 spaces
 print("\nUpdated TIMS Metadata:")
-print(json.dumps(prj_meta["tims"], indent=4))
+print(json.dumps(prj_meta["tims"], indent = 4))
 
 # Update the tims metadata json file
 metadata_path = os.path.join(prj_dirs["metadata"], "tims_metadata.json")
 
 # Replace the existing tims_metadata.json file with the updated metadata
-with open(metadata_path, "w", encoding="utf-8") as f:
-    json.dump(prj_meta["tims"], f, indent=4)
+with open(metadata_path, "w", encoding = "utf-8") as f:
+    json.dump(prj_meta["tims"], f, indent = 4)
 
 # Update the metadata info
-prj_meta = ocs.project_metadata(part=0, version=2025.2, silent=False)
+prj_meta = ocs.project_metadata(part = 0, version = 2025.3, silent = False)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

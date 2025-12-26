@@ -169,7 +169,7 @@ def export_tims_metadata(metadata: dict) -> None:
     tims_path = os.path.join(os.getcwd(), "metadata", "tims_metadata.json")
     # Write the TIMS metadata to a JSON file and overwrite if it exists
     with open(tims_path, 'w') as f:
-        json.dump(tims_metadata, f, indent=4)
+        json.dump(tims_metadata, f, indent = 4)
     
     # if successful, print a message
     print(f"- TIMS metadata exported to disk successfully.")
@@ -344,14 +344,14 @@ def categorical_series(var_series: pd.Series, var_name: str, cb_dict: dict) -> p
     # Obtain the codes if the type is binary, nominal or ordinal
     if var_type == "binary":
         # Binary codes
-        cat_series = labeled_series.astype(CategoricalDtype(categories=cats, ordered=False))
+        cat_series = labeled_series.astype(CategoricalDtype(categories = cats, ordered = False))
     elif var_type == "nominal":
         # Categorical codes
-        cat_series = labeled_series.astype(CategoricalDtype(categories=cats, ordered=False))
+        cat_series = labeled_series.astype(CategoricalDtype(categories = cats, ordered = False))
     elif var_type == "ordinal":
         # Get the ordered categories
         # Ordinal codes
-        cat_series = labeled_series.astype(CategoricalDtype(categories=cats, ordered=True))
+        cat_series = labeled_series.astype(CategoricalDtype(categories = cats, ordered = True))
     else:
         # Raise an error if the type is not valid
         raise ValueError(f"Variable {var_name} Categorical type is not valid.")
@@ -413,7 +413,7 @@ def is_dst(dt_series: pd.Series, tz_name: str = "America/Los_Angeles") -> pd.Ser
         return dt_series.apply(check_dst)
     except (pytz.UnknownTimeZoneError, ValueError, TypeError) as e:
         print(f"Error determining DST: {str(e)}")
-        return pd.Series([False] * len(dt_series), index=dt_series.index)
+        return pd.Series([False] * len(dt_series), index = dt_series.index)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -716,7 +716,7 @@ def chi2_gof_test(df: pd.DataFrame, col: str) -> dict:
     # Create observed and expected counts for the df[col] column
     observed = df[col].value_counts().values
     expected = np.full_like(observed, dtype=np.float64, fill_value=np.mean(observed))
-    stat = stats.chisquare(f_obs=observed, f_exp=expected)
+    stat = stats.chisquare(f_obs = observed, f_exp = expected)
     t = "Chi-squared Goodness-of-Fit test"
     s = stat.statistic
     p = stat.pvalue
@@ -748,7 +748,7 @@ def kruskal_test(df: pd.DataFrame, col1: str, col2: str) -> dict:
         >>> kruskal_test_victim_count_severity(df3)
         (0.034, '<0.05')
     """
-    groups = [group[col1].values for name, group in df.groupby(col2, observed=True)]
+    groups = [group[col1].values for name, group in df.groupby(col2, observed = True)]
     test = stats.kruskal(*groups)
     t = "Kruskal-Wallis H-test"
     s = test.statistic
@@ -794,7 +794,7 @@ def p_value_display(p_value: float) -> str:
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # 15. Create STL Plot Function ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-def create_stl_plot(time_series, season, model="additive", label=None, covid=False, robust=True):
+def create_stl_plot(time_series, season, model = "additive", label = None, covid = False, robust = True):
     """
     Create a Seasonal-Trend decomposition using LOESS (STL).
 
@@ -838,12 +838,12 @@ def create_stl_plot(time_series, season, model="additive", label=None, covid=Fal
     original_title = f"Original Time Series: {label}" if label else "Original Time Series"  # Perform STL decomposition
     if robust:
         # Use STL for robust decomposition
-        stl = sm.tsa.STL(time_series, period=period)
+        stl = sm.tsa.STL(time_series, period = period)
         decomposition = stl.fit()
     else:
         # Use seasonal_decompose for non-robust decomposition
         decomposition = sm.tsa.seasonal_decompose(
-            time_series, period=period, model=model
+            time_series, period = period, model = model
         )  # Create figure with subplots for original, trend, seasonal, and residual
     fig = plt.figure(figsize=(12, 10))  # Plot original time series
     ax1 = plt.subplot(411)
@@ -941,8 +941,8 @@ def create_stl_plot(time_series, season, model="additive", label=None, covid=Fal
             ax.add_patch(rect)
 
             # Add the reference lines
-            ax.axvline(x=covid_start_num, linewidth=0.5, linestyle="dashed", color="darkgreen")
-            ax.axvline(x=covid_end_num, linewidth=0.5, linestyle="dashed", color="darkgreen")
+            ax.axvline(x = covid_start_num, linewidth = 0.5, linestyle = "dashed", color = "darkgreen")
+            ax.axvline(x = covid_end_num, linewidth = 0.5, linestyle = "dashed", color = "darkgreen")
 
         # Add the annotation text only to the first subplot
         covid_mid_dt = covid_start + (covid_end - covid_start) / 2
@@ -964,7 +964,7 @@ def create_stl_plot(time_series, season, model="additive", label=None, covid=Fal
     # Add footnote at the bottom left of the plot
     # if footnote is a single string, add it to the figure
     if footnote is not None and isinstance(footnote, str):
-        fig.text(0.01, 0, footnote, fontsize=10, style="italic", ha="left")
+        fig.text(0.01, 0, footnote, fontsize = 10, style = "italic", ha = "left")
 
     # Return the decomposition result and the figure
     return decomposition, fig
@@ -1023,7 +1023,7 @@ def update_tims_metadata(year: int, type: str = "reported", data_counts = None):
     
     # Save the updated metadata back to the file
     with open(metadata_file, 'w') as f:
-        json.dump(tims_metadata, f, indent=4)
+        json.dump(tims_metadata, f, indent = 4)
     
     print(f"TIMS metadata for {year} ({type}) updated successfully:\nCrashes: {count_crashes:,}, Parties: {count_parties:,}, Victims: {count_victims:,}")
 

@@ -3,7 +3,7 @@
 # Project: OCTraffic Data Processing
 # Title: Part 3 - Time Series Processing ----
 # Author: Dr. Kostas Alexandridis, GISP
-# Version: 2025.2, Date: December 2025
+# Version: 2025.3, Date: December 2025
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 print("\nOCTraffic Data Processing - Part 3 - Time Series Processing\n")
@@ -20,20 +20,13 @@ print("\n1. Preliminaries")
 print("\n1.1. Libraries and Initialization")
 
 # Import necessary libraries
-import os, sys, datetime, time
-import json, pickle
+import os, datetime
+import json
 import pandas as pd
-from pandas.api.types import CategoricalDtype
-import numpy as np
-import pytz
 from dotenv import load_dotenv
-import arcpy, arcgis
-from arcpy import metadata as md
 
 # important as it "enhances" Pandas by importing these classes (from ArcGIS API for Python)
-from arcgis.features import GeoAccessor, GeoSeriesAccessor
 from octraffic import octraffic
-import codebook.cbl as cbl
 
 # Initialize the OCTraffic object
 ocs = octraffic()
@@ -43,6 +36,10 @@ load_dotenv()
 
 os.getcwd()
 
+# Part and Version
+part = 3
+version = 2025.3
+
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ## 1.2. Project and Workspace Variables ----
@@ -51,11 +48,11 @@ print("\n1.2. Project and Workspace Variables")
 
 # Create a dictionary with the project metadata
 print("\nCreating project metadata")
-prj_meta = ocs.project_metadata(part=3, version=2025.2, silent=False,)
+prj_meta = ocs.project_metadata(part = part, version = version, silent = False)
 
 # Create a dictionary with the project directories
 print("\nCreating project directories")
-prj_dirs = ocs.project_directories(base_path=os.getcwd(), silent=False)
+prj_dirs = ocs.project_directories(base_path = os.getcwd(), silent = False)
 
 # Set the current working directory to the project root
 os.chdir(prj_dirs["root"])
@@ -112,7 +109,7 @@ print("\n1.4. Loading Codebook from Disk")
 # Load the JSON file from directory and store it in a variable
 print("- Loading the codebook JSON file")
 cb_path = os.path.join(prj_dirs["codebook"], "cb.json")
-with open(cb_path, encoding="utf-8") as json_file:
+with open(cb_path, encoding = "utf-8") as json_file:
     cb = json.load(json_file)
 
 # create a data frame from the codebook

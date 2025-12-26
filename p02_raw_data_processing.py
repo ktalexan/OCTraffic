@@ -3,7 +3,7 @@
 # Project: OCTraffic Data Processing
 # Title: Part 2 - Raw Data Processing ----
 # Author: Dr. Kostas Alexandridis, GISP
-# Version: 2025.2, Date: December 2025
+# Version: 2025.3, Date: December 2025
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 print("\nOCTraffic Data Processing - Part 2 - Raw Data Processing\n")
@@ -20,20 +20,15 @@ print("\n1. Preliminaries")
 print("\n1.1. Libraries and Initialization")
 
 # Import necessary libraries
-import os, sys, datetime, time
-import json, pickle
+import os, sys, datetime
+import json
 import pandas as pd
-from pandas.api.types import CategoricalDtype
 import numpy as np
-import pytz
 from dotenv import load_dotenv
-import arcpy, arcgis
-from arcpy import metadata as md
 
 # important as it "enhances" Pandas by importing these classes (from ArcGIS API for Python)
-from arcgis.features import GeoAccessor, GeoSeriesAccessor
+from arcgis.features import GeoAccessor
 from octraffic import octraffic
-import codebook.cbl as cbl
 
 # Initialize the OCTraffic object
 ocs = octraffic()
@@ -43,6 +38,10 @@ load_dotenv()
 
 os.getcwd()
 
+# Part and Version
+part = 2
+version = 2025.3
+
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ## 1.2. Project and Workspace Variables ----
@@ -51,11 +50,11 @@ print("\n1.2. Project and Workspace Variables")
 
 # Create a dictionary with the project metadata
 print("\nCreating project metadata")
-prj_meta = ocs.project_metadata(part=2, version=2025.2, silent=False)
+prj_meta = ocs.project_metadata(part = part, version = version, silent = False)
 
 # Create a dictionary with the project directories
 print("\nCreating project directories")
-prj_dirs = ocs.project_directories(base_path=os.getcwd(), silent=False)
+prj_dirs = ocs.project_directories(base_path = os.getcwd(), silent = False)
 
 # Set the current working directory to the project root
 os.chdir(prj_dirs["root"])
@@ -64,11 +63,11 @@ print(f"\nCurrent working directory: {os.getcwd()}\n")
 
 # Import the LaTeX variables dictionary from the json file on disk
 latex_vars_path = os.path.join(prj_dirs["metadata"], "latex_vars.json")
-with open(latex_vars_path, encoding="utf-8") as json_file:
+with open(latex_vars_path, encoding = "utf-8") as json_file:
     latex_vars = json.load(json_file)
 
 # Print the latex variables dictionary formatted with 4 spaces
-print(json.dumps(latex_vars, indent=4))
+print(json.dumps(latex_vars, indent = 4))
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # 2. Raw Data Import (Initialization) ----
@@ -318,8 +317,8 @@ raw_cols = {
 
 # Export the raw_cols dictionary to a JSON file
 raw_cols_path = os.path.join(prj_dirs["codebook"], "raw_cols.json")
-with open(raw_cols_path, "w", encoding="utf-8") as f:
-    json.dump(raw_cols, f, indent=4, ensure_ascii=False)
+with open(raw_cols_path, "w", encoding = "utf-8") as f:
+    json.dump(raw_cols, f, indent = 4, ensure_ascii = False)
 
 # Reorder the columns in the crashes data frame
 print("\n- Reordering the columns in the crashes data frame")
@@ -353,7 +352,7 @@ print("\n2.4. Import Codebook")
 # Load the JSON file from directory and store it in a variable
 print("- Loading the codebook JSON file")
 cb_path = os.path.join(prj_dirs["codebook"], "cb.json")
-with open(cb_path, encoding="utf-8") as json_file:
+with open(cb_path, encoding = "utf-8") as json_file:
     cb = json.load(json_file)
 
 # create a data frame from the codebook
@@ -396,12 +395,12 @@ for new_name in list_sel:
     old_name = df_cb.loc[new_name, "var_raw"]
     if old_name in crashes.columns:
         # rename the column in the crashes data frame
-        crashes.rename(columns={old_name: new_name}, inplace=True)
+        crashes.rename(columns = {old_name: new_name}, inplace = True)
 
 # Remove all the columns in the crashes data frame that are not in list_sel
 for col in crashes.columns:
     if col not in list_sel:
-        crashes.drop(columns=col, inplace=True)
+        crashes.drop(columns = col, inplace = True)
 
 # Remove the temporary variables
 del list_sel, old_name, new_name
@@ -423,12 +422,12 @@ for new_name in list_sel:
     old_name = df_cb.loc[new_name, "var_raw"]
     if old_name in parties.columns:
         # rename the column in the crashes data frame
-        parties.rename(columns={old_name: new_name}, inplace=True)
+        parties.rename(columns = {old_name: new_name}, inplace = True)
 
 # Remove all the columns in the crashes data frame that are not in list_sel
 for col in parties.columns:
     if col not in list_sel:
-        parties.drop(columns=col, inplace=True)
+        parties.drop(columns = col, inplace = True)
 
 # Remove the temporary variables
 del list_sel, old_name, new_name
@@ -450,12 +449,12 @@ for new_name in list_sel:
     old_name = df_cb.loc[new_name, "var_raw"]
     if old_name in victims.columns:
         # rename the column in the crashes data frame
-        victims.rename(columns={old_name: new_name}, inplace=True)
+        victims.rename(columns = {old_name: new_name}, inplace = True)
 
 # Remove all the columns in the crashes data frame that are not in list_sel
 for col in victims.columns:
     if col not in list_sel:
-        victims.drop(columns=col, inplace=True)
+        victims.drop(columns = col, inplace = True)
 
 # Remove the temporary variables
 del list_sel, old_name, new_name
@@ -496,9 +495,9 @@ parties["cid"] = parties["case_id"].astype(str).str.strip()
 victims["cid"] = victims["case_id"].astype(str).str.strip()
 
 # Relocate the cid column after the case_iD column in the data frames
-ocs.relocate_column(df=crashes, col_name="cid", ref_col_name="case_id", position="after")
-ocs.relocate_column(df=parties, col_name="cid", ref_col_name="case_id", position="after")
-ocs.relocate_column(df=victims, col_name="cid", ref_col_name="case_id", position="after")
+ocs.relocate_column(df = crashes, col_name = "cid", ref_col_name = "case_id", position = "after")
+ocs.relocate_column(df = parties, col_name = "cid", ref_col_name = "case_id", position = "after")
+ocs.relocate_column(df = victims, col_name = "cid", ref_col_name = "case_id", position = "after")
 
 
 ### Add PID Columns ----
@@ -510,8 +509,8 @@ parties["pid"] = parties["case_id"].astype(str).str.strip() + "-" + parties["par
 victims["pid"] = victims["case_id"].astype(str).str.strip() + "-" + victims["party_number"].astype(str).str.strip()
 
 # Relocate the pid column after the cid column in the data frames
-ocs.relocate_column(df=parties, col_name="pid", ref_col_name="cid", position="after")
-ocs.relocate_column(df=victims, col_name="pid", ref_col_name="cid", position="after")
+ocs.relocate_column(df = parties, col_name = "pid", ref_col_name = "cid", position = "after")
+ocs.relocate_column(df = victims, col_name = "pid", ref_col_name = "cid", position = "after")
 
 
 ### Add VID Columns ----
@@ -528,7 +527,7 @@ victims["vid"] = (
 )
 
 # Relocate the vid column after the pid column in the data frames
-ocs.relocate_column(df=victims, col_name="vid", ref_col_name="pid", position="after")
+ocs.relocate_column(df = victims, col_name = "vid", ref_col_name = "pid", position = "after")
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -541,23 +540,23 @@ print("\n3.4. Add TotalCrashes, TotalParties, and TotalVictims Columns")
 # Add count of unique cid to the crashes data frame
 crashes["crashes_cid_count"] = crashes.groupby("cid")["cid"].transform("count")
 # Relocate the crashes_cid_count column after the cid column in the data frame
-ocs.relocate_column(df=crashes, col_name="crashes_cid_count", ref_col_name="cid", position="after")
+ocs.relocate_column(df = crashes, col_name = "crashes_cid_count", ref_col_name = "cid", position = "after")
 
 # add count of unique cid and pid to the parties data frame
 parties["parties_cid_count"] = parties.groupby("cid")["cid"].transform("count")
 parties["parties_pid_count"] = parties.groupby("pid")["pid"].transform("count")
 # Relocate the parties_cid_count and parties_pid_count columns after the pid column in the data frame
-ocs.relocate_column(df=parties, col_name="parties_cid_count", ref_col_name="pid", position="after")
-ocs.relocate_column(df=parties, col_name="parties_pid_count", ref_col_name="parties_cid_count", position="after")
+ocs.relocate_column(df = parties, col_name = "parties_cid_count", ref_col_name = "pid", position = "after")
+ocs.relocate_column(df = parties, col_name = "parties_pid_count", ref_col_name = "parties_cid_count", position = "after")
 
 # add count of unique cid, pid and vid to the victims data frame
 victims["victims_cid_count"] = victims.groupby("cid")["cid"].transform("count")
 victims["victims_pid_count"] = victims.groupby("pid")["pid"].transform("count")
 victims["victims_vid_count"] = victims.groupby("vid")["vid"].transform("count")
 # Relocate the victims_cid_count, victims_pid_count and victims_vid_count columns after the vid column in the data frame
-ocs.relocate_column(df=victims, col_name="victims_cid_count", ref_col_name="vid", position="after")
-ocs.relocate_column(df=victims, col_name="victims_pid_count", ref_col_name="victims_cid_count", position="after")
-ocs.relocate_column(df=victims, col_name="victims_vid_count", ref_col_name="victims_pid_count", position="after")
+ocs.relocate_column(df = victims, col_name = "victims_cid_count", ref_col_name = "vid", position = "after")
+ocs.relocate_column(df = victims, col_name = "victims_pid_count", ref_col_name = "victims_cid_count", position = "after")
+ocs.relocate_column(df = victims, col_name = "victims_vid_count", ref_col_name = "victims_pid_count", position = "after")
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -607,7 +606,7 @@ for i in [
     if i in crashes.columns:
         # Use pandas built-in type checking function
         if not pd.api.types.is_integer_dtype(crashes[i]):
-            crashes[i] = pd.to_numeric(crashes[i], errors="coerce", downcast="integer")
+            crashes[i] = pd.to_numeric(crashes[i], errors = "coerce", downcast = "integer")
             print(f"  -Crashes: Converted {i} to integer")
         else:
             print(f"  -Crashes: {i} is already an integer")
@@ -617,7 +616,7 @@ for i in ["distance", "longitude", "latitude", "point_x", "point_y"]:
     if i in crashes.columns:
         # Use pandas built-in type checking function
         if not pd.api.types.is_float_dtype(crashes[i]):
-            crashes[i] = pd.to_numeric(crashes[i], errors="coerce", downcast="float")
+            crashes[i] = pd.to_numeric(crashes[i], errors = "coerce", downcast = "float")
             print(f"  -Crashes: Converted {i} to float")
         else:
             print(f"  -Crashes: {i} is already a float")
@@ -638,14 +637,14 @@ for i in [
     if i in parties.columns:
         # Use pandas built-in type checking function
         if not pd.api.types.is_integer_dtype(parties[i]):
-            parties[i] = pd.to_numeric(parties[i], errors="coerce", downcast="integer")
+            parties[i] = pd.to_numeric(parties[i], errors = "coerce", downcast = "integer")
             print(f"  -Parties: Converted {i} to integer")
         else:
             print(f"  -Parties: {i} is already an integer")
     if i in victims.columns:
         # Use pandas built-in type checking function
         if not pd.api.types.is_integer_dtype(victims[i]):
-            victims[i] = pd.to_numeric(victims[i], errors="coerce", downcast="integer")
+            victims[i] = pd.to_numeric(victims[i], errors = "coerce", downcast = "integer")
             print(f"  -Victims: Converted {i} to integer")
         else:
             print(f"  -Victims: {i} is already an integer")
@@ -655,7 +654,7 @@ for i in ["city_area_sq_mi", "city_pop_dens", "city_hou_dens"]:
     if i in cities.columns:
         # Use pandas built-in type checking function
         if not pd.api.types.is_float_dtype(cities[i]):
-            cities[i] = pd.to_numeric(cities[i], errors="coerce", downcast="float")
+            cities[i] = pd.to_numeric(cities[i], errors = "coerce", downcast = "float")
             print(f"  -Cities: Converted {i} to float")
         else:
             print(f"  -Cities: {i} is already a float")
@@ -674,7 +673,7 @@ for i in [
     if i in cities.columns:
         # Use pandas built-in type checking function
         if not pd.api.types.is_integer_dtype(cities[i]):
-            cities[i] = pd.to_numeric(cities[i], errors="coerce", downcast="integer")
+            cities[i] = pd.to_numeric(cities[i], errors = "coerce", downcast = "integer")
             print(f"  -Cities: Converted {i} to integer")
         else:
             print(f"  -Cities: {i} is already an integer")
@@ -684,7 +683,7 @@ for i in ["road_length"]:
     if i in roads.columns:
         # Use pandas built-in type checking function
         if not pd.api.types.is_float_dtype(roads[i]):
-            roads[i] = pd.to_numeric(roads[i], errors="coerce", downcast="float")
+            roads[i] = pd.to_numeric(roads[i], errors = "coerce", downcast = "float")
             print(f"  -Roads: Converted {i} to float")
         else:
             print(f"  -Roads: {i} is already a float")
@@ -713,7 +712,7 @@ print("- Adding crashes dataset identifier")
 # Add a unique crash tag
 crashes["crash_tag"] = 1
 # Move the crash_tag column after the cid column in the data frame
-ocs.relocate_column(df=crashes, col_name="crash_tag", ref_col_name="cid", position="after")
+ocs.relocate_column(df = crashes, col_name = "crash_tag", ref_col_name = "cid", position = "after")
 
 
 ### Parties Dataset Identifier ----
@@ -723,7 +722,7 @@ print("- Adding parties dataset identifier")
 # Add a unique party tag
 parties["party_tag"] = 1
 # Move the party_tag column after the pid column in the data frame
-ocs.relocate_column(df=parties, col_name="party_tag", ref_col_name="pid", position="after")
+ocs.relocate_column(df = parties, col_name = "party_tag", ref_col_name = "pid", position = "after")
 
 
 ### Victims Dataset Identifier ----
@@ -733,7 +732,7 @@ print("- Adding victims dataset identifier")
 # Add a unique victim tag
 victims["victim_tag"] = 1
 # Move the victim_tag column after the vid column in the data frame
-ocs.relocate_column(df=victims, col_name="victim_tag", ref_col_name="vid", position="after")
+ocs.relocate_column(df = victims, col_name = "victim_tag", ref_col_name = "vid", position = "after")
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -752,7 +751,7 @@ print("- Adding crashes tag")
 crashes["crashes_case_tag"] = crashes.groupby("cid")["cid"].transform("count")
 
 # Relocate the crashes_case_tag column after the crash_tag column in the data frame
-ocs.relocate_column(df=crashes, col_name="crashes_case_tag", ref_col_name="crash_tag", position="after")
+ocs.relocate_column(df = crashes, col_name = "crashes_case_tag", ref_col_name = "crash_tag", position = "after")
 
 
 ### Parties Tag ----
@@ -762,7 +761,7 @@ print("- Adding parties tag")
 # Create a count of parties for each cid in the parties data frame
 parties["parties_case_tag"] = parties.groupby("cid")["cid"].transform("count")
 # Relocate the parties_case_tag column after the party_tag column in the data frame
-ocs.relocate_column(df=parties, col_name="parties_case_tag", ref_col_name="party_tag", position="after")
+ocs.relocate_column(df = parties, col_name = "parties_case_tag", ref_col_name = "party_tag", position = "after")
 
 
 ### Victims Tag ----
@@ -772,7 +771,7 @@ print("- Adding victims tag")
 # Create a count of victims for each cid in the victims data frame
 victims["victims_case_tag"] = victims.groupby("cid")["cid"].transform("count")
 # Move the victims_case_tag column after the victim_tag column in the data frame
-ocs.relocate_column(df=victims, col_name="victims_case_tag", ref_col_name="victim_tag", position="after")
+ocs.relocate_column(df = victims, col_name = "victims_case_tag", ref_col_name = "victim_tag", position = "after")
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -788,7 +787,7 @@ print("\n5.1. Convert Data Types")
 
 # convert the accident_year column to integer, if it is not already
 if not pd.api.types.is_integer_dtype(crashes["accident_year"]):
-    crashes["accident_year"] = pd.to_numeric(crashes["accident_year"], errors="coerce", downcast="integer")
+    crashes["accident_year"] = pd.to_numeric(crashes["accident_year"], errors = "coerce", downcast = "integer")
     print("- Converted accident_year to integer")
 else:
     print("- accident_year is already an integer")
@@ -800,11 +799,11 @@ else:
 print("\n5.2. Collision and Process Date Conversion")
 
 # Convert the date_process into date by using the first 4 digits as year, the next 2 digits as month, and the last 2 digits as day
-crashes["date_process"] = pd.to_datetime(crashes["process_date"], format="%Y-%m-%d", errors="coerce")
+crashes["date_process"] = pd.to_datetime(crashes["process_date"], format = "%Y-%m-%d", errors = "coerce")
 
 # Convert the coll_time (Collision Time) to integer, it it is not already
 if not pd.api.types.is_integer_dtype(crashes["coll_time"]):
-    crashes["coll_time"] = pd.to_numeric(crashes["coll_time"], errors="coerce", downcast="integer")
+    crashes["coll_time"] = pd.to_numeric(crashes["coll_time"], errors = "coerce", downcast = "integer")
     print("- Converted coll_time to integer")
 else:
     print("- coll_time is already an integer")
@@ -814,7 +813,7 @@ crashes["coll_time_temp"] = crashes["coll_time"].apply(ocs.format_coll_time)
 
 # Convert the coll_date and coll_time_temp columns to a datetime object with time zone "America/Los_Angeles"
 crashes["date_datetime"] = pd.to_datetime(
-    crashes["coll_date"] + " " + crashes["coll_time_temp"], format="%Y-%m-%d %H:%M:%S", errors="coerce"
+    crashes["coll_date"] + " " + crashes["coll_time_temp"], format = "%Y-%m-%d %H:%M:%S", errors = "coerce"
 )
 
 # Delete the temporary column
@@ -835,7 +834,7 @@ print("- Creating year column")
 crashes["dt_year"] = crashes["date_datetime"].dt.year
 
 # Create a year datetime column from the date_datetime column as a datetime object
-crashes["date_year"] = pd.to_datetime(crashes["date_datetime"].dt.year, format="%Y", errors="coerce")
+crashes["date_year"] = pd.to_datetime(crashes["date_datetime"].dt.year, format = "%Y", errors = "coerce")
 
 
 ### Quarter (Date) ----
@@ -846,7 +845,7 @@ print("- Creating quarter column")
 crashes["dt_quarter"] = crashes["date_datetime"].dt.quarter
 
 # Apply the function to create date_quarter column
-crashes["date_quarter"] = crashes.apply(ocs.quarter_to_date, axis=1)
+crashes["date_quarter"] = crashes.apply(ocs.quarter_to_date, axis = 1)
 
 # Convert the dt_quarter column to categorical
 crashes["dt_quarter"] = ocs.categorical_series(var_series=crashes["dt_quarter"], var_name="dt_quarter", cb_dict=cb)
@@ -860,10 +859,10 @@ print("- Creating month column")
 crashes["dt_month"] = crashes["date_datetime"].dt.month
 
 # Create a month datetime column from the date_datetime column as a datetime object that includes the year
-crashes["date_month"] = pd.to_datetime(crashes["date_datetime"].dt.strftime("%Y-%m"), format="%Y-%m", errors="coerce")
+crashes["date_month"] = pd.to_datetime(crashes["date_datetime"].dt.strftime("%Y-%m"), format = "%Y-%m", errors = "coerce")
 
 # Convert the dt_month column to categorical
-crashes["dt_month"] = ocs.categorical_series(var_series=crashes["dt_month"], var_name="dt_month", cb_dict=cb)
+crashes["dt_month"] = ocs.categorical_series(var_series = crashes["dt_month"], var_name = "dt_month", cb_dict = cb)
 
 
 ### Week of the Year (Date) ----
@@ -879,8 +878,8 @@ crashes["date_week"] = pd.to_datetime(
     + "-W"
     + crashes["date_datetime"].dt.isocalendar().week.astype(str)
     + "-1",
-    format="%Y-W%W-%w",
-    errors="coerce",
+    format = "%Y-W%W-%w",
+    errors = "coerce",
 )
 
 
@@ -890,7 +889,7 @@ print("- Creating day column")
 
 # Create a day datetime column from the date_datetime column as a datetime object
 crashes["date_day"] = pd.to_datetime(
-    crashes["date_datetime"].dt.strftime("%Y-%m-%d"), format="%Y-%m-%d", errors="coerce"
+    crashes["date_datetime"].dt.strftime("%Y-%m-%d"), format = "%Y-%m-%d", errors = "coerce"
 )
 
 
@@ -902,7 +901,7 @@ print("- Creating week day column")
 crashes["dt_week_day"] = crashes["date_datetime"].dt.isocalendar().day
 
 # Convert the dt_week_day column to categorical
-crashes["dt_week_day"] = ocs.categorical_series(var_series=crashes["dt_week_day"], var_name="dt_week_day", cb_dict=cb)
+crashes["dt_week_day"] = ocs.categorical_series(var_series = crashes["dt_week_day"], var_name = "dt_week_day", cb_dict = cb)
 
 
 ### Day of the Month (Date) ----
@@ -986,7 +985,7 @@ print("\n5.4. Collision Time Intervals")
 
 # Create a new column in the crashes data frame called coll_time_intervals that has value of 1 if the dt_hour is between 00:00 and 06:00, 2 if it is between 06:00 and 12:00, 3 if it is between 12:00 and 18:00, 4 if it is between 18:00 and 24:00
 crashes["coll_time_intervals"] = pd.cut(
-    crashes["dt_hour"], bins=[0, 6, 12, 18, 24], labels=[1, 2, 3, 4], right=False, include_lowest=True
+    crashes["dt_hour"], bins = [0, 6, 12, 18, 24], labels = [1, 2, 3, 4], right = False, include_lowest = True
 )
 
 # Convert the coll_time_intervals column to categorical
@@ -1112,7 +1111,7 @@ print("\n6.3. Ranked Collision Severity")
 # Generate a new column in the crashes data frame called coll_severity_rank that ranks the collision severity based on the number of killed and severe injuries
 
 # Apply the function to the crashes data frame to create the coll_severity_rank column
-crashes["coll_severity_rank"] = crashes.apply(ocs.get_coll_severity_rank, axis=1)
+crashes["coll_severity_rank"] = crashes.apply(ocs.get_coll_severity_rank, axis = 1)
 
 # Create a numeric version of the coll_severity_rank column
 crashes["coll_severity_rank_num"] = crashes["coll_severity_rank"].astype(int)
@@ -1832,10 +1831,10 @@ bins = cb["party_age_group"]["recode"]
 bins.append(np.inf)
 parties["party_age_group"] = pd.cut(
     parties["party_age"],
-    bins=cb["party_age_group"]["recode"],
-    labels=[v for k, v in cb["party_age_group"]["labels"].items()],
-    include_lowest=True,
-    right=False,
+    bins = cb["party_age_group"]["recode"],
+    labels = [v for k, v in cb["party_age_group"]["labels"].items()],
+    include_lowest = True,
+    right = False,
 )
 
 # Relocate the party_age_group column after the party_age column in the data frame
@@ -2163,10 +2162,10 @@ bins = cb["vehicle_year_group"]["recode"]
 bins.append(np.inf)
 parties["vehicle_year_group"] = pd.cut(
     parties["vehicle_year"],
-    bins=cb["vehicle_year_group"]["recode"],
-    labels=[v for k, v in cb["vehicle_year_group"]["labels"].items()],
-    include_lowest=True,
-    right=False,
+    bins = cb["vehicle_year_group"]["recode"],
+    labels = [v for k, v in cb["vehicle_year_group"]["labels"].items()],
+    include_lowest = True,
+    right = False,
 )
 
 # Relocate the vehicle_year_group column after the vehicle_year column in the data frame
@@ -2316,10 +2315,10 @@ bins = cb["victim_age_group"]["recode"]
 bins.append(np.inf)
 victims["victim_age_group"] = pd.cut(
     victims["victim_age"],
-    bins=cb["victim_age_group"]["recode"],
-    labels=[v for k, v in cb["victim_age_group"]["labels"].items()],
-    include_lowest=True,
-    right=False,
+    bins = cb["victim_age_group"]["recode"],
+    labels = [v for k, v in cb["victim_age_group"]["labels"].items()],
+    include_lowest = True,
+    right = False,
 )
 
 # Relocate the victim_age_group column after the victim_age column in the data frame
@@ -2357,7 +2356,7 @@ victims["victim_degree_of_injury_bin"] = ocs.categorical_series(
 
 # Relocate the victim_degree_of_injury_bin column after the victim_degree_of_injury column
 ocs.relocate_column(
-    df=victims, col_name="victim_degree_of_injury_bin", ref_col_name="victim_degree_of_injury", position="after"
+    df = victims, col_name = "victim_degree_of_injury_bin", ref_col_name = "victim_degree_of_injury", position = "after"
 )
 
 
@@ -2442,13 +2441,13 @@ victims["victim_ejected"] = ocs.categorical_series(
 print("\n11. Add Column Attributes")
 
 # Add column attributes to the crashes data frame
-crashes = ocs.add_attributes(df=crashes, cb=cb)
+crashes = ocs.add_attributes(df = crashes, cb = cb)
 
 # Add column attributes to the parties data frame
-parties = ocs.add_attributes(df=parties, cb=cb)
+parties = ocs.add_attributes(df = parties, cb = cb)
 
 # Add column attributes to the victims data frame
-victims = ocs.add_attributes(df=victims, cb=cb)
+victims = ocs.add_attributes(df = victims, cb = cb)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2465,14 +2464,14 @@ print("\n12.1. Preparing Roads Dataset for Merging")
 
 # Create a table of road categories by city (contains counts for each category)
 # Use pandas crosstab to replicate R's table function
-road_cat_table = pd.crosstab(roads["place_name"], roads["road_cat"], dropna=False)
+road_cat_table = pd.crosstab(roads["place_name"], roads["road_cat"], dropna = False)
 
 # Remove rows where the city (place_name) is NA
 road_cat_table = road_cat_table[~road_cat_table.index.isna()]
 
 # Convert the table to a data frame and rename the city column to "city"
 road_cat_table = road_cat_table.reset_index()
-road_cat_table.rename(columns={"place_name": "city"}, inplace=True)
+road_cat_table.rename(columns = {"place_name": "city"}, inplace = True)
 
 # Aggregate the roads dataset by city and calculate the mean road length across all road lengths in each city
 mean_road_length = (
@@ -2480,7 +2479,7 @@ mean_road_length = (
     .groupby("place_name")["road_length"]
     .mean()
     .reset_index()
-    .rename(columns={"place_name": "city", "road_length": "road_length_mean"})
+    .rename(columns = {"place_name": "city", "road_length": "road_length_mean"})
 )
 
 # Aggregate the roads dataset by city and calculate the sum of all road lengths in each city
@@ -2489,20 +2488,20 @@ sum_road_length = (
     .groupby("place_name")["road_length"]
     .sum()
     .reset_index()
-    .rename(columns={"place_name": "city", "road_length": "road_length_sum"})
+    .rename(columns = {"place_name": "city", "road_length": "road_length_sum"})
 )
 
 # Merge the mean and sum road length columns into the aggregated roads data frame (road_cat_table)
-roads_aggr = road_cat_table.merge(mean_road_length, on="city", how="left")
-roads_aggr = roads_aggr.merge(sum_road_length, on="city", how="left")
+roads_aggr = road_cat_table.merge(mean_road_length, on = "city", how = "left")
+roads_aggr = roads_aggr.merge(sum_road_length, on = "city", how = "left")
 
 # Reorder the aggregated roads data frame
 roads_aggr = roads_aggr[["city", "Primary", "Secondary", "Local", "road_length_mean", "road_length_sum"]]
 
 # Rename the columns of the aggregated roads data frame
 roads_aggr.rename(
-    columns={"city": "place_name", "Primary": "roads_primary", "Secondary": "roads_secondary", "Local": "roads_local"},
-    inplace=True,
+    columns = {"city": "place_name", "Primary": "roads_primary", "Secondary": "roads_secondary", "Local": "roads_local"},
+    inplace = True,
 )
 
 # Check if the columns in the roads_aggr data frame exist in the roads data frame
@@ -2517,25 +2516,25 @@ if roads_aggr_cols:
     roads_aggr_subset = roads_aggr[["place_name"] + roads_aggr_cols]
     # Merge the aggregated roads data frame into the original roads data frame
     roads = roads.merge(
-        roads_aggr_subset, on="place_name", how="left", suffixes=(".roads", ".aggr"), validate="many_to_one"
+        roads_aggr_subset, on = "place_name", how = "left", suffixes = (".roads", ".aggr"), validate = "many_to_one"
     )
     del roads_aggr_subset
 else:
     print("No new columns to add to the roads data frame")
 
 # Convert the columns to the correct data types
-roads["roads_primary"] = pd.to_numeric(roads["roads_primary"], errors="coerce", downcast="integer")
-roads["roads_secondary"] = pd.to_numeric(roads["roads_secondary"], errors="coerce", downcast="integer")
-roads["roads_local"] = pd.to_numeric(roads["roads_local"], errors="coerce", downcast="integer")
-roads["road_length_mean"] = pd.to_numeric(roads["road_length_mean"], errors="coerce", downcast="float")
-roads["road_length_sum"] = pd.to_numeric(roads["road_length_sum"], errors="coerce", downcast="float")
+roads["roads_primary"] = pd.to_numeric(roads["roads_primary"], errors = "coerce", downcast = "integer")
+roads["roads_secondary"] = pd.to_numeric(roads["roads_secondary"], errors = "coerce", downcast = "integer")
+roads["roads_local"] = pd.to_numeric(roads["roads_local"], errors = "coerce", downcast = "integer")
+roads["road_length_mean"] = pd.to_numeric(roads["road_length_mean"], errors = "coerce", downcast = "float")
+roads["road_length_sum"] = pd.to_numeric(roads["road_length_sum"], errors = "coerce", downcast = "float")
 
 # Rename the "place_name" column of the roads_aggr data frame back to "city"
-roads_aggr.rename(columns={"place_name": "city"}, inplace=True)
+roads_aggr.rename(columns = {"place_name": "city"}, inplace = True)
 
 # Delete the "accident_year" column from the parties and victims data frames
-parties.drop(columns=["accident_year"], inplace=True, errors="ignore")
-victims.drop(columns=["accident_year"], inplace=True, errors="ignore")
+parties.drop(columns = ["accident_year"], inplace = True, errors = "ignore")
+victims.drop(columns = ["accident_year"], inplace = True, errors = "ignore")
 
 del road_cat_table, mean_road_length, sum_road_length, roads_aggr_cols
 
@@ -2552,26 +2551,26 @@ print("- Checking the Data Types of the Columns")
 
 # Create a list of the columns in crashes with their dtypes
 crashes_cols = crashes.dtypes.reset_index()
-crashes_cols.rename(columns={"index": "column_name", 0: "data_type"}, inplace=True)
+crashes_cols.rename(columns = {"index": "column_name", 0: "data_type"}, inplace = True)
 
 # Create a list of the columns in parties with their dtypes
 parties_cols = parties.dtypes.reset_index()
-parties_cols.rename(columns={"index": "column_name", 0: "data_type"}, inplace=True)
+parties_cols.rename(columns = {"index": "column_name", 0: "data_type"}, inplace = True)
 
 # Create a list of the columns in victims with their dtypes
 victims_cols = victims.dtypes.reset_index()
-victims_cols.rename(columns={"index": "column_name", 0: "data_type"}, inplace=True)
+victims_cols.rename(columns = {"index": "column_name", 0: "data_type"}, inplace = True)
 
 # Find the columns that are the same between crashes_cols and parties_cols, and compare their data_types
-common_cols_1 = pd.merge(crashes_cols, parties_cols, on="column_name", suffixes=(".crashes", ".parties"), how="inner")
+common_cols_1 = pd.merge(crashes_cols, parties_cols, on = "column_name", suffixes = (".crashes", ".parties"), how = "inner")
 print(common_cols_1)
 
 # Find the columns that are the same between crashes_cols and victims_cols, and compare their data_types
-common_cols_2 = pd.merge(crashes_cols, victims_cols, on="column_name", suffixes=(".crashes", ".victims"), how="inner")
+common_cols_2 = pd.merge(crashes_cols, victims_cols, on = "column_name", suffixes = (".crashes", ".victims"), how = "inner")
 print(common_cols_2)
 
 # Find the columns that are the same between parties_cols and victims_cols, and compare their data_types
-common_cols_3 = pd.merge(parties_cols, victims_cols, on="column_name", suffixes=(".parties", ".victims"), how="inner")
+common_cols_3 = pd.merge(parties_cols, victims_cols, on = "column_name", suffixes = (".parties", ".victims"), how = "inner")
 print(common_cols_3)
 
 del (crashes_cols, parties_cols, victims_cols, common_cols_1, common_cols_2, common_cols_3)
@@ -2595,37 +2594,37 @@ victims["pid"] = victims["pid"].astype(str)
 # First, merge the crashes and parties datasets based on the Case ID and CID columns (outer join)
 crashes_parties = crashes.merge(
     parties,
-    left_on=["case_id", "cid"],
-    right_on=["case_id", "cid"],
-    how="outer",
-    suffixes=(".crashes", ".parties"),
-    validate="one_to_many",
+    left_on = ["case_id", "cid"],
+    right_on = ["case_id", "cid"],
+    how = "outer",
+    suffixes = (".crashes", ".parties"),
+    validate = "one_to_many",
 )
 
 # Secondly, merge the crashes_parties dataset with the victims dataset based on the Case ID, CID, PID and Party Number columns (outer join)
 crashes_parties_victims = crashes_parties.merge(
     victims,
-    left_on=["case_id", "cid", "pid", "party_number"],
-    right_on=["case_id", "cid", "pid", "party_number"],
-    how="outer",
-    suffixes=(".crashes_parties", ".victims"),
-    validate="one_to_many",
+    left_on = ["case_id", "cid", "pid", "party_number"],
+    right_on = ["case_id", "cid", "pid", "party_number"],
+    how = "outer",
+    suffixes = (".crashes_parties", ".victims"),
+    validate = "one_to_many",
 )
 
 # Thirdly, merge the crashes_parties_victims dataset with the cities dataset based on the City column (inner left join)
 crashes_parties_victims_cities = crashes_parties_victims.merge(
     cities,
-    left_on="city",
-    right_on="city",
-    how="left",
-    suffixes=(".crashes_parties_victims", ".cities"),
-    validate="many_to_one",
+    left_on = "city",
+    right_on = "city",
+    how = "left",
+    suffixes = (".crashes_parties_victims", ".cities"),
+    validate = "many_to_one",
 )
 
 # The final merge, contains the combined collisions data frame
 # Merge the crashes_parties_victims_cities dataset with the aggregated roads data (roads_aggr) on the "city" column (left join)
 collisions = crashes_parties_victims_cities.merge(
-    roads_aggr, left_on="city", right_on="city", how="left", suffixes=(".join3", ".roads"), validate="many_to_one"
+    roads_aggr, left_on = "city", right_on = "city", how = "left", suffixes = (".join3", ".roads"), validate = "many_to_one"
 )
 
 # Convert the collisions to a pandas DataFrame
@@ -2633,10 +2632,10 @@ collisions = pd.DataFrame(collisions)
 
 # Delete the "OBJECTID" and "SHAPE" columns from the collisions data frame
 # These columns are not needed for the analysis
-collisions.drop(columns=["OBJECTID", "SHAPE"], inplace=True, errors="ignore")
+collisions.drop(columns = ["OBJECTID", "SHAPE"], inplace = True, errors = "ignore")
 
 # Reset the index of the collisions data frame
-collisions.reset_index(drop=True, inplace=True)
+collisions.reset_index(drop = True, inplace = True)
 
 # Get the codebook keys that are in the collisions data frame
 cb_keys = [key for key in cb.keys() if key in collisions.columns]
@@ -2645,7 +2644,7 @@ cb_keys = [key for key in cb.keys() if key in collisions.columns]
 collisions = collisions[cb_keys]
 
 # Add the column attributes to the collisions data frame
-collisions = ocs.add_attributes(df=collisions, cb=cb)
+collisions = ocs.add_attributes(df = collisions, cb = cb)
 
 # We can now remove all the temporary datasets (except of the aggregated roads data frame)
 del (crashes_parties, crashes_parties_victims, crashes_parties_victims_cities, roads_aggr, cb_keys)
@@ -2686,7 +2685,7 @@ datetime_cols = [
     "coll_severity_rank_num",
     "coll_severity_hs"
 ]
-parties = parties.merge(crashes[datetime_cols], on="cid", how="left", suffixes=(".parties", ".crashes"))
+parties = parties.merge(crashes[datetime_cols], on = "cid", how = "left", suffixes = (".parties", ".crashes"))
 
 # Get the codebook keys that are in the parties data frame
 cb_keys = [key for key in cb.keys() if key in parties.columns]
@@ -2695,10 +2694,10 @@ cb_keys = [key for key in cb.keys() if key in parties.columns]
 parties = parties[cb_keys]
 
 # Add the column attributes to the parties data frame
-parties = ocs.add_attributes(df=parties, cb=cb)
+parties = ocs.add_attributes(df = parties, cb = cb)
 
 # Add date and time variables from the crashes data frame to the victims data frame on the CID column
-victims = victims.merge(crashes[datetime_cols], on="cid", how="left", suffixes=(".victims", ".crashes"))
+victims = victims.merge(crashes[datetime_cols], on = "cid", how = "left", suffixes = (".victims", ".crashes"))
 
 # Get the codebook keys that are in the victims data frame
 cb_keys = [key for key in cb.keys() if key in victims.columns]
@@ -2707,7 +2706,7 @@ cb_keys = [key for key in cb.keys() if key in victims.columns]
 victims = victims[cb_keys]
 
 # Add the column attributes to the victims data frame
-victims = ocs.add_attributes(df=victims, cb=cb)
+victims = ocs.add_attributes(df = victims, cb = cb)
 
 del datetime_cols, cb_keys
 
@@ -2718,8 +2717,8 @@ del datetime_cols, cb_keys
 print("\n12.3. Update the tag variables")
 
 # First, sort the collisions data frame by cid, pid, and vid
-collisions.sort_values(by=["cid", "pid", "vid"], inplace=True)
-collisions.reset_index(drop=True, inplace=True)
+collisions.sort_values(by = ["cid", "pid", "vid"], inplace = True)
+collisions.reset_index(drop = True, inplace = True)
 
 # Replace the crash_tag column with 1 if it is the first occurrence of a CID, otherwise 0
 collisions["crash_tag"] = (~collisions["cid"].duplicated()).astype(int)
@@ -2752,14 +2751,14 @@ collisions.loc[collisions["combined_ind"] == 999, "combined_ind"] = np.nan
 
 # Convert the combined_ind column to categorical
 collisions["combined_ind"] = ocs.categorical_series(
-    var_series=collisions["combined_ind"], var_name="combined_ind", cb_dict=cb
+    var_series = collisions["combined_ind"], var_name = "combined_ind", cb_dict = cb
 )
 
 # Relocate the collisions combined_ind column after the victim_tag column
-ocs.relocate_column(df=collisions, col_name="combined_ind", ref_col_name="victim_tag", position="after")
+ocs.relocate_column(df = collisions, col_name = "combined_ind", ref_col_name = "victim_tag", position = "after")
 
 # Add the column attributes to the collisions data frame
-collisions = ocs.add_attributes(df=collisions, cb=cb)
+collisions = ocs.add_attributes(df = collisions, cb = cb)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2963,7 +2962,7 @@ with open(metadata_path, "w") as f:
     json.dump(prj_meta["tims"], f, indent=4)
 
 # Update the metadata info
-prj_meta = ocs.project_metadata(part=0, version=2025.2, silent=False)
+prj_meta = ocs.project_metadata(part=0, version=2025.3, silent=False)
 
 
 # Delete the temporary variables
@@ -2984,26 +2983,26 @@ print("- Convert to Spatial Data Frames")
 
 print("  - Converting Crashes data to ArcGIS Spatial Data Frames")
 # Convert the crashes_agp data frame to ArcGIS spatial DataFrame
-crashes_agp = GeoAccessor.from_xy(crashes, x_column="point_x", y_column="point_y", sr=4326)
+crashes_agp = GeoAccessor.from_xy(crashes, x_column = "point_x", y_column = "point_y", sr = 4326)
 
 print("  - Converting Parties data to ArcGIS Spatial Data Frames")
 # Convert the parties_agp data frame to ArcGIS spatial DataFrame
-parties_agp = GeoAccessor.from_xy(parties, x_column="point_x", y_column="point_y", sr=4326)
+parties_agp = GeoAccessor.from_xy(parties, x_column = "point_x", y_column = "point_y", sr = 4326)
 
 print("  - Converting Victims data to ArcGIS Spatial Data Frames")
 # Convert the victims_agp data frame to ArcGIS spatial DataFrame
-victims_agp = GeoAccessor.from_xy(victims, x_column="point_x", y_column="point_y", sr=4326)
+victims_agp = GeoAccessor.from_xy(victims, x_column = "point_x", y_column = "point_y", sr = 4326)
 
 print("  - Converting Collisions data to ArcGIS Spatial Data Frames")
 # Convert the collisions_agp data frame to ArcGIS spatial DataFrame
-collisions_agp = GeoAccessor.from_xy(collisions, x_column="point_x", y_column="point_y", sr=4326)
+collisions_agp = GeoAccessor.from_xy(collisions, x_column = "point_x", y_column = "point_y", sr = 4326)
 
 print("- Changing the spatial reference to Web Mercator")
 # Change the spatial reference of the crashes, parties, victims and collisions data frames to Web Mercator
-crashes_agp.spatial.project(3857, transformation_name=None)
-parties_agp.spatial.project(3857, transformation_name=None)
-victims_agp.spatial.project(3857, transformation_name=None)
-collisions_agp.spatial.project(3857, transformation_name=None)
+crashes_agp.spatial.project(3857, transformation_name = None)
+parties_agp.spatial.project(3857, transformation_name = None)
+victims_agp.spatial.project(3857, transformation_name = None)
+collisions_agp.spatial.project(3857, transformation_name = None)
 
 # Define the path to the raw geodatabase
 gdb_raw = prj_dirs["agp_gdb_raw"]
@@ -3027,41 +3026,41 @@ print("- Exporting the spatial data frames to the geodatabase")
 print("  - Exporting Crashes data to the geodatabase")
 # Export the crashes spatial data frame to the geodatabase
 crashes_agp.spatial.to_featureclass(
-    location=crashes_agp_location, overwrite=True, has_z=None, has_m=None, sanitize_columns=False
+    location = crashes_agp_location, overwrite = True, has_z = None, has_m = None, sanitize_columns = False
 )
 # Export the crashes spatial data frame to the main geodatabase
 crashes_agp.spatial.to_featureclass(
-    location=crashes_main_location, overwrite=True, has_z=None, has_m=None, sanitize_columns=False
+    location = crashes_main_location, overwrite = True, has_z = None, has_m = None, sanitize_columns = False
 )
 
 print("  - Exporting Parties data to the geodatabase")
 # Export the parties spatial data frame to the geodatabase
 parties_agp.spatial.to_featureclass(
-    location=parties_agp_location, overwrite=True, has_z=None, has_m=None, sanitize_columns=False
+    location = parties_agp_location, overwrite = True, has_z = None, has_m = None, sanitize_columns = False
 )
 # Export the parties spatial data frame to the main geodatabase
 parties_agp.spatial.to_featureclass(
-    location=parties_main_location, overwrite=True, has_z=None, has_m=None, sanitize_columns=False
+    location = parties_main_location, overwrite = True, has_z = None, has_m = None, sanitize_columns = False
 )
 
 print("  - Exporting Victims data to the geodatabase")
 # Export the victims spatial data frame to the geodatabase
 victims_agp.spatial.to_featureclass(
-    location=victims_agp_location, overwrite=True, has_z=None, has_m=None, sanitize_columns=False
+    location = victims_agp_location, overwrite = True, has_z = None, has_m = None, sanitize_columns = False
 )
 # Export the victims spatial data frame to the main geodatabase
 victims_agp.spatial.to_featureclass(
-    location=victims_main_location, overwrite=True, has_z=None, has_m=None, sanitize_columns=False
+    location = victims_main_location, overwrite = True, has_z = None, has_m = None, sanitize_columns = False
 )
 
 print("  - Exporting Collisions data to the geodatabase")
 # Export the collisions spatial data frame to the geodatabase
 collisions_agp.spatial.to_featureclass(
-    location=collisions_agp_location, overwrite=True, has_z=None, has_m=None, sanitize_columns=False
+    location = collisions_agp_location, overwrite = True, has_z = None, has_m = None, sanitize_columns = False
 )
 # Export the collisions spatial data frame to the main geodatabase
 collisions_agp.spatial.to_featureclass(
-    location=collisions_main_location, overwrite=True, has_z=None, has_m=None, sanitize_columns=False
+    location = collisions_main_location, overwrite = True, has_z = None, has_m = None, sanitize_columns = False
 )
 
 
@@ -3105,8 +3104,8 @@ proc_cols = {
 
 # Export the processed columns to a JSON file
 proc_cols_path = os.path.join(os.path.join(prj_dirs["codebook"], "proc_cols.json"))
-with open(proc_cols_path, "w", encoding="utf-8") as f:
-    json.dump(proc_cols, f, indent=4)
+with open(proc_cols_path, "w", encoding = "utf-8") as f:
+    json.dump(proc_cols, f, indent = 4)
 del f
 
 
@@ -3116,12 +3115,12 @@ del f
 print("\n15. Save to Disk")
 
 # Save the data to disk
-ocs.save_to_disk(dir_list=prj_dirs, local_vars=locals(), global_vars=globals())
+ocs.save_to_disk(dir_list = prj_dirs, local_vars = locals(), global_vars = globals())
 
 # Save the latex variables to a JSON file
 latex_vars_path = os.path.join(prj_dirs["metadata"], "latex_vars.json")
-with open(latex_vars_path, "w", encoding="utf-8") as f:
-    json.dump(latex_vars, f, indent=4)
+with open(latex_vars_path, "w", encoding = "utf-8") as f:
+    json.dump(latex_vars, f, indent = 4)
 del f
 
 

@@ -11,7 +11,6 @@
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 import os, sys, datetime, pickle
 from typing import Union, List, Optional
-import pprint
 import json, pytz
 import pandas as pd
 from pandas.api.types import CategoricalDtype
@@ -53,6 +52,10 @@ class octraffic:
         18. get_coll_severity_rank(self, row: pd.Series) -> int
         19. counts_by_year(self, df: pd.DataFrame, year: int) -> int
         20. ts_aggregate(self, dt: str, df: pd.DataFrame, cb: dict = cb) -> pd.DataFrame
+        21. plot_victim_count_histogram(self, df: pd.DataFrame, fig: matplotlib.figure.Figure=None, ax: matplotlib.axes.Axes=None) -> tuple
+        22. plot_collision_type_bar(self, df: pd.DataFrame, fig: matplotlib.figure.Figure=None, ax: matplotlib.axes.Axes=None) -> tuple
+        23. plot_fatalities_by_type_and_year(self, df: pd.DataFrame, fig: matplotlib.figure.Figure=None, ax: matplotlib.axes.Axes=None) -> tuple
+        24. compute_monthly_stats(self, ts_month: pd.DataFrame) -> pd.DataFrame
     Examples:
         >>> from octraffic import octraffic
         >>> ocs = octraffic()
@@ -95,7 +98,7 @@ class octraffic:
         
         # Get the first and last dates from the TIMS metadata
         start_date = datetime.date.fromisoformat(tims_metadata[list(tims_metadata.keys())[0]]["date_start"])
-        end_date= datetime.date.fromisoformat(tims_metadata[list(tims_metadata.keys())[-1]]["date_end"])
+        end_date = datetime.date.fromisoformat(tims_metadata[list(tims_metadata.keys())[-1]]["date_end"])
 
         # Check if the part is integer
         if not isinstance(part, int):
@@ -205,7 +208,7 @@ class octraffic:
         tims_path = os.path.join(os.getcwd(), "metadata", "tims_metadata.json")
         # Write the TIMS metadata to a JSON file and overwrite if it exists
         with open(tims_path, 'w') as f:
-            json.dump(tims_metadata, f, indent=4)
+            json.dump(tims_metadata, f, indent = 4)
         
         # if successful, print a message
         print(f"- TIMS metadata exported to disk successfully.")
@@ -450,14 +453,14 @@ class octraffic:
         # Obtain the codes if the type is binary, nominal or ordinal
         if var_type == "binary":
             # Binary codes
-            cat_series = labeled_series.astype(CategoricalDtype(categories=cats, ordered=False))
+            cat_series = labeled_series.astype(CategoricalDtype(categories = cats, ordered = False))
         elif var_type == "nominal":
             # Categorical codes
-            cat_series = labeled_series.astype(CategoricalDtype(categories=cats, ordered=False))
+            cat_series = labeled_series.astype(CategoricalDtype(categories = cats, ordered = False))
         elif var_type == "ordinal":
             # Get the ordered categories
             # Ordinal codes
-            cat_series = labeled_series.astype(CategoricalDtype(categories=cats, ordered=True))
+            cat_series = labeled_series.astype(CategoricalDtype(categories = cats, ordered = True))
         else:
             # Raise an error if the type is not valid
             raise ValueError(f"Variable {var_name} Categorical type is not valid.")
@@ -517,7 +520,7 @@ class octraffic:
             return dt_series.apply(check_dst)
         except (pytz.UnknownTimeZoneError, ValueError, TypeError) as e:
             print(f"Error determining DST: {str(e)}")
-            return pd.Series([False] * len(dt_series), index=dt_series.index)
+            return pd.Series([False] * len(dt_series), index = dt_series.index)
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -719,7 +722,7 @@ class octraffic:
                 # If it is a table, create a new table entry
                 entry_id = f"tbl{nt + 1}"
                 print(f"Creating new table entry with id: {entry_id}")
-                gr_path = gr_dirs["analysis_graphics"] if gr_dirs is not None and "analysis_graphics" in gr_dirs else ""
+                gr_path = gr_dirs["graphics"] if gr_dirs is not None and "graphics" in gr_dirs else ""
                 # Add the table fields from the attributes list provided
                 # for the table entry the attributes must have the following entries provided: name, description, caption, method, fileFormat, file, status
                 entry_table = {
@@ -752,7 +755,7 @@ class octraffic:
             else:
                 # If it is a graphic, create a new graphic entry
                 entry_id = f"fig{ng + 1}"
-                gr_path = gr_dirs["analysis_graphics"] if gr_dirs is not None and "analysis_graphics" in gr_dirs else ""
+                gr_path = gr_dirs["graphics"] if gr_dirs is not None and "graphics" in gr_dirs else ""
                 entry_graphic = {
                     "id": f"fig{ng + 1}",
                     "category": str(gr_attr.get("category", "")),
@@ -838,8 +841,8 @@ class octraffic:
         """
         # Create observed and expected counts for the df[col] column
         observed = df[col].value_counts().values
-        expected = np.full_like(observed, dtype=np.float64, fill_value=np.mean(observed))
-        stat = stats.chisquare(f_obs=observed, f_exp=expected)
+        expected = np.full_like(observed, dtype = np.float64, fill_value = np.mean(observed))
+        stat = stats.chisquare(f_obs = observed, f_exp = expected)
         t = "Chi-squared Goodness-of-Fit test"
         s = stat.statistic
         p = stat.pvalue
@@ -869,7 +872,7 @@ class octraffic:
         Notes:
             This function performs a Kruskal-Wallis H-test for independent samples on VictimCount grouped by Severity.
         """
-        groups = [group[col1].values for name, group in df.groupby(col2, observed=True)]
+        groups = [group[col1].values for name, group in df.groupby(col2, observed = True)]
         test = stats.kruskal(*groups)
         t = "Kruskal-Wallis H-test"
         s = test.statistic
@@ -916,7 +919,7 @@ class octraffic:
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ## 15. Create STL Plot Function ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    def create_stl_plot(self, time_series, season, model="additive", label=None, covid=False, robust=True) -> tuple:
+    def create_stl_plot(self, time_series, season, model = "additive", label = None, covid = False, robust = True) -> tuple:
         """
         Create a Seasonal-Trend decomposition using LOESS (STL).
         Args:
@@ -958,17 +961,17 @@ class octraffic:
         original_title = f"Original Time Series: {label}" if label else "Original Time Series"  # Perform STL decomposition
         if robust:
             # Use STL for robust decomposition
-            stl = sm.tsa.STL(time_series, period=period)
+            stl = sm.tsa.STL(time_series, period = period)
             decomposition = stl.fit()
         else:
             # Use seasonal_decompose for non-robust decomposition
             decomposition = sm.tsa.seasonal_decompose(
-                time_series, period=period, model=model
+                time_series, period = period, model = model
             )  # Create figure with subplots for original, trend, seasonal, and residual
-        fig = plt.figure(figsize=(12, 10))  # Plot original time series
+        fig = plt.figure(figsize = (12, 10))  # Plot original time series
         ax1 = plt.subplot(411)
-        ax1.plot(time_series, color="royalblue")
-        ax1.set_title(original_title, fontweight="bold")
+        ax1.plot(time_series, color = "royalblue")
+        ax1.set_title(original_title, fontweight = "bold")
         # Format y-axis values based on their magnitude
         ax1.yaxis.set_major_formatter(
             plt.FuncFormatter(
@@ -982,9 +985,9 @@ class octraffic:
         ax1.spines["right"].set_visible(False)  # Plot trend component
         ax2 = plt.subplot(412)
         ax2.plot(
-            decomposition.trend, color="brown", linewidth=3
+            decomposition.trend, color = "brown", linewidth = 3
         )  # Increased line thickness
-        ax2.set_title("Trend Component", fontweight="bold")
+        ax2.set_title("Trend Component", fontweight = "bold")
         # Format y-axis values based on their magnitude
         ax2.yaxis.set_major_formatter(
             plt.FuncFormatter(
@@ -997,8 +1000,8 @@ class octraffic:
         ax2.spines["top"].set_visible(False)
         ax2.spines["right"].set_visible(False)  # Plot seasonal component
         ax3 = plt.subplot(413)
-        ax3.plot(decomposition.seasonal, color="darkgreen")
-        ax3.set_title("Seasonal Component", fontweight="bold")
+        ax3.plot(decomposition.seasonal, color = "darkgreen")
+        ax3.set_title("Seasonal Component", fontweight = "bold")
         # Format y-axis values based on their magnitude
         ax3.yaxis.set_major_formatter(
             plt.FuncFormatter(
@@ -1013,8 +1016,8 @@ class octraffic:
 
         # Plot residual component
         ax4 = plt.subplot(414)
-        ax4.plot(decomposition.resid, color="purple")
-        ax4.set_title("Residual Component", fontweight="bold")
+        ax4.plot(decomposition.resid, color = "purple")
+        ax4.set_title("Residual Component", fontweight = "bold")
         # Format y-axis values based on their magnitude
         ax4.yaxis.set_major_formatter(
             plt.FuncFormatter(
@@ -1027,7 +1030,7 @@ class octraffic:
         ax4.spines["top"].set_visible(False)
         ax4.spines["right"].set_visible(False)
         # Ensure time axes are aligned across all subplots
-        fig.subplots_adjust(hspace=0.3)
+        fig.subplots_adjust(hspace = 0.3)
         for ax in [ax1, ax2, ax3, ax4]:
             ax.set_xlim(time_series.index.min(), time_series.index.max())
 
@@ -1054,28 +1057,28 @@ class octraffic:
                     (covid_start_num, ymin),  # Start at the bottom of the plot
                     covid_end_num - covid_start_num,
                     ymax - ymin,  # Span the entire height
-                    facecolor="green",
-                    alpha=0.2,
-                    zorder=0,  # Ensure it's behind the data
+                    facecolor = "green",
+                    alpha = 0.2,
+                    zorder = 0,  # Ensure it's behind the data
                 )
                 ax.add_patch(rect)
 
                 # Add the reference lines
-                ax.axvline(x=covid_start_num, linewidth=0.5, linestyle="dashed", color="darkgreen")
-                ax.axvline(x=covid_end_num, linewidth=0.5, linestyle="dashed", color="darkgreen")
+                ax.axvline(x = covid_start_num, linewidth = 0.5, linestyle = "dashed", color = "darkgreen")
+                ax.axvline(x = covid_end_num, linewidth = 0.5, linestyle = "dashed", color = "darkgreen")
 
             # Add the annotation text only to the first subplot
             covid_mid_dt = covid_start + (covid_end - covid_start) / 2
             covid_mid_num = float(mdates.date2num(covid_mid_dt))
             ax1.annotate(
                 "COVID-19\nRestrictions",
-                xy=(covid_mid_num, ax1.get_ylim()[1] * 0.85),
-                xycoords="data",
-                ha="center",
-                fontsize=10,
-                fontweight="bold",
-                fontstyle="italic",
-                color="darkgreen",
+                xy = (covid_mid_num, ax1.get_ylim()[1] * 0.85),
+                xycoords = "data",
+                ha = "center",
+                fontsize = 10,
+                fontweight = "bold",
+                fontstyle = "italic",
+                color = "darkgreen",
             )
 
         # Adjust layout
@@ -1084,7 +1087,7 @@ class octraffic:
         # Add footnote at the bottom left of the plot
         # if footnote is a single string, add it to the figure
         if footnote is not None and isinstance(footnote, str):
-            fig.text(0.01, 0, footnote, fontsize=10, style="italic", ha="left")
+            fig.text(0.01, 0, footnote, fontsize = 10, style = "italic", ha = "left")
 
         # Return the decomposition result and the figure
         return decomposition, fig
@@ -1156,7 +1159,7 @@ class octraffic:
         month = 1 + (row["dt_quarter"] - 1) * 3
         if ts:
             # Return a Timestamp object for the first day of the quarter
-            return pd.Timestamp(year=row["dt_year"], month=month, day=1)
+            return pd.Timestamp(year = row["dt_year"], month = month, day = 1)
         elif not ts:
             # Return a quarter string (e.g., "2023-Q1")
             return f"{int(row['dt_year'])}-Q{int(row['dt_quarter'])}"
@@ -1246,7 +1249,7 @@ class octraffic:
             KeyError: If the specified date column does not exist in the dataframe.
             ValueError: If the dataframe is empty or does not contain any columns to aggregate.
         Examples:
-            ts_year_crashes = ts_aggregate(dt="date_year", df=crashes, cb=cb)
+            ts_year_crashes = ts_aggregate(dt = "date_year", df = crashes, cb = cb)
         Notes:
             This function aggregates a dataframe by a specified date column and returns a new dataframe with aggregated statistics.
         """
@@ -1255,7 +1258,7 @@ class octraffic:
             agg_df = ts[[dt] + cols].copy()
             for col in cols:
                 if col in agg_df.columns:
-                    agg_df.rename(columns={col: f"{col}_{suffix}"}, inplace=True)
+                    agg_df.rename(columns = {col: f"{col}_{suffix}"}, inplace = True)
             for col in agg_df.columns:
                 if agg_df[col].dtype.name == "category":
                     agg_df[col] = agg_df[col].cat.codes
@@ -1282,18 +1285,319 @@ class octraffic:
         te = _aggregate_helper(df_list, "max", "max")
         tf = _aggregate_helper(df_list, "std", "sd")
         tg = _aggregate_helper(df_list, "sem", "se")
-        ts_aggregated = ta.merge(tb, on=dt, how="outer")
-        ts_aggregated = ts_aggregated.merge(tc, on=dt, how="outer")
-        ts_aggregated = ts_aggregated.merge(td, on=dt, how="outer")
-        ts_aggregated = ts_aggregated.merge(te, on=dt, how="outer")
-        ts_aggregated = ts_aggregated.merge(tf, on=dt, how="outer")
-        ts_aggregated = ts_aggregated.merge(tg, on=dt, how="outer")
+        ts_aggregated = ta.merge(tb, on = dt, how = "outer")
+        ts_aggregated = ts_aggregated.merge(tc, on = dt, how = "outer")
+        ts_aggregated = ts_aggregated.merge(td, on = dt, how = "outer")
+        ts_aggregated = ts_aggregated.merge(te, on = dt, how = "outer")
+        ts_aggregated = ts_aggregated.merge(tf, on = dt, how = "outer")
+        ts_aggregated = ts_aggregated.merge(tg, on = dt, how = "outer")
         
         # Sort the aggregated dataframe by the date column
-        ts_aggregated.sort_values(by=dt, inplace=True)
+        ts_aggregated.sort_values(by = dt, inplace = True)
         
         # Return the aggregated dataframe
         return ts_aggregated
+    
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ## 21. Plot a histogram of victim counts ----
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    def plot_victim_count_histogram(self, df: pd.DataFrame, fig = None, ax = None) -> tuple:
+        """
+        Plots a histogram for the top 10 victim frequency counts.
+        Args:
+            df (pd.DataFrame): DataFrame containing a 'victim_count' column.
+            fig (matplotlib.figure.Figure, optional): Figure object to plot on.
+            ax (matplotlib.axes.Axes, optional): Axes object to plot on.
+        Returns:
+            tuple: (fig, ax) Figure and Axes objects with the plot.
+        Raises:
+            KeyError: If 'victim_count' column is not present in df.
+        Examples:
+            plot_victim_count_histogram(df)
+        Notes:
+            This function plots a histogram for the top 10 victim frequency counts.
+        """
+        if "victim_count" not in df.columns:
+            raise KeyError("The DataFrame must contain a 'victim_count' column.")
+
+        filtered = df[(df["victim_count"] >= 1) & (df["victim_count"] <= 10)]
+
+        if fig is None or ax is None:
+            fig, ax = plt.subplots(figsize = (12, 8))
+        sns.histplot(
+            filtered["victim_count"],
+            bins = 10,
+            binrange = (1, 11),
+            color = "darkred",
+            edgecolor = "white",
+            linewidth = 1,
+            discrete = True,
+            ax = ax,
+        )
+
+        # Annotate bars with counts
+        for p in ax.patches:
+            if hasattr(p, "get_height"):
+                height = p.get_height()
+                if height > 0:
+                    ax.annotate(
+                        f"{int(height):,}",
+                        (p.get_x() + p.get_width() / 2, height),
+                        ha = "center",
+                        va = "bottom",
+                        fontsize = 16,
+                        fontweight = "normal",
+                    )
+
+        ax.set_xlabel("Victim Count", fontsize = 20, color = "black")
+        ax.set_ylabel("Number of Victims in Crash Incidents", fontsize = 20, color = "black")
+        ax.set_title("")
+        ax.set_xticks(range(1, 11))
+        ax.set_yticks(range(0, 120001, 20000))
+        ax.yaxis.set_major_formatter(FuncFormatter(lambda x, _: f"{int(x):,}"))
+        ax.tick_params(axis = "x", labelsize = 18, colors = "black")
+        ax.tick_params(axis = "y", labelsize = 18, colors = "black")
+        fig.text(0.01, 0.01, "Note: Top 10 victim frequency counts", ha = "left", fontsize = 16, color = "black", style = "italic")
+        sns.despine()
+        fig.tight_layout()
+        return fig, ax
+
+
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ## 22. Plot a bar graph of collision types ----
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    def plot_collision_type_bar(self, df: pd.DataFrame, fig = None, ax = None) -> tuple:
+        """
+        Plots a bar graph of collision types from the crashes DataFrame.
+        Args:
+            df (pd.DataFrame): DataFrame containing a 'type_of_coll' column.
+            fig (matplotlib.figure.Figure, optional): Figure object to plot on.
+            ax (matplotlib.axes.Axes, optional): Axes object to plot on.
+        Returns:
+            tuple: (fig, ax) Figure and Axes objects with the plot.
+        Raises:
+            KeyError: If 'type_of_coll' column not found in DataFrame.
+        Examples:
+            >>> plot_collision_type_bar(df)
+        Notes:
+            This function plots a bar graph of collision types from the crashes DataFrame.
+        """
+        if "type_of_coll" not in df.columns:
+            raise KeyError("'type_of_coll' column not found in DataFrame.")
+        # Prepare the data for plotting
+        fig2_data = df["type_of_coll"].value_counts().reset_index()
+        fig2_data.columns = ["CollisionType", "Count"]
+        fig2_data = fig2_data[fig2_data["CollisionType"] != "Not Stated"]
+        fig2_data = fig2_data.sort_values("Count", ascending = False)
+        fig2_data["CollisionType"] = fig2_data["CollisionType"].astype(str)
+        fig2_data["CollisionType_wrapped"] = fig2_data["CollisionType"].apply(
+            lambda x: "\n".join(textwrap.wrap(x, width=10))
+        )
+        if fig is None or ax is None:
+            fig, ax = plt.subplots(figsize = (12, 8))
+        sns.barplot(
+            data = fig2_data,
+            x = "CollisionType_wrapped",
+            y = "Count",
+            hue = "CollisionType_wrapped",
+            palette = "Dark2",
+            legend = True,
+            ax = ax,
+        )
+        for i, count in enumerate(fig2_data["Count"]):
+            ax.text(i, count, f"{count:,}", ha = "center", va = "bottom", fontsize = 16)
+        ax.set_xlabel("Crash Type", fontsize = 20)
+        ax.set_ylabel("Number of Collisions", fontsize = 20)
+        ax.set_title("Type of Collision by Count", fontsize = 22)
+        plt.xticks(rotation = 0, ha = "center", fontsize = 18)
+        plt.yticks(fontsize = 18)
+        ax.yaxis.set_major_formatter(FuncFormatter(lambda x, _: f"{int(x):,}"))
+        ax.yaxis.grid(True, linestyle = ":", color = "gray", zorder = 0)
+        ax.set_axisbelow(True)
+        fig.tight_layout()
+        ax.spines["top"].set_visible(False)
+        ax.spines["right"].set_visible(False)
+        ax.spines["left"].set_visible(True)
+        ax.spines["bottom"].set_visible(True)
+        legend = ax.legend(title = "Crash Type", fontsize = 16, title_fontsize = 18, ncol = 1)
+        if legend is not None:
+            legend.get_frame().set_edgecolor("white")
+            legend.get_frame().set_facecolor("white")
+        return fig, ax
+    
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ## 23. Plot a stacked bar chart of fatalities by type and year ----
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    def plot_fatalities_by_type_and_year(self, df: pd.DataFrame, fig = None, ax = None) -> tuple:
+        """Plot a stacked bar chart of fatalities by type and year.
+        Args:
+            df (pd.DataFrame): DataFrame with columns ["Year", "Type", "Killed"]
+            fig (matplotlib.figure.Figure, optional): Figure object to plot on.
+            ax (matplotlib.axes.Axes, optional): Axes object to plot on.
+        Returns:
+            tuple: (fig, ax) Figure and Axes objects with the plot.
+        Raises:
+            ValueError: If required columns are missing.
+        Examples:
+            plot_fatalities_by_type_and_year(fig3_data)
+        Notes:
+            This function plots a stacked bar chart of fatalities by type and year.
+        """
+        fig3_data = df[
+            ["date_year", "count_car_killed_sum", "count_ped_killed_sum", "count_bic_killed_sum", "count_mc_killed_sum"]
+        ].copy()
+        fig3_data["date_year"] = fig3_data["date_year"].dt.year
+        fig3_data = fig3_data.rename(
+            columns = {
+                "date_year": "Year",
+                "count_car_killed_sum": "Car",
+                "count_ped_killed_sum": "Pedestrian",
+                "count_bic_killed_sum": "Bicycle",
+                "count_mc_killed_sum": "Motorcycle",
+            }
+        )
+        fig3_data = fig3_data[["Year", "Car", "Pedestrian", "Bicycle", "Motorcycle"]]
+        fig3_data = pd.melt(
+            fig3_data,
+            id_vars = ["Year"],
+            value_vars = ["Car", "Pedestrian", "Bicycle", "Motorcycle"],
+            var_name = "Type",
+            value_name = "Killed",
+        )
+        pivot_df = fig3_data.pivot(index = "Year", columns = "Type", values = "Killed").fillna(0)
+        pivot_df = pivot_df.sort_index()
+        palette = sns.color_palette("Set2")
+        if fig is None or ax is None:
+            fig, ax = plt.subplots(figsize = (12, 8))
+        pivot_df.plot(kind = "bar", stacked = True, color = palette, edgecolor = "black", width = 0.9, ax = ax)
+        for c_idx, col in enumerate(pivot_df.columns):
+            if c_idx > 0:
+                y_offset = pivot_df.iloc[:, :c_idx].sum(axis = 1)
+            else:
+                y_offset = pd.Series([0] * len(pivot_df), index = pivot_df.index)
+            for i, (y, val) in enumerate(zip(y_offset, pivot_df[col])):
+                if val > 0:
+                    ax.text(i, y + val / 2, int(val), ha = "center", va = "center", fontsize = 13)
+        ax.set_xlabel("Year", fontsize = 18)
+        ax.set_ylabel("Number of Fatalities", fontsize = 18)
+        ax.tick_params(axis = "y", labelsize = 16)
+        ax.set_title("Number of Fatalities by Type and Year", fontsize = 20, fontweight = "normal")
+        ax.legend(title = None, loc = "upper left", bbox_to_anchor = (0, 1.0), ncol = pivot_df.shape[1], fontsize = 14, frameon = True)
+        legend = ax.get_legend()
+        legend.get_frame().set_edgecolor("white")
+        legend.get_frame().set_facecolor("white")
+        ax.set_xticklabels(ax.get_xticklabels(), rotation = 0, fontsize = 16)
+        ax.grid(axis = "y", linestyle = "--", alpha = 0.7)
+        fig.text(
+            0.01,
+            0.01,
+            "Notes: (a) Stacked bars of number of fatal accidents; (b) bar labels represent category counts",
+            ha = "left",
+            fontsize = 14,
+            style = "italic",
+        )
+        fig.tight_layout(rect = (0, 0.05, 1, 1))
+        return fig, ax
+    
+
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ## 24. Compute monthly statistics ----
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    def compute_monthly_stats(self, ts_month: pd.DataFrame) -> pd.DataFrame:
+        """
+        Compute monthly statistics for the input DataFrame.
+        Args:
+            ts_month (pd.DataFrame): Input DataFrame with monthly data.
+        Returns:
+            pd.DataFrame: DataFrame with computed statistics and additional columns.
+        Raises:
+            ValueError: If input is not a DataFrame.
+        Examples:
+            >>> df = pd.DataFrame({"a": [1, 2, 3], "b": [4, 5, 6]})
+            >>> compute_monthly_stats(df)
+        Notes:
+            This function computes monthly statistics for the input DataFrame.
+        """
+        if not isinstance(ts_month, pd.DataFrame):
+            raise ValueError("Input must be a pandas DataFrame.")
+
+        # Only use numeric columns for statistics
+        numeric_cols = ts_month.select_dtypes(include = [np.number]).columns
+        ts_month_numeric = ts_month[numeric_cols]
+
+        desc = ts_month_numeric.describe(percentiles = [0.5, 0.95]).T
+        desc["sum"] = ts_month_numeric.sum()
+        desc["var"] = ts_month_numeric.var()
+        # Prevent division by zero for coef.var
+        mean_nozero = desc["mean"].where(desc["mean"] != 0, np.nan)
+        desc["coef.var"] = desc["std"] / mean_nozero
+        desc["skewness"] = ts_month_numeric.skew()
+        desc["kurtosis"] = ts_month_numeric.kurtosis()
+        desc["nbr.null"] = ts_month_numeric.isnull().sum()
+        desc["nbr.na"] = ts_month_numeric.isna().sum()
+        desc["nbr.val"] = ts_month_numeric.count()
+        desc["range"] = desc["max"] - desc["min"]
+        # Prevent division by zero for SE.mean
+        desc["SE.mean"] = desc["std"] / desc["count"].apply(lambda x: np.sqrt(x) if pd.notnull(x) and x > 0 else np.nan)
+        # CI.mean.0.95 only where count > 1 and SE.mean is not NaN
+        ci_mask = (desc["count"] > 1) & desc["count"].notna() & desc["SE.mean"].notna()
+        df_for_t = (desc["count"] - 1).where(ci_mask, np.nan).astype(float)
+        t_val = stats.t.ppf(0.975, df_for_t)
+        desc["CI.mean.0.95"] = (desc["mean"] + t_val * desc["SE.mean"]).where(ci_mask, np.nan)
+        desc["normtest.W"] = ts_month_numeric.apply(lambda x: stats.shapiro(x.dropna())[0] if x.count() > 3 else np.nan)
+        desc["normtest.p"] = ts_month_numeric.apply(lambda x: stats.shapiro(x.dropna())[1] if x.count() > 3 else np.nan)
+
+        desc = desc.reset_index().rename(columns = {"index": "var.name", "std": "std.dev", "50%": "median"})
+
+        def get_stat_type(var_name):
+            if var_name.endswith("mean"):
+                return "mean"
+            if var_name.endswith("median"):
+                return "median"
+            if var_name.endswith("sum"):
+                return "sum"
+            if var_name.endswith("std.dev"):
+                return "sd"
+            if var_name.endswith("min"):
+                return "min"
+            if var_name.endswith("max"):
+                return "max"
+            if var_name.startswith("dt_"):
+                return "datetime"
+            return np.nan
+
+        desc["stat.type"] = desc["var.name"].apply(get_stat_type)
+        # Filter to only keep sum, mean, or median
+        desc = desc[desc["stat.type"].isin(["sum", "mean", "median"])]
+
+        col_order = [
+            "stat.type",
+            "var.name",
+            "nbr.val",
+            "nbr.null",
+            "nbr.na",
+            "sum",
+            "min",
+            "max",
+            "range",
+            "median",
+            "mean",
+            "SE.mean",
+            "CI.mean.0.95",
+            "std.dev",
+            "var",
+            "coef.var",
+            "skewness",
+            "skewness",
+            "kurtosis",
+            "kurtosis",
+            "normtest.W",
+            "normtest.p",
+        ]
+        # Remove duplicates in col_order
+        col_order = list(dict.fromkeys(col_order))
+        desc = desc[[col for col in col_order if col in desc.columns]]
+        return desc
 
     
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
