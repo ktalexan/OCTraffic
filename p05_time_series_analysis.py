@@ -24,16 +24,16 @@ print("\n1.1. Libraries and Initialization")
 import os
 import datetime as dt
 import json
-from dateutil.parser import parse
+#from dateutil.parser import parse
 import pandas as pd
-import numpy as np
-import statsmodels.api as sm
-from statsmodels.nonparametric.smoothers_lowess import lowess
+#import numpy as np
+#import statsmodels.api as sm
+#from statsmodels.nonparametric.smoothers_lowess import lowess
 import matplotlib.pyplot as plt
-from matplotlib.ticker import FuncFormatter
-import matplotlib.dates as mdates
-from matplotlib.patches import Rectangle, Patch
-import seaborn as sns
+#from matplotlib.ticker import FuncFormatter
+#import matplotlib.dates as mdates
+#from matplotlib.patches import Rectangle, Patch
+#import seaborn as sns
 from dotenv import load_dotenv
 
 from octraffic import octraffic
@@ -235,7 +235,7 @@ stl_m_crashes, fig_m_crashes = ocs.create_stl_plot(
 )
 
 # Save the figure to disk
-fig_m_crashes.savefig(os.path.join(prj_dirs["analysis_graphics"], "fig_m_crashes.png"), dpi = 300, bbox_inches = "tight")
+fig_m_crashes.savefig(os.path.join(prj_dirs["graphics"], "fig_m_crashes.png"), dpi = 300, bbox_inches = "tight")
 
 # Show the figure
 # fig_m_crashes.show()
@@ -247,7 +247,7 @@ stl_w_crashes, fig_w_crashes = ocs.create_stl_plot(
 )
 
 # Save the figure to disk
-fig_w_crashes.savefig(os.path.join(prj_dirs["analysis_graphics"], "fig_w_crashes.png"), dpi = 300, bbox_inches = "tight")
+fig_w_crashes.savefig(os.path.join(prj_dirs["graphics"], "fig_w_crashes.png"), dpi = 300, bbox_inches = "tight")
 
 # Show the figure
 # fig_w_crashes.show()
@@ -264,7 +264,7 @@ stl_m_victims, fig_m_victims = ocs.create_stl_plot(
 )
 
 # Save the figure to disk
-fig_m_victims.savefig(os.path.join(prj_dirs["analysis_graphics"], "fig_m_victims.png"), dpi = 300, bbox_inches = "tight")
+fig_m_victims.savefig(os.path.join(prj_dirs["graphics"], "fig_m_victims.png"), dpi = 300, bbox_inches = "tight")
 
 # Show the figure
 # fig_m_victims.show()
@@ -276,7 +276,7 @@ stl_w_victims, fig_w_victims = ocs.create_stl_plot(
 )
 
 # Save the figure to disk
-fig_w_victims.savefig(os.path.join(prj_dirs["analysis_graphics"], "fig_w_victims.png"), dpi = 300, bbox_inches = "tight")
+fig_w_victims.savefig(os.path.join(prj_dirs["graphics"], "fig_w_victims.png"), dpi = 300, bbox_inches = "tight")
 
 # Show the figure
 # fig_w_victims.show()
@@ -293,7 +293,7 @@ stl_m_fatal, fig_m_fatal = ocs.create_stl_plot(
 )
 
 # Save the figure to disk
-fig_m_fatal.savefig(os.path.join(prj_dirs["analysis_graphics"], "fig_m_fatal.png"), dpi = 300, bbox_inches = "tight")
+fig_m_fatal.savefig(os.path.join(prj_dirs["graphics"], "fig_m_fatal.png"), dpi = 300, bbox_inches = "tight")
 
 # Show the figure
 # fig_m_fatal.show()
@@ -305,7 +305,7 @@ stl_w_fatal, fig_w_fatal = ocs.create_stl_plot(
 )
 
 # Save the figure to disk
-fig_w_fatal.savefig(os.path.join(prj_dirs["analysis_graphics"], "fig_w_fatal.png"), dpi = 300, bbox_inches = "tight")
+fig_w_fatal.savefig(os.path.join(prj_dirs["graphics"], "fig_w_fatal.png"), dpi = 300, bbox_inches = "tight")
 
 # Show the figure
 # fig_w_fatal.show()
@@ -327,9 +327,7 @@ stl_m_fatal_severe, fig_m_fatal_severe = ocs.create_stl_plot(
 )
 
 # Save the figure to disk
-fig_m_fatal_severe.savefig(
-    os.path.join(prj_dirs["analysis_graphics"], "fig_m_fatal_severe.png"), dpi = 300, bbox_inches = "tight"
-)
+fig_m_fatal_severe.savefig(os.path.join(prj_dirs["graphics"], "fig_m_fatal_severe.png"), dpi = 300, bbox_inches = "tight")
 
 # Show the figure
 # fig_m_fatal_severe.show()
@@ -346,9 +344,7 @@ stl_w_fatal_severe, fig_w_fatal_severe = ocs.create_stl_plot(
 )
 
 # Save the figure to disk
-fig_w_fatal_severe.savefig(
-    os.path.join(prj_dirs["analysis_graphics"], "fig_w_fatal_severe.png"), dpi = 300, bbox_inches = "tight"
-)
+fig_w_fatal_severe.savefig(os.path.join(prj_dirs["graphics"], "fig_w_fatal_severe.png"), dpi = 300, bbox_inches = "tight")
 
 # Show the figure
 # fig_w_fatal_severe.show()
@@ -365,7 +361,7 @@ stl_m_injuries, fig_m_injuries = ocs.create_stl_plot(
 )
 
 # Save the figure to disk
-fig_m_injuries.savefig(os.path.join(prj_dirs["analysis_graphics"], "fig_m_injuries.png"), dpi = 300, bbox_inches = "tight")
+fig_m_injuries.savefig(os.path.join(prj_dirs["graphics"], "fig_m_injuries.png"), dpi = 300, bbox_inches = "tight")
 
 # Show the figure
 # fig_m_injuries.show()
@@ -377,7 +373,7 @@ stl_w_injuries, fig_w_injuries = ocs.create_stl_plot(
 )
 
 # Save the figure to disk
-fig_w_injuries.savefig(os.path.join(prj_dirs["analysis_graphics"], "fig_w_injuries.png"), dpi = 300, bbox_inches = "tight")
+fig_w_injuries.savefig(os.path.join(prj_dirs["graphics"], "fig_w_injuries.png"), dpi = 300, bbox_inches = "tight")
 
 # Show the figure
 # fig_w_injuries.show()
@@ -399,7 +395,7 @@ stl_m_severity, fig_m_severity = ocs.create_stl_plot(
 )
 
 # Save the figure to disk
-fig_m_severity.savefig(os.path.join(prj_dirs["analysis_graphics"], "fig_m_severity.png"), dpi = 300, bbox_inches = "tight")
+fig_m_severity.savefig(os.path.join(prj_dirs["graphics"], "fig_m_severity.png"), dpi = 300, bbox_inches = "tight")
 
 # Show the figure
 # fig_m_severity.show()
@@ -416,7 +412,7 @@ stl_w_severity, fig_w_severity = ocs.create_stl_plot(
 )
 
 # Save the figure to disk
-fig_w_severity.savefig(os.path.join(prj_dirs["analysis_graphics"], "fig_w_severity.png"), dpi = 300, bbox_inches = "tight")
+fig_w_severity.savefig(os.path.join(prj_dirs["graphics"], "fig_w_severity.png"), dpi = 300, bbox_inches = "tight")
 
 # Show the figure
 # fig_w_severity.show()
@@ -529,7 +525,7 @@ stl_w_crashes, fig5 = ocs.create_stl_plot(
 )
 
 # Show the figure
-# fig5.show()
+fig5.show()
 # plt.close(fig5)
 
 
@@ -595,7 +591,7 @@ stl_w_fatal, fig6 = ocs.create_stl_plot(
 )
 
 # Show the figure
-# fig6.show()
+fig6.show()
 # plt.close(fig6)
 
 
@@ -666,7 +662,7 @@ stl_w_severity, fig7 = ocs.create_stl_plot(
 )
 
 # Show the figure
-# fig7.show()
+fig7.show()
 # plt.close(fig7)
 
 
@@ -750,7 +746,7 @@ fig8, ax1, ax2 = ocs.create_victims_severity_plot(
 )
 
 # Show the figure
-#fig8.show()
+fig8.show()
 #plt.close(fig8)
 
 
@@ -855,4 +851,4 @@ ocs.save_to_disk(
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 print("\nLast Execution:", dt.datetime.now().strftime("%Y-%m-%d"))
 print("\nEnd of Script")
-# Last Executed: 2025-10-21
+# Last Executed: 2025-12-26
