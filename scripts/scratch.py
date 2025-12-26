@@ -23,3 +23,5 @@ df_cb[df_cb["fc"].apply(lambda x: x["crashes"] == 1)]
 list_sel = df_cb[df_cb["fc"].apply(lambda x: x["crashes"] == 1) & (df_cb["raw"] == 1)].index.tolist()
 
 list_sel
+
+[col for col in parties.columns if cb[col]["ts"]["parties"] == 1 and cb[col]["stats"]["sum"] == 1]

@@ -52,6 +52,7 @@ class octraffic:
         17. quarter_to_date(self, row: pd.Series, ts: bool = True) -> pd.Timestamp
         18. get_coll_severity_rank(self, row: pd.Series) -> int
         19. counts_by_year(self, df: pd.DataFrame, year: int) -> int
+        20. ts_aggregate(self, dt: str, df: pd.DataFrame, cb: dict = cb) -> pd.DataFrame
     Examples:
         >>> from octraffic import octraffic
         >>> ocs = octraffic()
@@ -1226,6 +1227,73 @@ class octraffic:
             This function returns the number of valid rows in the specified year.
         """
         return len(df[df['date_datetime'].dt.year == year].copy())
+    
+
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ## 20. Time Series Aggregate ----
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    def ts_aggregate(self, dt: str, df: pd.DataFrame, cb: dict) -> pd.DataFrame:
+        """Aggregate a dataframe by a specified date column and return a new dataframe with aggregated statistics.
+        This function takes a date column and a dataframe, and aggregates the dataframe by the date column.
+        It computes the sum, mean, median, min, max, and standard deviation for specified columns in the dataframe.
+        Args:
+            dt (str): The name of the date column to aggregate by.
+            df (pd.DataFrame): The dataframe to aggregate.
+            cb (dict): A configuration dictionary containing metadata about the columns.
+        Returns:
+            pd.DataFrame: A new dataframe with the aggregated statistics.
+        Raises:
+            KeyError: If the specified date column does not exist in the dataframe.
+            ValueError: If the dataframe is empty or does not contain any columns to aggregate.
+        Examples:
+            ts_year_crashes = ts_aggregate(dt="date_year", df=crashes, cb=cb)
+        Notes:
+            This function aggregates a dataframe by a specified date column and returns a new dataframe with aggregated statistics.
+        """
+        # Helper function to aggregate a dataframe by a specified date column
+        def _aggregate_helper(cols, agg_type, suffix):
+            agg_df = ts[[dt] + cols].copy()
+            for col in cols:
+                if col in agg_df.columns:
+                    agg_df.rename(columns={col: f"{col}_{suffix}"}, inplace=True)
+            for col in agg_df.columns:
+                if agg_df[col].dtype.name == "category":
+                    agg_df[col] = agg_df[col].cat.codes
+            agg_df = agg_df.groupby(dt).agg(agg_type).reset_index()
+            return agg_df
+
+        # Get the name of the dataframe
+        df_name = df.attrs["name"]
+        ts = df.copy()
+        
+        # Get the list of columns to aggregate
+        df_list_sum = [col for col in df.columns if cb[col]["ts"][df_name] == 1 and cb[col]["stats"]["sum"] == 1]
+        df_list_mean = [
+            col for col in df.columns if cb[col]["ts"][df_name] == 1 and cb[col]["stats"]["mean"] == 1
+        ]
+        df_list_median = [
+            col for col in df.columns if cb[col]["ts"][df_name] == 1 and cb[col]["stats"]["median"] == 1
+        ]
+        df_list = list(set(df_list_sum + df_list_mean + df_list_median))
+        ta = _aggregate_helper(df_list_sum, "sum", "sum")
+        tb = _aggregate_helper(df_list_mean, "mean", "mean")
+        tc = _aggregate_helper(df_list_median, "median", "median")
+        td = _aggregate_helper(df_list, "min", "min")
+        te = _aggregate_helper(df_list, "max", "max")
+        tf = _aggregate_helper(df_list, "std", "sd")
+        tg = _aggregate_helper(df_list, "sem", "se")
+        ts_aggregated = ta.merge(tb, on=dt, how="outer")
+        ts_aggregated = ts_aggregated.merge(tc, on=dt, how="outer")
+        ts_aggregated = ts_aggregated.merge(td, on=dt, how="outer")
+        ts_aggregated = ts_aggregated.merge(te, on=dt, how="outer")
+        ts_aggregated = ts_aggregated.merge(tf, on=dt, how="outer")
+        ts_aggregated = ts_aggregated.merge(tg, on=dt, how="outer")
+        
+        # Sort the aggregated dataframe by the date column
+        ts_aggregated.sort_values(by=dt, inplace=True)
+        
+        # Return the aggregated dataframe
+        return ts_aggregated
 
     
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
