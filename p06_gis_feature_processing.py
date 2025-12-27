@@ -23,7 +23,7 @@ print("\n1.1. Referencing Libraries and Initialization")
 import os
 import datetime as dt
 import json
-from dateutil.parser import parse
+#from dateutil.parser import parse
 import pandas as pd
 import pytz
 from dotenv import load_dotenv
@@ -304,9 +304,9 @@ print(f"Collisions: {arcpy.GetMessages()}")
 # Collisions field aliases
 for f in collisions_fields:
     if f in list(cb.keys()):
-        print(f"\tMatch {cb[f]['var_order']}: {f} ({cb[f]['label']})")
+        print(f"\tMatch {cb[f]['order']}: {f} ({cb[f]['var_alias']})")
         arcpy.management.AlterField(
-            in_table = collisions, field = f, new_field_alias = cb[f]["label"]
+            in_table = collisions, field = f, new_field_alias = cb[f]["var_alias"]
         )
 print(arcpy.GetMessages())
 
@@ -323,9 +323,9 @@ print(f"Crashes: {arcpy.GetMessages()}")
 # Crashes field aliases
 for f in crashes_fields:
     if f in list(cb.keys()):
-        print(f"\tMatch {cb[f]['var_order']}: {f} ({cb[f]['label']})")
+        print(f"\tMatch {cb[f]['order']}: {f} ({cb[f]['var_alias']})")
         arcpy.management.AlterField(
-            in_table = crashes, field = f, new_field_alias = cb[f]["label"]
+            in_table = crashes, field = f, new_field_alias = cb[f]["var_alias"]
         )
 print(arcpy.GetMessages())
 
@@ -342,9 +342,9 @@ print(f"Parties: {arcpy.GetMessages()}")
 # Parties field aliases
 for f in parties_fields:
     if f in list(cb.keys()):
-        print(f"\tMatch {cb[f]['var_order']}: {f} ({cb[f]['label']})")
+        print(f"\tMatch {cb[f]['order']}: {f} ({cb[f]['var_alias']})")
         arcpy.management.AlterField(
-            in_table = parties, field = f, new_field_alias = cb[f]["label"]
+            in_table = parties, field = f, new_field_alias = cb[f]["var_alias"]
         )
 print(arcpy.GetMessages())
 
@@ -361,9 +361,9 @@ print(f"Victims: {arcpy.GetMessages()}")
 # Victims field aliases
 for f in victims_fields:
     if f in list(cb.keys()):
-        print(f"\tMatch {cb[f]['var_order']}: {f} ({cb[f]['label']})")
+        print(f"\tMatch {cb[f]['order']}: {f} ({cb[f]['var_alias']})")
         arcpy.management.AlterField(
-            in_table = victims, field = f, new_field_alias = cb[f]["label"]
+            in_table = victims, field = f, new_field_alias = cb[f]["var_alias"]
         )
 print(arcpy.GetMessages())
 
@@ -423,9 +423,9 @@ print(f"Roads: {arcpy.GetMessages()}")
 # Roads field aliases
 for f in roads_fields:
     if f in list(cb.keys()):
-        print(f"\tMatch {cb[f]['var_order']}: {f} ({cb[f]['label']})")
+        print(f"\tMatch {cb[f]['order']}: {f} ({cb[f]['var_alias']})")
         arcpy.management.AlterField(
-            in_table = roads, field = f, new_field_alias = cb[f]["label"]
+            in_table = roads, field = f, new_field_alias = cb[f]["var_alias"]
         )
 print(arcpy.GetMessages())
 
@@ -442,9 +442,9 @@ print(f"USC 2020 Census Blocks: {arcpy.GetMessages()}")
 # Census Blocks field aliases
 for f in blocks_fields:
     if f in list(cb.keys()):
-        print(f"\tMatch {cb[f]['var_order']}: {f} ({cb[f]['label']})")
+        print(f"\tMatch {cb[f]['order']}: {f} ({cb[f]['var_alias']})")
         arcpy.management.AlterField(
-            in_table = blocks, field = f, new_field_alias = cb[f]["label"]
+            in_table = blocks, field = f, new_field_alias = cb[f]["var_alias"]
         )
 print(arcpy.GetMessages())
 
@@ -461,9 +461,9 @@ print(f"Cities: {arcpy.GetMessages()}")
 # Cities field aliases
 for f in cities_fields:
     if f in list(cb.keys()):
-        print(f"\tMatch {cb[f]['var_order']}: {f} ({cb[f]['label']})")
+        print(f"\tMatch {cb[f]['order']}: {f} ({cb[f]['var_alias']})")
         arcpy.management.AlterField(
-            in_table = cities, field = f, new_field_alias = cb[f]["label"]
+            in_table = cities, field = f, new_field_alias = cb[f]["var_alias"]
         )
 print(arcpy.GetMessages())
 
