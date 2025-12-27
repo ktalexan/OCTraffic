@@ -797,9 +797,9 @@ graphics_list = ocs.graphics_entry(
 print("\n- Create the Median Age Figure")
 
 # Create the age pyramid plot for parties and victims
-fig = ocs.create_age_pyramid_plot(collisions)
+fig9 = ocs.create_age_pyramid_plot(collisions)
 # Show the figure
-fig.show()
+fig9.show()
 # close the figure to free memory
 #plt.close(fig)  # Close the figure to free memory
 
@@ -809,7 +809,7 @@ fig.show()
 print("\n- Save the Figure")
 
 # Save the figure to a file
-fig.savefig(
+fig9.savefig(
     fname = graphics_list["graphics"]["fig9"]["path"],
     transparent = True,
     dpi = graphics_list["graphics"]["fig9"]["resolution"],
