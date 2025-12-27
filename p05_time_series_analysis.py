@@ -24,16 +24,8 @@ print("\n1.1. Libraries and Initialization")
 import os
 import datetime as dt
 import json
-#from dateutil.parser import parse
 import pandas as pd
-#import numpy as np
-#import statsmodels.api as sm
-#from statsmodels.nonparametric.smoothers_lowess import lowess
 import matplotlib.pyplot as plt
-#from matplotlib.ticker import FuncFormatter
-#import matplotlib.dates as mdates
-#from matplotlib.patches import Rectangle, Patch
-#import seaborn as sns
 from dotenv import load_dotenv
 
 from octraffic import octraffic
