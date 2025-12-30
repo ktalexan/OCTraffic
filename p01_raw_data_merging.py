@@ -24,10 +24,10 @@ import os, datetime
 import json
 import pandas as pd
 from dotenv import load_dotenv
-from octraffic import ocTraffic
+from octraffic import OCTraffic
 
 # Initialize the OCTraffic class
-ocs = ocTraffic(part = 1, version = 2025.3)
+ocs = OCTraffic(part = 1, version = 2025.3)
 
 # Load environment variables from .env file
 load_dotenv()
@@ -309,7 +309,7 @@ try:
     with open(latex_vars_path, "w", encoding = "utf-8") as json_file:
         json.dump(latex_vars, json_file, indent = 4)
     print(f"- LaTeX variables dictionary saved to {latex_vars_path}")
-except Exception as e:
+except OSError as e:
     print(f"- Error saving LaTeX variables dictionary: {e}")
 
 
@@ -318,4 +318,4 @@ except Exception as e:
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 print("\nLast Execution:", datetime.datetime.now().strftime("%Y-%m-%d"))
 print("\nEnd of Script")
-# Last Execution: 2025-12-29
+# Last Execution: 2025-12-30

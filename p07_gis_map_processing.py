@@ -31,17 +31,13 @@ from dotenv import load_dotenv
 import arcpy
 from arcpy import metadata as md
 
-from octraffic import octraffic
+from octraffic import OCTraffic
 
 # Initialize the OCTraffic object
-ocs = octraffic(part = 7, version = 2025.3)
+ocs = OCTraffic(part = 7, version = 2025.3)
 
 # Load environment variables from .env file
 load_dotenv()
-
-# Part and Version
-part = 7
-version = 2025.3
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -119,11 +115,9 @@ md_dates = f"Data from {date_start.strftime('%B %d, %Y')} to {date_end.strftime(
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 print("\n- Codebook")
 
-# Load the JSON file from directory and store it in a variable
-print("- Loading the codebook JSON file")
-cb_path = os.path.join(prj_dirs["codebook"], "cb.json")
-with open(cb_path, encoding = "utf-8") as json_file:
-    cb = json.load(json_file)
+# Load the codebook from the project codebook directory
+print("- Loading the codebook from the project codebook directory")
+cb = ocs.load_cb()
 
 # create a data frame from the codebook
 print("- Creating a data frame from the codebook")

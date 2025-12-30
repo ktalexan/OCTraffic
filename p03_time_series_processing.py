@@ -25,10 +25,10 @@ import pandas as pd
 from dotenv import load_dotenv
 
 # important as it "enhances" Pandas by importing these classes (from ArcGIS API for Python)
-from octraffic import ocTraffic
+from octraffic import OCTraffic
 
 # Initialize the OCTraffic object
-ocs = ocTraffic(part = 3, version = 2025.3)
+ocs = OCTraffic(part = 3, version = 2025.3)
 
 # Load environment variables from .env file
 load_dotenv()
@@ -281,4 +281,4 @@ ocs.save_to_disk(
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 print("\nLast Execution:", datetime.datetime.now().strftime("%Y-%m-%d"))
 print("\nEnd of Script")
-# Last Execution: 2025-12-29
+# Last Execution: 2025-12-30

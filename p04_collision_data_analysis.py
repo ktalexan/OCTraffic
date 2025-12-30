@@ -27,10 +27,10 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from dotenv import load_dotenv
 
-from octraffic import ocTraffic
+from octraffic import OCTraffic
 
 # Initialize the OCTraffic object
-ocs = ocTraffic(part = 4, version = 2025.3)
+ocs = OCTraffic(part = 4, version = 2025.3)
 
 # Set default fonts for matplotlib and seaborn
 plt.rcParams["font.family"] = "serif"
@@ -1704,4 +1704,4 @@ ocs.save_to_disk(
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 print("\nLast Execution:", datetime.datetime.now().strftime("%Y-%m-%d"))
 print("\nEnd of Script")
-# Last Execution: 2025-12-29
+# Last Execution: 2025-12-30

@@ -28,10 +28,10 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from dotenv import load_dotenv
 
-from octraffic import octraffic
+from octraffic import OCTraffic
 
 # Initialize the OCTraffic object
-ocs = octraffic()
+ocs = OCTraffic(part = 5, version = 2025.3)
 
 # Set default fonts for matplotlib and seaborn
 plt.rcParams["font.family"] = "serif"
@@ -42,10 +42,6 @@ load_dotenv()
 
 os.getcwd()
 
-# Part and Version
-part = 5
-version = 2025.3
-
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ## 1.2. Project and Workspace Variables ----
@@ -54,11 +50,11 @@ print("\n1.2. Project and Workspace Variables")
 
 # Create a dictionary with the project metadata
 print("\nCreating project metadata")
-prj_meta = ocs.project_metadata(part = part, version = version, silent = False)
+prj_meta = ocs.project_metadata(silent = False)
 
 # Create a dictionary with the project directories
 print("\nCreating project directories")
-prj_dirs = ocs.project_directories(base_path = os.getcwd(), silent = False)
+prj_dirs = ocs.project_directories(silent = False)
 
 # Set the current working directory to the project root
 os.chdir(prj_dirs["root"])
@@ -137,11 +133,9 @@ graphics_list = pd.read_pickle(os.path.join(prj_dirs["data_python"], "graphics_l
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 print("\n1.4. Loading Codebook from Disk")
 
-# Load the JSON file from directory and store it in a variable
-print("- Loading the codebook JSON file")
-cb_path = os.path.join(prj_dirs["codebook"], "cb.json")
-with open(cb_path, encoding = "utf-8") as json_file:
-    cb = json.load(json_file)
+# Load the codebook from the project codebook directory
+print("- Loading the codebook from the project codebook directory")
+cb = ocs.load_cb()
 
 # create a data frame from the codebook
 print("- Creating a data frame from the codebook")

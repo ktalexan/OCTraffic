@@ -28,10 +28,10 @@ from dotenv import load_dotenv
 
 # important as it "enhances" Pandas by importing these classes (from ArcGIS API for Python)
 from arcgis.features import GeoAccessor
-from octraffic import ocTraffic
+from octraffic import OCTraffic
 
 # Initialize the OCTraffic object
-ocs = ocTraffic(part = 2, version = 2025.3)
+ocs = OCTraffic(part = 2, version = 2025.3)
 
 # Load environment variables from .env file
 load_dotenv()
@@ -2952,8 +2952,8 @@ for year in prj_meta.get("years", []):
 metadata_path = os.path.join(prj_dirs["metadata"], "tims_metadata.json")
 
 # Replace the existing tims_metadata.json file with the updated metadata
-with open(metadata_path, "w") as f:
-    json.dump(prj_meta["tims"], f, indent=4)
+with open(metadata_path, "w", encoding = "utf-8") as f:
+    json.dump(prj_meta["tims"], f, indent = 4)
 
 # Update the metadata info
 prj_meta = ocs.project_metadata(silent=False)
@@ -3076,7 +3076,7 @@ for year in range(min_year, max_year + 1):
     # Update the TIMS metadata for the geocoded data counts
     ocs.update_tims_metadata(
         year = year,
-        type = "geocoded",
+        data_type = "geocoded",
         data_counts = [crashes_agp_counts.get(year, 0), parties_agp_counts.get(year, 0), victims_agp_counts.get(year, 0)]
     )
 
@@ -3118,10 +3118,9 @@ with open(latex_vars_path, "w", encoding = "utf-8") as f:
 del f
 
 
-
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # End of Script ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 print("\nLast Execution:", datetime.date.today().strftime("%Y-%m-%d"))
 print("\nEnd of Script")
-# Last Execution: 2025-12-29
+# Last Execution: 2025-12-30
