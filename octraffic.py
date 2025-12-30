@@ -31,7 +31,7 @@ import codebook.cbl as cbl
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Class containing OCTraffic data processing functions ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-class ocTraffic:
+class OCTraffic:
     """
     Class containing OCTraffic data processing functions.
     Attributes:
@@ -123,7 +123,7 @@ class ocTraffic:
             raise FileNotFoundError(f"Metadata file {metadata_file} does not exist.")
         
         # Load the TIMS metadata
-        with open(metadata_file, 'r', encoding="utf-8") as f:
+        with open(metadata_file, "r", encoding = "utf-8") as f:
             tims_metadata = json.load(f)
         
         # Get the first and last dates from the TIMS metadata
@@ -241,7 +241,7 @@ class ocTraffic:
             json.dump(tims_metadata, f, indent = 4)
         
         # if successful, print a message
-        print(f"- TIMS metadata exported to disk successfully.")
+        print("- TIMS metadata exported to disk successfully.")
         
         return None
 
@@ -249,12 +249,12 @@ class ocTraffic:
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ## 3. Update TIMS Metadata Function ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    def update_tims_metadata(self, year: int, type: str = "reported", data_counts = None) -> None:
+    def update_tims_metadata(self, year: int, data_type: str = "reported", data_counts = None) -> None:
         """
         Update the TIMS metadata file with the counts of crashes, parties, and victims for a given year and type.
         Args:
             year (int): The year for which the metadata is being updated.
-            type (str): The type of data being updated. Valid values are "reported", "geocoded", or "excluded".
+            data_type (str): The type of data being updated. Valid values are "reported", "geocoded", or "excluded".
             data_counts (list, optional): A list containing the counts of crashes, parties, and victims.
         Returns:
             None
@@ -268,8 +268,8 @@ class ocTraffic:
         """    
         # Types definition
         types = ["reported", "geocoded", "excluded"]
-        if type not in types:
-            raise ValueError(f"Invalid type '{type}'. Valid types are: {', '.join(types)}")
+        if data_type not in types:
+            raise ValueError(f"Invalid data_type '{data_type}'. Valid types are: {', '.join(types)}")
         
         if data_counts is None:
             data_counts = [0, 0, 0]  # Default to zero counts for crashes, parties, victims
@@ -294,18 +294,18 @@ class ocTraffic:
             tims_metadata = json.load(f)
         
         # Update the metadata for the specified type
-        if type == "reported":
+        if data_type == "reported":
             tims_metadata[str(year)]["reported"]["crashes"] = count_crashes
-        elif type == "geocoded":
+        elif data_type == "geocoded":
             tims_metadata[str(year)]["geocoded"]["parties"] = count_parties
-        elif type == "excluded":
+        elif data_type == "excluded":
             tims_metadata[str(year)]["excluded"]["victims"] = count_victims
         
         # Save the updated metadata back to the file
         with open(metadata_file, 'w', encoding="utf-8") as f:
             json.dump(tims_metadata, f, indent=4)
         
-        print(f"TIMS metadata for {year} ({type}) updated successfully:\nCrashes: {count_crashes:,}, Parties: {count_parties:,}, Victims: {count_victims:,}")
+        print(f"TIMS metadata for {year} ({data_type}) updated successfully:\nCrashes: {count_crashes:,}, Parties: {count_parties:,}, Victims: {count_victims:,}")
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1960,11 +1960,13 @@ class ocTraffic:
         severity_std = data["severity"].std()
 
         # Function to format y-axis ticks for victims
-        def victims_formatter(x, pos):
+        #def victims_formatter(x, pos):
+        def victims_formatter(x):
             return f"{z_to_original(x, victims_mean, victims_std):.0f}"
 
         # Function to format y-axis ticks for severity
-        def severity_formatter(x, pos):
+        #def severity_formatter(x, pos):
+        def severity_formatter(x):
             return f"{z_to_original(x, severity_mean, severity_std):.2f}"
 
         # Apply formatters to axes
@@ -2080,8 +2082,10 @@ class ocTraffic:
         ax.barh(victim_data["Age"], victim_data["Freq"], color = "darkorange", label = "Victim Age")
 
         # Format x-axis labels with commas and no negative signs
-        def abs_comma(x, pos):
-            return f'{abs(x):,}'
+        #def abs_comma(x, pos):
+        def abs_comma(x):
+            result = f"{abs(x):,}" 
+            return result
 
         ax.xaxis.set_major_formatter(FuncFormatter(abs_comma))  # Set axis limits
         max_freq = max(fig9a_data["Freq"].max(), fig9a_data["Freq"].max())
