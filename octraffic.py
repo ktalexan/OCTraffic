@@ -9,7 +9,7 @@
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Import necessary libraries ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-import os, sys, datetime, pickle
+import os, datetime, pickle
 import textwrap
 from typing import Union, List, Optional
 import json, pytz
@@ -20,19 +20,18 @@ from scipy import stats
 import statsmodels.api as sm
 from statsmodels.nonparametric.smoothers_lowess import lowess
 import matplotlib.pyplot as plt
-from matplotlib.ticker import FuncFormatter, MultipleLocator
+from matplotlib.ticker import FuncFormatter
 import matplotlib.dates as mdates
 from matplotlib.patches import Rectangle, Patch
 import seaborn as sns
-import codebook.cbl as cbl
 import arcpy
-
+import codebook.cbl as cbl
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Class containing OCTraffic data processing functions ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-class octraffic:
+class ocTraffic:
     """
     Class containing OCTraffic data processing functions.
     Attributes:
@@ -42,57 +41,76 @@ class octraffic:
         2. export_tims_metadata(self, metadata: dict) -> None
         3. update_tims_metadata(self, year: int, type: str = "reported", data_counts = None) -> None
         4. project_directories(self, base_path: str, silent: bool = False) -> dict
-        5. relocate_column(self, df: pd.DataFrame, col_name: Union[str, List[str]], ref_col_name: str, position: str = "after") -> pd.DataFrame
-        6. categorical_series(self, var_series: pd.Series, var_name: str, cb_dict: dict) -> pd.Series
-        7. is_dst(self, dt_series: pd.Series, tz_name: str = "America/Los_Angeles") -> pd.Series
-        8. add_attributes(self, df: pd.DataFrame, cb: dict) -> pd.DataFrame
-        9. save_to_disk(self, dir_list: dict, local_vars: dict = locals(), global_vars: dict = globals()) -> None
-        10. graphics_entry(self, gr_type: int, gr_id: int, gr_attr: dict, gr_list: Optional[dict] = None, gr_dirs: Optional[dict] = None) -> None
-        11. chi2_test(self, df: pd.DataFrame, col1: str, col2: str) -> dict
-        12. chi2_gof_test(self, df: pd.DataFrame, col: str) -> dict
-        13. kruskal_test(self, df: pd.DataFrame, col1: str, col2: str) -> dict
-        14. p_value_display(self, p_value: float) -> str
-        15. create_stl_plot(self, time_series, season, model="additive", label=None, covid=False, robust=True) -> tuple
-        16. format_coll_time(self, x: int) -> str
-        17. quarter_to_date(self, row: pd.Series, ts: bool = True) -> pd.Timestamp
-        18. get_coll_severity_rank(self, row: pd.Series) -> int
-        19. counts_by_year(self, df: pd.DataFrame, year: int) -> int
-        20. ts_aggregate(self, dt: str, df: pd.DataFrame, cb: dict = cb) -> pd.DataFrame
-        21. plot_victim_count_histogram(self, df: pd.DataFrame, fig: matplotlib.figure.Figure=None, ax: matplotlib.axes.Axes=None) -> tuple
-        22. plot_collision_type_bar(self, df: pd.DataFrame, fig: matplotlib.figure.Figure=None, ax: matplotlib.axes.Axes=None) -> tuple
-        23. plot_fatalities_by_type_and_year(self, df: pd.DataFrame, fig: matplotlib.figure.Figure=None, ax: matplotlib.axes.Axes=None) -> tuple
-        24. compute_monthly_stats(self, ts_month: pd.DataFrame) -> pd.DataFrame
-        25. create_monthly_fatalities_figure(self, ts_month: pd.DataFrame) -> tuple
-        26. create_victims_severity_plot(self,data: pd.DataFrame, save_path: str = None, show_plot: bool = True) -> tuple
-        27. create_age_pyramid_plot(self, collisions: pd.DataFrame) -> tuple
-        28. export_cim(self, cim_type: str, cim_object: object, cim_name: str) -> None
-        29. set_layer_time(self, layer: arcpy.mapping.Layer) -> None
-        30. layout_configuration(self, nmf: int) -> dict
+        5. load_cb(self) -> dict
+        6. relocate_column(self, df: pd.DataFrame, col_name: Union[str, List[str]], ref_col_name: str, position: str = "after") -> pd.DataFrame
+        7. categorical_series(self, var_series: pd.Series, var_name: str, cb_dict: dict) -> pd.Series
+        8. is_dst(self, dt_series: pd.Series, tz_name: str = "America/Los_Angeles") -> pd.Series
+        9. add_attributes(self, df: pd.DataFrame, cb: dict) -> pd.DataFrame
+        10. save_to_disk(self, dir_list: dict, local_vars: dict = locals(), global_vars: dict = globals()) -> None
+        11. graphics_entry(self, gr_type: int, gr_id: int, gr_attr: dict, gr_list: Optional[dict] = None, gr_dirs: Optional[dict] = None) -> None
+        12. chi2_test(self, df: pd.DataFrame, col1: str, col2: str) -> dict
+        13. chi2_gof_test(self, df: pd.DataFrame, col: str) -> dict
+        14. kruskal_test(self, df: pd.DataFrame, col1: str, col2: str) -> dict
+        15. p_value_display(self, p_value: float) -> str
+        16. create_stl_plot(self, time_series, season, model="additive", label=None, covid=False, robust=True) -> tuple
+        17. format_coll_time(self, x: int) -> str
+        18. quarter_to_date(self, row: pd.Series, ts: bool = True) -> pd.Timestamp
+        19. get_coll_severity_rank(self, row: pd.Series) -> int
+        20. counts_by_year(self, df: pd.DataFrame, year: int) -> int
+        21. ts_aggregate(self, dt: str, df: pd.DataFrame, cb: dict = cb) -> pd.DataFrame
+        22. plot_victim_count_histogram(self, df: pd.DataFrame, fig: matplotlib.figure.Figure=None, ax: matplotlib.axes.Axes=None) -> tuple
+        23. plot_collision_type_bar(self, df: pd.DataFrame, fig: matplotlib.figure.Figure=None, ax: matplotlib.axes.Axes=None) -> tuple
+        24. plot_fatalities_by_type_and_year(self, df: pd.DataFrame, fig: matplotlib.figure.Figure=None, ax: matplotlib.axes.Axes=None) -> tuple
+        25. compute_monthly_stats(self, ts_month: pd.DataFrame) -> pd.DataFrame
+        26. create_monthly_fatalities_figure(self, ts_month: pd.DataFrame) -> tuple
+        27. create_victims_severity_plot(self,data: pd.DataFrame, save_path: str = None, show_plot: bool = True) -> tuple
+        28. create_age_pyramid_plot(self, collisions: pd.DataFrame) -> tuple
+        29. export_cim(self, cim_type: str, cim_object: object, cim_name: str) -> None
+        30. set_layer_time(self, layer: arcpy.mapping.Layer) -> None
+        31. layout_configuration(self, nmf: int) -> dict
     Examples:
         >>> from octraffic import octraffic
         >>> ocs = octraffic()
         >>> ocs.create_stl_plot(time_series, season, model="additive", label=None, covid=False, robust=True)
     """
 
-    def __init__(self):
-        pass
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ## 0. Class initialization ----
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    def __init__(self, part: int, version: float):
+        self.part = part
+        self.version = version
+        self.base_path = os.getcwd()
+
+        # Create an prj_meta variable calling the function using the part and version variables from the initialization
+        self.prj_meta = self.project_metadata(silent = True)
+
+        # Create an prj_dir variable calling the function using the part and version variables from the initialization
+        self.prj_dir = self.project_directories(silent = True)
+
+        # Load the codebook
+        self.cb_path = os.path.join(self.prj_dir["codebook"], "cb.json")
+        self.cb = self.load_cb()
+
+        # Load the ArcGIS Pro project
+        self.aprx_path: str = self.prj_dir.get("agp_aprx", "")
+        self.aprx = arcpy.mp.ArcGISProject(self.aprx_path)
+
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ## 1. Project metadata function ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    def project_metadata(self, part: int, version: float, silent: bool = False) -> dict:
+    def project_metadata(self, silent: bool = False) -> dict:
         """
         Function to generate project metadata for the OCTraffic data processing project.
         Args:
-            part (int): The part number of the project.
-            version (float): The version number of the project.
             silent (bool): If True, suppresses the print output. Default is False.
         Returns:
             metadata (dict): A dictionary containing the project metadata. The dictionary includes: name, title, description, version, author, years, date_start, date_end, date_updated, and TIMS metadata.
         Raises:
             ValueError: If part is not an integer, or if version is not numeric.
         Example:
-            >>> metadata = project_metadata(1, 1.0)
+            >>> metadata = self.project_metadata()
         Notes:
             This function reads the TIMS metadata from a JSON file located in the "metadata" directory.
             It generates a dictionary with project metadata based on the provided part and version.
@@ -105,7 +123,7 @@ class octraffic:
             raise FileNotFoundError(f"Metadata file {metadata_file} does not exist.")
         
         # Load the TIMS metadata
-        with open(metadata_file, 'r') as f:
+        with open(metadata_file, 'r', encoding="utf-8") as f:
             tims_metadata = json.load(f)
         
         # Get the first and last dates from the TIMS metadata
@@ -113,18 +131,18 @@ class octraffic:
         end_date = datetime.date.fromisoformat(tims_metadata[list(tims_metadata.keys())[-1]]["date_end"])
 
         # Check if the part is integer
-        if not isinstance(part, int):
+        if not isinstance(self.part, int):
             raise ValueError("Part must be an integer.")
 
         # Check if the version is numeric
-        if not isinstance(version, (int, float)):
+        if not isinstance(self.version, (int, float)):
             raise ValueError("Version must be a number.")
         
         # Set dateUpdated to the current date
         date_updated = datetime.date.today()
         
         # Match the part to a specific step and description (with default case)
-        match part:
+        match self.part:
             case 0:
                 step = "Part 0: TIMS Metadata Update"
                 desc = "Updating the TIMS metadata for the OCTraffic data processing project."
@@ -167,7 +185,7 @@ class octraffic:
             "name": "OCTraffic Data Processing",
             "title": step,
             "description": desc,
-            "version": version,
+            "version": self.version,
             "author": "Dr. Kostas Alexandridis, GISP",
             "years": [tims_metadata[key]["year"] for key in tims_metadata.keys()],
             "date_start": start_date,
@@ -209,9 +227,9 @@ class octraffic:
         # keeping original logic structure but 'metadata' is argument. 
         
         if isinstance(metadata, dict):
-             if "tims" in metadata:
+            if "tims" in metadata:
                 tims_metadata = metadata["tims"]
-             else:
+            else:
                 raise ValueError("- Metadata does not contain 'tims' key.")
         else:
             raise ValueError("- Metadata must be a dictionary.")
@@ -219,7 +237,7 @@ class octraffic:
         # Define the path to the metadata directory
         tims_path = os.path.join(os.getcwd(), "metadata", "tims_metadata.json")
         # Write the TIMS metadata to a JSON file and overwrite if it exists
-        with open(tims_path, 'w') as f:
+        with open(tims_path, 'w', encoding="utf-8") as f:
             json.dump(tims_metadata, f, indent = 4)
         
         # if successful, print a message
@@ -272,7 +290,7 @@ class octraffic:
             raise FileNotFoundError(f"Metadata file {metadata_file} does not exist.")
         
         # Load the TIMS metadata
-        with open(metadata_file, 'r') as f:
+        with open(metadata_file, 'r', encoding="utf-8") as f:
             tims_metadata = json.load(f)
         
         # Update the metadata for the specified type
@@ -284,7 +302,7 @@ class octraffic:
             tims_metadata[str(year)]["excluded"]["victims"] = count_victims
         
         # Save the updated metadata back to the file
-        with open(metadata_file, 'w') as f:
+        with open(metadata_file, 'w', encoding="utf-8") as f:
             json.dump(tims_metadata, f, indent=4)
         
         print(f"TIMS metadata for {year} ({type}) updated successfully:\nCrashes: {count_crashes:,}, Parties: {count_parties:,}, Victims: {count_victims:,}")
@@ -293,56 +311,55 @@ class octraffic:
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ## 4. Project Directories function ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    def project_directories(self, base_path: str, silent: bool = False) -> dict:
+    def project_directories(self, silent: bool = False) -> dict:
         """
         Function to generate project directories for the OCTraffic data processing project.
         Args:
-            base_path (str): The base path of the project.
             silent (bool): If True, suppresses the print output. Default is False.
         Returns:
             prj_dirs (dict): A dictionary containing the project directories.
         Raises:
             ValueError: If base_path is not a string.
         Example:
-            >>> prj_dirs = project_directories("/path/to/project")
+            >>> prj_dirs = self.project_directories()
         Notes:
             This function creates a dictionary of project directories based on the base path.
             The function also checks if the base path exists and raises an error if it does not.
         """
         prj_dirs = {
-            "root": base_path,
-            "admin": os.path.join(base_path, "admin"),
-            "agp": os.path.join(base_path, "octagp"),
-            "agp_aprx": os.path.join(base_path, "octagp", "octagp.aprx"),
-            "agp_gdb": os.path.join(base_path, "octagp", "octagp.gdb"),
-            "agp_gdb_raw": os.path.join(base_path, "octagp", "octagp.gdb", "raw"),
-            "agp_gdb_supporting": os.path.join(base_path, "octagp", "octagp.gdb", "supporting"),
-            "agp_gdb_analysis": os.path.join(base_path, "octagp", "octagp.gdb", "analysis"),
-            "agp_gdb_hotspots": os.path.join(base_path, "octagp", "octagp.gdb", "hotspots"),
-            "gdbmain": os.path.join(base_path, "gis", "octmain.gdb"),
-            "gdbmain_raw": os.path.join(base_path, "gis", "octmain.gdb", "raw"),
-            "gdbmain_supporting": os.path.join(base_path, "gis", "octmain.gdb", "supporting"),
-            "analysis": os.path.join(base_path, "analysis"),
-            "codebook": os.path.join(base_path, "codebook"),
-            "data": os.path.join(base_path, "data"),
-            "data_ago": os.path.join(base_path, "data", "ago"),
-            "data_archived": os.path.join(base_path, "data", "archived"),
-            "data_processed": os.path.join(base_path, "data", "processed"),
-            "data_python": os.path.join(base_path, "data", "python"),
-            "data_raw": os.path.join(base_path, "data", "raw"),
-            "gis": os.path.join(base_path, "gis"),
-            "gis_layers": os.path.join(base_path, "gis", "layers"),
-            "gis_layers_templates": os.path.join(base_path, "gis", "layers", "templates"),
-            "gis_layouts": os.path.join(base_path, "gis", "layouts"),
-            "gis_maps": os.path.join(base_path, "gis", "maps"),
-            "gis_styles": os.path.join(base_path, "gis", "styles"),
-            "graphics": os.path.join(base_path, "graphics"),
-            "graphics_gis": os.path.join(base_path, "graphics", "gis"),
-            "metadata": os.path.join(base_path, "metadata"),
-            "notebooks": os.path.join(base_path, "notebooks"),
-            "notebooks_archived": os.path.join(base_path, "notebooks", "archived"),
-            "scripts": os.path.join(base_path, "scripts"),
-            "scripts_archived": os.path.join(base_path, "scripts", "archived")
+            "root": self.base_path,
+            "admin": os.path.join(self.base_path, "admin"),
+            "agp": os.path.join(self.base_path, "octagp"),
+            "agp_aprx": os.path.join(self.base_path, "octagp", "octagp.aprx"),
+            "agp_gdb": os.path.join(self.base_path, "octagp", "octagp.gdb"),
+            "agp_gdb_raw": os.path.join(self.base_path, "octagp", "octagp.gdb", "raw"),
+            "agp_gdb_supporting": os.path.join(self.base_path, "octagp", "octagp.gdb", "supporting"),
+            "agp_gdb_analysis": os.path.join(self.base_path, "octagp", "octagp.gdb", "analysis"),
+            "agp_gdb_hotspots": os.path.join(self.base_path, "octagp", "octagp.gdb", "hotspots"),
+            "gdbmain": os.path.join(self.base_path, "gis", "octmain.gdb"),
+            "gdbmain_raw": os.path.join(self.base_path, "gis", "octmain.gdb", "raw"),
+            "gdbmain_supporting": os.path.join(self.base_path, "gis", "octmain.gdb", "supporting"),
+            "analysis": os.path.join(self.base_path, "analysis"),
+            "codebook": os.path.join(self.base_path, "codebook"),
+            "data": os.path.join(self.base_path, "data"),
+            "data_ago": os.path.join(self.base_path, "data", "ago"),
+            "data_archived": os.path.join(self.base_path, "data", "archived"),
+            "data_processed": os.path.join(self.base_path, "data", "processed"),
+            "data_python": os.path.join(self.base_path, "data", "python"),
+            "data_raw": os.path.join(self.base_path, "data", "raw"),
+            "gis": os.path.join(self.base_path, "gis"),
+            "gis_layers": os.path.join(self.base_path, "gis", "layers"),
+            "gis_layers_templates": os.path.join(self.base_path, "gis", "layers", "templates"),
+            "gis_layouts": os.path.join(self.base_path, "gis", "layouts"),
+            "gis_maps": os.path.join(self.base_path, "gis", "maps"),
+            "gis_styles": os.path.join(self.base_path, "gis", "styles"),
+            "graphics": os.path.join(self.base_path, "graphics"),
+            "graphics_gis": os.path.join(self.base_path, "graphics", "gis"),
+            "metadata": os.path.join(self.base_path, "metadata"),
+            "notebooks": os.path.join(self.base_path, "notebooks"),
+            "notebooks_archived": os.path.join(self.base_path, "notebooks", "archived"),
+            "scripts": os.path.join(self.base_path, "scripts"),
+            "scripts_archived": os.path.join(self.base_path, "scripts", "archived")
         }
         # Print the project directories
         if not silent:
@@ -350,11 +367,32 @@ class octraffic:
             for key, value in prj_dirs.items():
                 print(f"- {key}: {value}")
         # Return the project directories
-        return prj_dirs
+        return prj_dirs    
 
-
+    
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## 5. Relocate Dataframe Column Function ----
+    ## 5. Load Codebook Function ----
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    def load_cb(self) -> dict:
+        """
+        Load the codebook.
+        Args:
+            None
+        Returns:
+            cb (dict): The codebook.
+        Raises:
+            Nothing
+        Example:
+            >>>cb = load_cb()
+        Notes:
+            This function loads the codebook from the codebook path.
+        """
+        with open(self.cb_path, encoding = "utf-8") as json_file:
+            cb = json.load(json_file)
+        return cb
+    
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ## 6. Relocate Dataframe Column Function ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def relocate_column(
         self, df: pd.DataFrame, col_name: Union[str, List[str]], ref_col_name: str, position: str = "after"
@@ -418,7 +456,7 @@ class octraffic:
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## 6. Categorical Pandas Series function ----
+    ## 7. Categorical Pandas Series function ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def categorical_series(self, var_series: pd.Series, var_name: str, cb_dict: dict) -> pd.Series:
         """
@@ -482,7 +520,7 @@ class octraffic:
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## 7. Determine Daylight Saving Time function ----
+    ## 8. Determine Daylight Saving Time function ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def is_dst(self, dt_series: pd.Series, tz_name: str = "America/Los_Angeles") -> pd.Series:
         """
@@ -536,7 +574,7 @@ class octraffic:
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## 8. Add Codebook Attributes Function ----
+    ## 9. Add Codebook Attributes Function ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def add_attributes(self, df: pd.DataFrame, cb: dict) -> pd.DataFrame:
         """
@@ -577,7 +615,7 @@ class octraffic:
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## 9. Save to Disk Function ----
+    ## 10. Save to Disk Function ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def save_to_disk(self, dir_list: dict, local_vars: dict = locals(), global_vars: dict = globals()) -> None:
         """
@@ -680,7 +718,7 @@ class octraffic:
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## 10. Graphics Entry Function ----
+    ## 11. Graphics Entry Function ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def graphics_entry(
         self, gr_type: int, gr_id: int, gr_attr: dict, gr_list: Optional[dict] = None, gr_dirs: Optional[dict] = None
@@ -801,7 +839,7 @@ class octraffic:
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## 11. Chi-squared Independence Test Function ----
+    ## 12. Chi-squared Independence Test Function ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def chi2_test(self, df: pd.DataFrame, col1: str, col2: str) -> dict:
         """
@@ -832,7 +870,7 @@ class octraffic:
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## 12. Chi-squared Goodness-of-fit Function ----
+    ## 13. Chi-squared Goodness-of-fit Function ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def chi2_gof_test(self, df: pd.DataFrame, col: str) -> dict:
         """
@@ -864,7 +902,7 @@ class octraffic:
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## 13. Kruskal-Wallis H-test Function ----
+    ## 14. Kruskal-Wallis H-test Function ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def kruskal_test(self, df: pd.DataFrame, col1: str, col2: str) -> dict:
         """
@@ -895,7 +933,7 @@ class octraffic:
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## 14. P-Value Display Function ----
+    ## 15. P-Value Display Function ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def p_value_display(self, p_value: float) -> str:
         """
@@ -929,7 +967,7 @@ class octraffic:
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## 15. Create STL Plot Function ----
+    ## 16. Create STL Plot Function ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def create_stl_plot(self, time_series, season, model = "additive", label = None, covid = False, robust = True) -> tuple:
         """
@@ -988,7 +1026,7 @@ class octraffic:
         ax1.yaxis.set_major_formatter(
             plt.FuncFormatter(
                 lambda x, loc: (
-                    "{:,.0f}".format(x) if abs(x) == 0 else "{:,.2f}".format(x) if abs(x) < 1 else "{:,.0f}".format(x)
+                    f"{x:,.0f}" if abs(x) == 0 else f"{x:,.2f}" if abs(x) < 1 else f"{x:,.0f}"
                 )
             )
         )
@@ -1004,7 +1042,7 @@ class octraffic:
         ax2.yaxis.set_major_formatter(
             plt.FuncFormatter(
                 lambda x, loc: (
-                    "{:,.0f}".format(x) if abs(x) == 0 else "{:,.2f}".format(x) if abs(x) < 1 else "{:,.0f}".format(x)
+                    f"{x:,.0f}" if abs(x) == 0 else f"{x:,.2f}" if abs(x) < 1 else f"{x:,.0f}"
                 )
             )
         )
@@ -1018,7 +1056,7 @@ class octraffic:
         ax3.yaxis.set_major_formatter(
             plt.FuncFormatter(
                 lambda x, loc: (
-                    "{:,.0f}".format(x) if abs(x) == 0 else "{:,.2f}".format(x) if abs(x) < 1 else "{:,.0f}".format(x)
+                    f"{x:,.0f}" if abs(x) == 0 else f"{x:,.2f}" if abs(x) < 1 else f"{x:,.0f}"
                 )
             )
         )
@@ -1034,7 +1072,7 @@ class octraffic:
         ax4.yaxis.set_major_formatter(
             plt.FuncFormatter(
                 lambda x, loc: (
-                    "{:,.0f}".format(x) if abs(x) == 0 else "{:,.2f}".format(x) if abs(x) < 1 else "{:,.0f}".format(x)
+                    f"{x:,.0f}" if abs(x) == 0 else f"{x:,.2f}" if abs(x) < 1 else f"{x:,.0f}"
                 )
             )
         )
@@ -1106,7 +1144,7 @@ class octraffic:
     
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## 16. Format Collision Time ----
+    ## 17. Format Collision Time ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def format_coll_time(self, x: int) -> str:
         """Convert the coll_time to a formatted time string in HH:MM:SS format.
@@ -1146,7 +1184,7 @@ class octraffic:
         return time_out
     
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## 17. Quarter to Date ----
+    ## 18. Quarter to Date ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def quarter_to_date(self, row: pd.Series, ts: bool = True) -> pd.Timestamp:
         """Convert the quarter to a datetime object representing the first day of the quarter.
@@ -1179,7 +1217,7 @@ class octraffic:
             raise ValueError("ts must be True or False")
     
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## 18. Get Collision Severity Rank ----
+    ## 19. Get Collision Severity Rank ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def get_coll_severity_rank(self, row: pd.Series) -> int:
         """Get the severity rank of a collision based on the number of killed and severe injured.
@@ -1221,7 +1259,7 @@ class octraffic:
             return np.nan
     
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## 19. Get Counts by Year ----
+    ## 20. Get Counts by Year ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def counts_by_year(self, df: pd.DataFrame, year: int) -> int:
         """
@@ -1245,7 +1283,7 @@ class octraffic:
     
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## 20. Time Series Aggregate ----
+    ## 21. Time Series Aggregate ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def ts_aggregate(self, dt: str, df: pd.DataFrame, cb: dict) -> pd.DataFrame:
         """Aggregate a dataframe by a specified date column and return a new dataframe with aggregated statistics.
@@ -1311,7 +1349,7 @@ class octraffic:
         return ts_aggregated
     
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## 21. Plot a histogram of victim counts ----
+    ## 22. Plot a histogram of victim counts ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def plot_victim_count_histogram(self, df: pd.DataFrame, fig = None, ax = None) -> tuple:
         """
@@ -1376,7 +1414,7 @@ class octraffic:
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## 22. Plot a bar graph of collision types ----
+    ## 23. Plot a bar graph of collision types ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def plot_collision_type_bar(self, df: pd.DataFrame, fig = None, ax = None) -> tuple:
         """
@@ -1438,7 +1476,7 @@ class octraffic:
         return fig, ax
     
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## 23. Plot a stacked bar chart of fatalities by type and year ----
+    ## 24. Plot a stacked bar chart of fatalities by type and year ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def plot_fatalities_by_type_and_year(self, df: pd.DataFrame, fig = None, ax = None) -> tuple:
         """Plot a stacked bar chart of fatalities by type and year.
@@ -1513,7 +1551,7 @@ class octraffic:
     
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## 24. Compute monthly statistics ----
+    ## 25. Compute Monthly Statistics ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def compute_monthly_stats(self, ts_month: pd.DataFrame) -> pd.DataFrame:
         """
@@ -1613,7 +1651,7 @@ class octraffic:
 
     
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## 25. Create monthly fatalities figure ----
+    ## 26. Create Monthly Fatalities Figure ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def create_monthly_fatalities_figure(self, ts_month: pd.DataFrame) -> tuple:
         """
@@ -1762,7 +1800,7 @@ class octraffic:
         return fig4, ax
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## 26. Create the victims vs severity overlay plot function ----
+    ## 27. Create Victims vs Severity Overlay Plot Function ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def create_victims_severity_plot(self,data: pd.DataFrame, save_path: str = None, show_plot: bool = True) -> tuple:
         """Creates a time series overlay plot of victims vs collision severity.
@@ -1989,7 +2027,7 @@ class octraffic:
         return fig, ax1, ax2
     
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## 27. Age Pyramid Plot ----
+    ## 28. Age Pyramid Plot ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def create_age_pyramid_plot(self, collisions:pd.DataFrame) -> plt.Figure:
         """
@@ -2043,7 +2081,7 @@ class octraffic:
 
         # Format x-axis labels with commas and no negative signs
         def abs_comma(x, pos):
-            return '{:,}'.format(int(abs(x)))
+            return f'{abs(x):,}'
 
         ax.xaxis.set_major_formatter(FuncFormatter(abs_comma))  # Set axis limits
         max_freq = max(fig9a_data["Freq"].max(), fig9a_data["Freq"].max())
@@ -2070,7 +2108,7 @@ class octraffic:
         return fig
     
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## 28. Export CIM Object to JSON ----
+    ## 29. Export CIM Object to JSON ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def export_cim(self, cim_type:str, cim_object:object, cim_name:str) -> None:
         """Export a CIM object to a file in both native (MAPX, PAGX, LYRX) and JSON CIM formats.
@@ -2094,25 +2132,25 @@ class octraffic:
             case "map":
                 # Export the CIM object to a MAPX file
                 print(f"Exporting {cim_name} map to MAPX...")
-                cim_object.exportToMAPX(os.path.join(prj_dirs.get("maps", ""), cim_name + ".mapx"))
+                cim_object.exportToMAPX(os.path.join(self.prj_dirs.get("maps", ""), cim_name + ".mapx"))
                 print(arcpy.GetMessages())
                 # Export the CIM object to a JSON file
                 print(f"Exporting {cim_name} map to JSON...\n")
-                with open(os.path.join(prj_dirs.get("maps", ""), cim_name + ".mapx"), "r", encoding = "utf-8") as f:
+                with open(os.path.join(self.prj_dirs.get("maps", ""), cim_name + ".mapx"), "r", encoding = "utf-8") as f:
                     data = f.read()
-                with open(os.path.join(prj_dirs.get("maps", ""), cim_name + ".json"), "w", encoding = "utf-8") as f:
+                with open(os.path.join(self.prj_dirs.get("maps", ""), cim_name + ".json"), "w", encoding = "utf-8") as f:
                     f.write(data)
             # When the CIM object is a layout
             case "layout":
                 # Export the CIM object to a PAGX file
                 print(f"Exporting {cim_name} layout to PAGX...")
-                cim_object.exportToPAGX(os.path.join(prj_dirs.get("layouts", ""), cim_name + ".pagx"))
+                cim_object.exportToPAGX(os.path.join(self.prj_dirs.get("layouts", ""), cim_name + ".pagx"))
                 print(arcpy.GetMessages())
                 # Export the CIM object to a JSON file
                 print(f"Exporting {cim_name} layout to JSON...\n")
-                with open(os.path.join(prj_dirs.get("layouts", ""), cim_name + ".pagx"), "r", encoding = "utf-8") as f:
+                with open(os.path.join(self.prj_dirs.get("layouts", ""), cim_name + ".pagx"), "r", encoding = "utf-8") as f:
                     data = f.read()
-                with open(os.path.join(prj_dirs.get("layouts", ""), cim_name + ".json"), "w", encoding = "utf-8") as f:
+                with open(os.path.join(self.prj_dirs.get("layouts", ""), cim_name + ".json"), "w", encoding = "utf-8") as f:
                     f.write(data)
             # When the CIM object is a layer
             case "layer":
@@ -2120,7 +2158,7 @@ class octraffic:
                 print(f"Exporting {cim_name} layer to LYRX...")
                 # Reformat the name of the output file
                 cim_new_name = "default_layer_name"  # Initialize cim_new_name with a default value
-                for m in aprx.listMaps():
+                for m in self.aprx.listMaps():
                     for l in m.listLayers():
                         if l == cim_object:
                             cim_new_name = (
@@ -2128,30 +2166,31 @@ class octraffic:
                             )
                 # Save the layer to a LYRX file
                 arcpy.management.SaveToLayerFile(
-                    cim_object, os.path.join(prj_dirs.get("layers", ""), cim_new_name + ".lyrx")
+                    cim_object, os.path.join(self.prj_dirs.get("layers", ""), cim_new_name + ".lyrx")
                 )
                 print(arcpy.GetMessages())
                 # Export the CIM object to a JSON file
                 print(f"Exporting {cim_name} layer to JSON...\n")
-                with open(os.path.join(prj_dirs.get("layers", ""), cim_new_name + ".lyrx"), "r", encoding = "utf-8") as f:
+                with open(os.path.join(self.prj_dirs.get("layers", ""), cim_new_name + ".lyrx"), "r", encoding = "utf-8") as f:
                     data = f.read()
-                with open(os.path.join(prj_dirs.get("layers", ""), cim_new_name + ".json"), "w", encoding = "utf-8") as f:
+                with open(os.path.join(self.prj_dirs.get("layers", ""), cim_new_name + ".json"), "w", encoding = "utf-8") as f:
                     f.write(data)
     
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## 29. Set Layer Time ----
+    ## 30. Set Layer Time ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    def set_layer_time(self, layer) -> None:
+    def set_layer_time(self, time_settings: dict, layer) -> None:
         """
         Set the time properties for a layer in the map.
         Args:
-            layer (arcpy.mapping.Layer): The layer to set the time properties for.
+            time_settings (dict): A dictionary containing the time settings for the layer.
+            layer: The layer to set the time properties for.
         Returns:
             None
         Raises:
             ValueError: If the layer is not time-enabled.
         Examples:
-            >>> set_layer_time(layer)
+            >>> set_layer_time(time_settings, layer)
         Notes:
             The layer must be a valid layer in the map.
         """
@@ -2175,9 +2214,10 @@ class octraffic:
         if layer.isTimeEnabled:
             layer.time.timeStepInterval = 1.0
             layer.time.timeStepIntervalUnits = "months"
-    
+
+
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ## 30. Layout Configuration ----
+    ## 31. Layout Configuration ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def layout_configuration(self, nmf:int) -> dict:
         """

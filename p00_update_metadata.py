@@ -22,18 +22,13 @@ print("\n1.1. Referencing Libraries and Initialization")
 import os, datetime
 import json
 from dotenv import load_dotenv
-from octraffic import octraffic
+from octraffic import ocTraffic
 
 # Initialize the OCTraffic class
-ocs = octraffic()
+ocs = ocTraffic(part = 0, version = 2025.3)
 
 # Loading environment variables from .env file
 load_dotenv()
-
-# Part and Version
-part = 0
-version = 2025.3
-
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ## 1.2. Data Definition Variables ----
@@ -56,11 +51,12 @@ print("\n1.3. Project and Workspace Variables")
 
 # Create a dictionary with the project metadata
 print("\nCreating project metadata")
-prj_meta = ocs.project_metadata(part = part, version = version, silent = False)
+prj_meta = ocs.project_metadata(silent = False)
 
 # Create a dictionary with the project directories
 print("\nCreating project directories")
-prj_dirs = ocs.project_directories(base_path = os.getcwd(), silent = False)
+prj_dirs = ocs.project_directories(silent = False)
+
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -187,7 +183,7 @@ with open(metadata_path, "w", encoding = "utf-8") as f:
     json.dump(prj_meta["tims"], f, indent = 4)
 
 # Update the metadata info
-prj_meta = ocs.project_metadata(part = 0, version = 2025.3, silent = False)
+prj_meta = ocs.project_metadata(silent = False)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -195,4 +191,4 @@ prj_meta = ocs.project_metadata(part = 0, version = 2025.3, silent = False)
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 print("\nLast Execution:", datetime.datetime.now().strftime("%Y-%m-%d"))
 print("\nEnd of Script")
-# Last Execution: 2025-12-26
+# Last Execution: 2025-12-29

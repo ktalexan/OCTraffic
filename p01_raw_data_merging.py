@@ -24,17 +24,13 @@ import os, datetime
 import json
 import pandas as pd
 from dotenv import load_dotenv
-from octraffic import octraffic
+from octraffic import ocTraffic
 
 # Initialize the OCTraffic class
-ocs = octraffic()
+ocs = ocTraffic(part = 1, version = 2025.3)
 
 # Load environment variables from .env file
 load_dotenv()
-
-# Part and Version
-part = 1
-version = 2025.3
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -44,11 +40,15 @@ print("\n1.2. Project and Workspace Variables")
 
 # Create a dictionary with the project metadata
 print("\nCreating project metadata")
-prj_meta = ocs.project_metadata(part = part, version = version, silent = False)
+prj_meta = ocs.project_metadata(silent = False)
 
 # Create a dictionary with the project directories
 print("\nCreating project directories")
-prj_dirs = ocs.project_directories(base_path = os.getcwd(), silent = False)
+prj_dirs = ocs.project_directories(silent = False)
+
+# Import the codeboom
+print("\nImporting codeboom")
+cb = ocs.load_cb()
 
 # Set the current working directory to the project root
 os.chdir(prj_dirs["root"])
@@ -318,4 +318,4 @@ except Exception as e:
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 print("\nLast Execution:", datetime.datetime.now().strftime("%Y-%m-%d"))
 print("\nEnd of Script")
-# Last Execution: 2025-12-26
+# Last Execution: 2025-12-29

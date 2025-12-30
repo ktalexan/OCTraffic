@@ -21,24 +21,19 @@ print("\n1.1. Libraries and Initialization")
 
 # Import necessary libraries
 import os, datetime
-import json
 import pandas as pd
 from dotenv import load_dotenv
 
 # important as it "enhances" Pandas by importing these classes (from ArcGIS API for Python)
-from octraffic import octraffic
+from octraffic import ocTraffic
 
 # Initialize the OCTraffic object
-ocs = octraffic()
+ocs = ocTraffic(part = 3, version = 2025.3)
 
 # Load environment variables from .env file
 load_dotenv()
 
 os.getcwd()
-
-# Part and Version
-part = 3
-version = 2025.3
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -48,11 +43,11 @@ print("\n1.2. Project and Workspace Variables")
 
 # Create a dictionary with the project metadata
 print("\nCreating project metadata")
-prj_meta = ocs.project_metadata(part = part, version = version, silent = False)
+prj_meta = ocs.project_metadata(silent = False)
 
 # Create a dictionary with the project directories
 print("\nCreating project directories")
-prj_dirs = ocs.project_directories(base_path = os.getcwd(), silent = False)
+prj_dirs = ocs.project_directories(silent = False)
 
 # Set the current working directory to the project root
 os.chdir(prj_dirs["root"])
@@ -106,11 +101,9 @@ data_dict = pd.read_pickle(os.path.join(prj_dirs["data_python"], "data_dict.pkl"
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 print("\n1.4. Loading Codebook from Disk")
 
-# Load the JSON file from directory and store it in a variable
-print("- Loading the codebook JSON file")
-cb_path = os.path.join(prj_dirs["codebook"], "cb.json")
-with open(cb_path, encoding = "utf-8") as json_file:
-    cb = json.load(json_file)
+# Load the codebook from the project codebook directory
+print("- Loading the codebook from the project codebook directory")
+cb = ocs.load_cb()
 
 # create a data frame from the codebook
 print("- Creating a data frame from the codebook")
@@ -288,4 +281,4 @@ ocs.save_to_disk(
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 print("\nLast Execution:", datetime.datetime.now().strftime("%Y-%m-%d"))
 print("\nEnd of Script")
-# Last Execution: 2025-12-26
+# Last Execution: 2025-12-29

@@ -4,7 +4,7 @@
         "date_start": "2012-01-01",
         "date_end": "2012-12-31",
         "date_updated": "2025-01-30",
-        "date_gp": "2025-12-26",
+        "date_gp": "2025-12-29",
         "status": "final",
         "files": {
             "crashes": "Crashes_2012.csv",
@@ -33,7 +33,7 @@
         "date_start": "2013-01-01",
         "date_end": "2013-12-31",
         "date_updated": "2025-06-12",
-        "date_gp": "2025-12-26",
+        "date_gp": "2025-12-29",
         "status": "final",
         "files": {
             "crashes": "Crashes_2013.csv",
@@ -62,7 +62,7 @@
         "date_start": "2014-01-01",
         "date_end": "2014-12-31",
         "date_updated": "2025-06-12",
-        "date_gp": "2025-12-26",
+        "date_gp": "2025-12-29",
         "status": "final",
         "files": {
             "crashes": "Crashes_2014.csv",
@@ -91,7 +91,7 @@
         "date_start": "2015-01-01",
         "date_end": "2015-12-31",
         "date_updated": "2025-06-12",
-        "date_gp": "2025-12-26",
+        "date_gp": "2025-12-29",
         "status": "final",
         "files": {
             "crashes": "Crashes_2015.csv",
@@ -120,7 +120,7 @@
         "date_start": "2016-01-01",
         "date_end": "2016-12-31",
         "date_updated": "2025-06-12",
-        "date_gp": "2025-12-26",
+        "date_gp": "2025-12-29",
         "status": "final",
         "files": {
             "crashes": "Crashes_2016.csv",
@@ -149,7 +149,7 @@
         "date_start": "2017-01-01",
         "date_end": "2017-12-31",
         "date_updated": "2025-06-12",
-        "date_gp": "2025-12-26",
+        "date_gp": "2025-12-29",
         "status": "final",
         "files": {
             "crashes": "Crashes_2017.csv",
@@ -178,7 +178,7 @@
         "date_start": "2018-01-01",
         "date_end": "2018-12-31",
         "date_updated": "2025-06-12",
-        "date_gp": "2025-12-26",
+        "date_gp": "2025-12-29",
         "status": "final",
         "files": {
             "crashes": "Crashes_2018.csv",
@@ -207,7 +207,7 @@
         "date_start": "2019-01-01",
         "date_end": "2019-12-31",
         "date_updated": "2025-06-12",
-        "date_gp": "2025-12-26",
+        "date_gp": "2025-12-29",
         "status": "final",
         "files": {
             "crashes": "Crashes_2019.csv",
@@ -236,7 +236,7 @@
         "date_start": "2020-01-01",
         "date_end": "2020-12-31",
         "date_updated": "2025-06-12",
-        "date_gp": "2025-12-26",
+        "date_gp": "2025-12-29",
         "status": "final",
         "files": {
             "crashes": "Crashes_2020.csv",
@@ -265,7 +265,7 @@
         "date_start": "2021-01-01",
         "date_end": "2021-12-31",
         "date_updated": "2025-06-12",
-        "date_gp": "2025-12-26",
+        "date_gp": "2025-12-29",
         "status": "final",
         "files": {
             "crashes": "Crashes_2021.csv",
@@ -294,7 +294,7 @@
         "date_start": "2022-01-01",
         "date_end": "2022-12-31",
         "date_updated": "2025-06-12",
-        "date_gp": "2025-12-26",
+        "date_gp": "2025-12-29",
         "status": "final",
         "files": {
             "crashes": "Crashes_2022.csv",
@@ -323,7 +323,7 @@
         "date_start": "2023-01-01",
         "date_end": "2023-12-31",
         "date_updated": "2025-09-30",
-        "date_gp": "2025-12-26",
+        "date_gp": "2025-12-29",
         "status": "final",
         "files": {
             "crashes": "Crashes_2023.csv",
@@ -352,7 +352,7 @@
         "date_start": "2024-01-01",
         "date_end": "2024-12-31",
         "date_updated": "2025-09-30",
-        "date_gp": "2025-12-26",
+        "date_gp": "2025-12-29",
         "status": "provisional",
         "files": {
             "crashes": "Crashes_2024.csv",
@@ -381,7 +381,7 @@
         "date_start": "2025-01-01",
         "date_end": "2025-09-30",
         "date_updated": "2025-12-26",
-        "date_gp": "2025-12-26",
+        "date_gp": "2025-12-29",
         "status": "provisional",
         "files": {
             "crashes": "Crashes_2025.csv",

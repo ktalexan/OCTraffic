@@ -34,7 +34,7 @@ from arcpy import metadata as md
 from octraffic import octraffic
 
 # Initialize the OCTraffic object
-ocs = octraffic()
+ocs = octraffic(part = 7, version = 2025.3)
 
 # Load environment variables from .env file
 load_dotenv()
@@ -56,11 +56,11 @@ print("\n- Project and Geodatabase Paths")
 
 # Create a dictionary with the project metadata
 print("\nCreating project metadata")
-prj_meta = ocs.project_metadata(part = part, version = version, silent = False)
+prj_meta = ocs.project_metadata(silent = False)
 
 # Create a dictionary with the project directories
 print("\nCreating project directories")
-prj_dirs = ocs.project_directories(base_path = os.getcwd(), silent = False)
+prj_dirs = ocs.project_directories(silent = False)
 
 # Set the current working directory to the project root
 os.chdir(prj_dirs["root"])
@@ -883,7 +883,7 @@ map_collisions_lyr_collisions.visible = False
 print("- Enable Time Settings")
 
 # Setup and enable time settings for the collisions map layers
-ocs.set_layer_time(map_collisions_lyr_collisions)
+ocs.set_layer_time(time_settings = time_settings, layer = map_collisions_lyr_collisions)
 
 
 ### Layer Symbology ----
@@ -1039,7 +1039,7 @@ map_crashes_lyr_crashes.visible = False
 print("- Enable Time Settings")
 
 # Setup and enable time settings for the crashes map layers
-ocs.set_layer_time(map_crashes_lyr_crashes)
+ocs.set_layer_time(time_settings = time_settings, layer = map_crashes_lyr_crashes)
 
 
 ### Layer Symbology ----
@@ -1196,7 +1196,7 @@ map_parties_lyr_parties.visible = False
 print("- Enable Time Settings")
 
 # Setup and enable time settings for the parties map layers
-ocs.set_layer_time(map_parties_lyr_parties)
+ocs.set_layer_time(time_settings = time_settings, layer = map_parties_lyr_parties)
 
 
 ### Layer Symbology ----
@@ -1354,7 +1354,7 @@ map_victims_lyr_victims.visible = False
 print("- Enable Time Settings")
 
 # Setup and enable time settings for the victims map layers
-ocs.set_layer_time(map_victims_lyr_victims)
+ocs.set_layer_time(time_settings = time_settings, layer = map_victims_lyr_victims)
 
 
 ### Layer Symbology ----
