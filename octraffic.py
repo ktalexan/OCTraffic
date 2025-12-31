@@ -68,6 +68,7 @@ class OCTraffic:
         29. export_cim(self, cim_type: str, cim_object: object, cim_name: str) -> None
         30. set_layer_time(self, layer: arcpy.mapping.Layer) -> None
         31. layout_configuration(self, nmf: int) -> dict
+        32. delete_feature_class(self, fc_name: str, gdb_path: Optional[str] = None, dataset: Optional[str] = None) -> None
     Examples:
         >>> from octraffic import octraffic
         >>> ocs = octraffic()
@@ -2516,6 +2517,52 @@ class OCTraffic:
                     },
                 }
         return lyt_config
+
+
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ## 32. Delete Feature Class ----
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    def delete_feature_class(self, fc_name: str, gdb_path: Optional[str] = None, dataset: Optional[str] = None) -> None:
+        """
+        Deletes a feature class from a geodatabase.
+        Args:
+            fc_name (str): Name of the feature class to delete.
+            gdb_path (str, optional): Path to the geodatabase. If None, uses the project geodatabase.
+            dataset (str, optional): Name of the feature dataset.
+        Returns:
+            None
+        Raises:
+            FileNotFoundError: If the geodatabase does not exist.
+            ValueError: If the geodatabase path is invalid.
+        """
+        # Determine GDB path
+        if gdb_path is None:
+            gdb_path = self.prj_dir.get("agp_gdb", "")
+        
+        # Validate geodatabase path
+        if not gdb_path:
+            raise ValueError("Geodatabase path is not provided and could not be determined from project directories.")
+        if not os.path.exists(gdb_path):
+            raise FileNotFoundError(f"Geodatabase not found: {gdb_path}")
+        
+        # Construct full path
+        if dataset:
+            fc_path = os.path.join(gdb_path, dataset, fc_name)
+        else:
+            fc_path = os.path.join(gdb_path, fc_name)
+        
+        # Check usage of arcpy
+        if not arcpy.Exists(fc_path):
+            print(f"Feature class '{fc_name}' does not exist at {fc_path}. Skipping deletion.")
+            return
+
+        try:
+            # Delete the feature class
+            arcpy.management.Delete(fc_path)
+            print(f"Successfully deleted feature class: {fc_name}")
+        except Exception as e:
+            print(f"Error deleting feature class {fc_name}: {e}")
+            raise e
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

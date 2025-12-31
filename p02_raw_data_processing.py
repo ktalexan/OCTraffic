@@ -2998,7 +2998,15 @@ parties_agp.spatial.project(3857, transformation_name = None)
 victims_agp.spatial.project(3857, transformation_name = None)
 collisions_agp.spatial.project(3857, transformation_name = None)
 
-# Define the path to the raw geodatabase
+# Delete the feature classes in the agp/raw geodatabase if they exist
+for fc in ["crashes", "parties", "victims", "collisions"]:
+    ocs.delete_feature_class(fc, gdb_path = prj_dirs["agp_gdb"], dataset = "raw")
+
+# Delete the feature classes in the main/raw geodatabase if they exist
+for fc in ["crashes", "parties", "victims", "collisions"]:
+    ocs.delete_feature_class(fc, gdb_path = prj_dirs["gdbmain"], dataset = "raw")
+
+# Define the paths to the raw geodatabases
 gdb_raw = prj_dirs["agp_gdb_raw"]
 gdbmain_raw = prj_dirs["gdbmain_raw"]
 
