@@ -22,8 +22,6 @@ print("\n1.1. Referencing Libraries and Initialization")
 # Import Python libraries
 import os
 import datetime as dt
-import json
-#from dateutil.parser import parse
 import pandas as pd
 import pytz
 from dotenv import load_dotenv
@@ -75,16 +73,16 @@ print("\n- ArcGIS Pro Paths")
 aprx_path: str = prj_dirs.get("agp_aprx", "")
 gdb_path: str = prj_dirs.get("agp_gdb", "")
 # ArcGIS Pro Project object
-aprx = arcpy.mp.ArcGISProject(aprx_path)
+aprx, workspace = ocs.load_aprx(aprx_path = aprx_path, gdb_path = gdb_path, add_to_map = False)
 # Close all map views
 aprx.closeViews()
 # Current ArcGIS workspace (arcpy)
-arcpy.env.workspace = gdb_path
-workspace = arcpy.env.workspace
+#arcpy.env.workspace = gdb_path
+#workspace = arcpy.env.workspace
 # Enable overwriting existing outputs
-arcpy.env.overwriteOutput = True
+#arcpy.env.overwriteOutput = True
 # Disable adding outputs to map
-arcpy.env.addOutputsToMap = False
+#arcpy.env.addOutputsToMap = False
 
 
 ### Data Folder Paths ----
@@ -107,7 +105,7 @@ time_updated = today.strftime("%I:%M %p")
 # String defining the years of the raw data
 md_years = f"{date_start.year}-{date_end.year}"
 # String defining the start and end dates of the raw data
-md_dates = (f"Data from {date_start.strftime('%B %d, %Y')} to {date_end.strftime('%B %d, %Y')}")
+md_dates = f"Data from {date_start.strftime('%B %d, %Y')} to {date_end.strftime('%B %d, %Y')}"
 
 
 ### Codebook ----
@@ -131,25 +129,9 @@ print(df_cb.head())
 print("\n- JSON CIM Exports")
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-## 1.3. ArcGIS Pro Workspace ----
+## 1.3. Map and Layout Lists ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-print("\n1.3. ArcGIS Pro Workspace")
-
-# Set the workspace and environment to the root of the project geodatabase
-arcpy.env.workspace = gdb_path
-workspace = arcpy.env.workspace
-
-# Enable overwriting existing outputs
-arcpy.env.overwriteOutput = True
-
-# Disable adding outputs to map
-arcpy.env.addOutputsToMap = False
-
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-## 1.4. Map and Layout Lists ----
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-print("\n1.4. Map and Layout Lists")
+print("\n1.3. Map and Layout Lists")
 
 ### Project Maps ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -194,9 +176,9 @@ layout_list = ["maps", "injuries", "hotspots", "roads", "points", "densities", "
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-## 1.5. Clean Up Data ----
+## 1.4. Clean Up Data ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-print("\n1.5. Clean Up Data")
+print("\n1.4. Clean Up Data")
 
 
 ### Delete Feature Classes ----
@@ -991,7 +973,7 @@ arcpy.stats.GWR(
     output_features = crashes_gwr,
     neighborhood_type = "NUMBER_OF_NEIGHBORS",
     neighborhood_selection_method = "GOLDEN_SEARCH",
-    minimum_number_of_neighbors = 75,
+    minimum_number_of_neighbors = 80,
     maximum_number_of_neighbors = 1000,
     minimum_search_distance = None,
     maximum_search_distance = None,
@@ -1311,7 +1293,7 @@ md_gdb = md.Metadata(gdb_path)
 if not md_gdb.isReadOnly:
     md_gdb.copy(mdo_gdb)
     md_gdb.save()
-    print(f"Metadata updated for project geodatabase.")
+    print("Metadata updated for project geodatabase.")
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1611,4 +1593,4 @@ aprx.save()
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 print("\nLast Execution:", dt.datetime.now().strftime("%Y-%m-%d"))
 print("\nEnd of Script")
-# Last Executed: 2025-10-21
+# Last Executed: 2025-12-31

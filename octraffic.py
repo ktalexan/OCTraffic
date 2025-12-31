@@ -69,10 +69,11 @@ class OCTraffic:
         30. set_layer_time(self, layer: arcpy.mapping.Layer) -> None
         31. layout_configuration(self, nmf: int) -> dict
         32. delete_feature_class(self, fc_name: str, gdb_path: Optional[str] = None, dataset: Optional[str] = None) -> None
+        33. load_aprx(self, add_to_map: bool = True) -> tuple
     Examples:
         >>> from octraffic import octraffic
         >>> ocs = octraffic()
-        >>> ocs.create_stl_plot(time_series, season, model="additive", label=None, covid=False, robust=True)
+        >>> ocs.load_aprx(add_to_map=True)
     """
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -92,10 +93,6 @@ class OCTraffic:
         # Load the codebook
         self.cb_path = os.path.join(self.prj_dir["codebook"], "cb.json")
         self.cb = self.load_cb()
-
-        # Load the ArcGIS Pro project
-        self.aprx_path: str = self.prj_dir.get("agp_aprx", "")
-        self.aprx = arcpy.mp.ArcGISProject(self.aprx_path)
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2112,7 +2109,7 @@ class OCTraffic:
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ## 29. Export CIM Object to JSON ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    def export_cim(self, cim_type:str, cim_object:object, cim_name:str) -> None:
+    def export_cim(self, aprx:object, cim_type:str, cim_object:object, cim_name:str) -> None:
         """Export a CIM object to a file in both native (MAPX, PAGX, LYRX) and JSON CIM formats.
         Args:
             cim_type (str): Type of CIM object to export ("map", "layout", or "style").
@@ -2160,7 +2157,7 @@ class OCTraffic:
                 print(f"Exporting {cim_name} layer to LYRX...")
                 # Reformat the name of the output file
                 cim_new_name = "default_layer_name"  # Initialize cim_new_name with a default value
-                for m in self.aprx.listMaps():
+                for m in aprx.listMaps():
                     for l in m.listLayers():
                         if l == cim_object:
                             cim_new_name = (
@@ -2531,6 +2528,14 @@ class OCTraffic:
         Raises:
             FileNotFoundError: If the geodatabase does not exist.
             ValueError: If the geodatabase path is invalid.
+        Examples:
+            >>> delete_feature_class("my_feature_class", "C:/path/to/gdb.gdb", "my_dataset")
+        Returns:
+            None
+        Notes:
+            - If the feature class does not exist, the function will print a message and return without doing anything.
+            - If the geodatabase does not exist, the function will raise a FileNotFoundError.
+            - If the geodatabase path is invalid, the function will raise a ValueError.
         """
         # Determine GDB path
         if gdb_path is None:
@@ -2560,6 +2565,40 @@ class OCTraffic:
         except Exception as e:
             print(f"Error deleting feature class {fc_name}: {e}")
             raise e
+
+
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ## 33. Load ArcGIS Pro Project ----
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    def load_aprx(self, aprx_path: str, gdb_path: str, add_to_map: bool = False) -> tuple:
+        """
+        Loads an ArcGIS Pro project and sets the workspace to the geodatabase.
+        Args:
+            aprx_path (str): Path to the ArcGIS Pro project.
+            gdb_path (str): Path to the geodatabase.
+            add_to_map (bool): Whether to add outputs to the map.
+        Raises:
+            FileNotFoundError: If the ArcGIS Pro project or geodatabase does not exist.
+            ValueError: If the ArcGIS Pro project or geodatabase path is invalid.
+        Examples:
+            >>> aprx, workspace = load_aprx(aprx_path, gdb_path, add_to_map=True)
+        Returns:
+            tuple: A tuple containing the ArcGIS Pro project object and the workspace.
+        Notes:
+            - The ArcGIS Pro project will be closed before loading.
+            - The workspace will be set to the geodatabase path.
+            - The ArcGIS Pro project will be closed after loading.
+        """
+        # ArcGIS Pro Project object
+        aprx = arcpy.mp.ArcGISProject(aprx_path)
+        # Current ArcGIS workspace (arcpy)
+        arcpy.env.workspace = gdb_path
+        workspace = arcpy.env.workspace
+        # Enable overwriting existing outputs
+        arcpy.env.overwriteOutput = True
+        # Disable adding outputs to map
+        arcpy.env.addOutputsToMap = add_to_map
+        return aprx, workspace
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
