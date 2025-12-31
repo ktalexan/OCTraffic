@@ -7,12 +7,12 @@
     "crashesOriginal": 182470,
     "partiesOriginal": 393035,
     "victimsOriginal": 315187,
-    "collisionsOriginal": 0,
-    "crashesCount": 0,
-    "partiesCount": 0,
-    "victimsCount": 0,
-    "collisionsCount": 0,
-    "crashesFatalities": 0,
-    "partiesFatalities": 0,
-    "victimsFatalities": 0
+    "collisionsOriginal": 465948,
+    "crashesCount": 178758,
+    "partiesCount": 385465,
+    "victimsCount": 309399,
+    "collisionsCount": 457276,
+    "crashesFatalities": 2462,
+    "partiesFatalities": 5060,
+    "victimsFatalities": 4439
 }

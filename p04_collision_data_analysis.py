@@ -368,11 +368,11 @@ tbl1_tests = pd.DataFrame(
     {
         "dataset": ["crashes", "parties", "victims", "parties", "victims"],
         "observations": [
-            "{:,}".format(crashes_chi2["observations"]),
-            "{:,}".format(parties_chi2["observations"]),
-            "{:,}".format(victims_chi2["observations"]),
-            "{:,}".format(parties_kw["observations"]),
-            "{:,}".format(victims_kw["observations"]),
+            f"{crashes_chi2['observations']:,}",
+            f"{parties_chi2['observations']:,}",
+            f"{victims_chi2['observations']:,}",
+            f"{parties_kw['observations']:,}",
+            f"{victims_kw['observations']:,}",
         ],
         "test": [
             crashes_chi2["test"],
@@ -416,30 +416,30 @@ tbl1_data = pd.DataFrame(
     {
         "severity": pd.concat([x1["severity"], pd.Series(["p-value"])], ignore_index = True),
         "crashes": pd.concat(
-            [x1["count"].apply(lambda x: "{:,}".format(x)), pd.Series([crashes_chi2["p-value_display"]])],
+            [x1["count"].apply(lambda x: f"{x:,}"), pd.Series([crashes_chi2["p-value_display"]])],
             ignore_index = True,
         ),
         "parties": pd.concat(
-            [x2["count"].apply(lambda x: "{:,}".format(x)), pd.Series([crashes_chi2["p-value_display"]])],
+            [x2["count"].apply(lambda x: f"{x:,}"), pd.Series([crashes_chi2["p-value_display"]])],
             ignore_index = True,
         ),
         "victims": pd.concat(
-            [x3["count"].apply(lambda x: "{:,}".format(x)), pd.Series([crashes_chi2["p-value_display"]])],
+            [x3["count"].apply(lambda x: f"{x:,}"), pd.Series([crashes_chi2["p-value_display"]])],
             ignore_index = True,
         ),
         "party_mean": pd.concat(
-            [x2["mean"].apply(lambda x: "{:,.3f}".format(x)), pd.Series([parties_kw["p-value_display"]])],
+            [x2["mean"].apply(lambda x: f"{x:,.3f}"), pd.Series([parties_kw["p-value_display"]])],
             ignore_index = True,
         ),
-        "party_std": pd.concat([x2["std"].apply(lambda x: "{:,.3f}".format(x)), pd.Series([""])], ignore_index = True),
+        "party_std": pd.concat([x2["std"].apply(lambda x: f"{x:,.3f}"), pd.Series([""])], ignore_index = True),
         "party_range": pd.concat(
             [x2.apply(lambda row: f"{row['min']}-{row['max']}", axis = 1), pd.Series([""])], ignore_index = True
         ),
         "victim_mean": pd.concat(
-            [x3["mean"].apply(lambda x: "{:,.3f}".format(x)), pd.Series([victims_kw["p-value_display"]])],
+            [x3["mean"].apply(lambda x: f"{x:,.3f}"), pd.Series([victims_kw["p-value_display"]])],
             ignore_index = True,
         ),
-        "victim_std": pd.concat([x3["std"].apply(lambda x: "{:,.3f}".format(x)), pd.Series([""])], ignore_index = True),
+        "victim_std": pd.concat([x3["std"].apply(lambda x: f"{x:,.3f}"), pd.Series([""])], ignore_index = True),
         "victim_range": pd.concat(
             [x3.apply(lambda row: f"{row['min']}-{row['max']}", axis = 1), pd.Series([""])], ignore_index = True
         ),
@@ -508,8 +508,8 @@ tbl1_latex = tbl1_latex.replace("<", "\\textless{}")
 tbl1_latex = tbl1_latex.replace("mean", "\\textit{mean}")
 tbl1_latex = tbl1_latex.replace("std", "\\textit{std}")
 tbl1_latex = tbl1_latex.replace("range", "\\textit{range}")
-tbl1_latex = tbl1_latex.replace(f"Party Count", "Party Count\\footnotemark[1]")
-tbl1_latex = tbl1_latex.replace(f"Victim Count", "Victim Count\\footnotemark[1]")
+tbl1_latex = tbl1_latex.replace("Party Count", "Party Count\\footnotemark[1]")
+tbl1_latex = tbl1_latex.replace("Victim Count", "Victim Count\\footnotemark[1]")
 
 # Split the LaTeX table into lines for easier manipulation
 tbl1_latex_lines = tbl1_latex.splitlines()
@@ -549,7 +549,7 @@ print(tbl1_latex)
 # Define the path to save the LaTeX table
 tbl1_path = graphics_list["tables"]["tbl1"]["path"]
 # Save the LaTeX table to a file
-with open(tbl1_path, "w", encoding="utf-8") as f:
+with open(tbl1_path, "w", encoding = "utf-8") as f:
     f.write(tbl1_latex)
     print(f"\n- Table 1 saved to {tbl1_path}")
 
@@ -575,7 +575,7 @@ with open(latex_vars_path, "w", encoding = "utf-8") as json_file:
 
 # Save the LaTeX variables dictionary to a .tex file
 latex_vars_tex_path = os.path.join(prj_dirs["graphics"], "latex_vars.tex")
-with open(latex_vars_tex_path, "w") as f:
+with open(latex_vars_tex_path, "w", encoding = "utf-8") as f:
     for key, value in latex_vars.items():
         f.write(f"\\newcommand{{\\{key}}}{{{value}}}\n")
 
@@ -712,9 +712,9 @@ tbl2_tests = pd.DataFrame(
     {
         "dataset": ["crashes", "parties", "victims"],
         "observations": [
-            "{:,}".format(crashes_chi2["observations"]),
-            "{:,}".format(parties_chi2["observations"]),
-            "{:,}".format(victims_chi2["observations"]),
+            f"{crashes_chi2['observations']:,}",
+            f"{parties_chi2['observations']:,}",
+            f"{victims_chi2['observations']:,}",
         ],
         "test": [crashes_chi2["test"], parties_chi2["test"], victims_chi2["test"]],
         "statistic": [crashes_chi2["statistic"], parties_chi2["statistic"], victims_chi2["statistic"]],
@@ -835,7 +835,7 @@ print(tbl2_latex)
 # Define the path to save the LaTeX table
 tbl2_path = graphics_list["tables"]["tbl2"]["path"]
 # Save the LaTeX table to a file
-with open(tbl2_path, "w", encoding="utf-8") as f:
+with open(tbl2_path, "w", encoding = "utf-8") as f:
     f.write(tbl2_latex)
     print(f"\n- Table 2 saved to {tbl2_path}")
 
@@ -1462,9 +1462,9 @@ tbl4_latex = "\n".join(tbl4_latex_lines)
 # Delete the temporary latex lines
 del tbl4_latex_lines
 
-tbl4_latex = tbl4_latex.replace(f"Severity", "Severity\\footnotemark[2]")
-tbl4_latex = tbl4_latex.replace(f"Hit and Run", "Hit and Run\\footnotemark[3]")
-tbl4_latex = tbl4_latex.replace(f"Lighting", "Lighting\\footnotemark[4]")
+tbl4_latex = tbl4_latex.replace("Severity", "Severity\\footnotemark[2]")
+tbl4_latex = tbl4_latex.replace("Hit and Run", "Hit and Run\\footnotemark[3]")
+tbl4_latex = tbl4_latex.replace("Lighting", "Lighting\\footnotemark[4]")
 
 # Add footnotes after the table
 footnotes = (
@@ -1488,7 +1488,7 @@ print(tbl4_latex)
 # Define the path to save the LaTeX table
 tbl4_path = graphics_list["tables"]["tbl4"]["path"]
 # Save the LaTeX table to a file
-with open(tbl4_path, "w", encoding="utf-8") as f:
+with open(tbl4_path, "w", encoding = "utf-8") as f:
     f.write(tbl4_latex)
     print(f"\n- Table 4 saved to {tbl4_path}")
 
@@ -1619,27 +1619,27 @@ tbl5_mod = tbl5_data.copy().astype(str)
 
 # Create the LaTeX table from the data frame
 tbl5_latex = tbl5_mod.to_latex(
-    buf=None,
-    columns=None,
-    header=True,
-    index=False,
-    na_rep="NaN",
-    formatters=None,
-    float_format=None,
-    sparsify=None,
-    index_names=True,
-    bold_rows=False,
-    column_format="crrrrrrrrrrrrrrrr",
-    longtable=False,
-    escape=False,
-    encoding=None,
-    decimal=".",
-    multicolumn=True,
-    multicolumn_format="c",
-    multirow=True,
-    caption=graphics_list["tables"]["tbl5"]["caption"],
-    label=graphics_list["tables"]["tbl5"]["id"].lower(),
-    position=None,
+    buf = None,
+    columns = None,
+    header = True,
+    index = False,
+    na_rep = "NaN",
+    formatters = None,
+    float_format = None,
+    sparsify = None,
+    index_names = True,
+    bold_rows = False,
+    column_format = "crrrrrrrrrrrrrrrr",
+    longtable = False,
+    escape = False,
+    encoding = None,
+    decimal = ".",
+    multicolumn = True,
+    multicolumn_format = "c",
+    multirow = True,
+    caption = graphics_list["tables"]["tbl5"]["caption"],
+    label = graphics_list["tables"]["tbl5"]["id"].lower(),
+    position = None,
 )
 
 # Change the LaTeX table to use the 'sidewaystable' style
@@ -1668,7 +1668,7 @@ print(tbl5_latex)
 # Define the path to save the LaTeX table
 tbl5_path = graphics_list["tables"]["tbl5"]["path"]
 # Save the LaTeX table to a file
-with open(tbl5_path, "w", encoding="utf-8") as f:
+with open(tbl5_path, "w", encoding = "utf-8") as f:
     f.write(tbl5_latex)
     print(f"\n- Table 5 saved to {tbl5_path}")
 

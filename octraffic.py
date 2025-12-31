@@ -1961,13 +1961,11 @@ class OCTraffic:
         severity_std = data["severity"].std()
 
         # Function to format y-axis ticks for victims
-        #def victims_formatter(x, pos):
-        def victims_formatter(x):
+        def victims_formatter(x, pos):
             return f"{z_to_original(x, victims_mean, victims_std):.0f}"
 
         # Function to format y-axis ticks for severity
-        #def severity_formatter(x, pos):
-        def severity_formatter(x):
+        def severity_formatter(x, pos):
             return f"{z_to_original(x, severity_mean, severity_std):.2f}"
 
         # Apply formatters to axes
@@ -2083,8 +2081,7 @@ class OCTraffic:
         ax.barh(victim_data["Age"], victim_data["Freq"], color = "darkorange", label = "Victim Age")
 
         # Format x-axis labels with commas and no negative signs
-        #def abs_comma(x, pos):
-        def abs_comma(x):
+        def abs_comma(x, pos):
             result = f"{abs(x):,}" 
             return result
 

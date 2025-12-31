@@ -23,7 +23,6 @@ print("\n1.1. Libraries and Initialization")
 # Import necessary libraries
 import os
 import datetime as dt
-import json
 import pandas as pd
 import matplotlib.pyplot as plt
 from dotenv import load_dotenv
@@ -816,7 +815,7 @@ fig9.savefig(
     backend = None,
 )
 
-plt.close(fig)  # Close the figure to free memory
+plt.close(fig9)  # Close the figure to free memory
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -837,4 +836,4 @@ ocs.save_to_disk(
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 print("\nLast Execution:", dt.datetime.now().strftime("%Y-%m-%d"))
 print("\nEnd of Script")
-# Last Executed: 2025-12-26
+# Last Executed: 2025-12-30
