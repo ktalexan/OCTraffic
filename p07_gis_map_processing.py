@@ -22,8 +22,8 @@ print("\n1.1. Referencing Libraries and Initialization")
 
 # Import Python libraries
 import os
+import math
 import datetime as dt
-import json
 from dateutil.parser import parse
 import pandas as pd
 import pytz
@@ -76,16 +76,9 @@ print("\n- ArcGIS Pro Paths")
 aprx_path = prj_dirs.get("agp_aprx", "")
 gdb_path = prj_dirs.get("agp_gdb", "")
 # ArcGIS Pro Project object
-aprx = arcpy.mp.ArcGISProject(aprx_path)
+aprx, workspace = ocs.load_aprx(aprx_path = aprx_path, gdb_path = gdb_path, add_to_map = False)
 # Close all map views
 aprx.closeViews()
-# Current ArcGIS workspace (arcpy)
-arcpy.env.workspace = gdb_path
-workspace = arcpy.env.workspace
-# Enable overwriting existing outputs
-arcpy.env.overwriteOutput = True
-# Disable adding outputs to map
-arcpy.env.addOutputsToMap = False
 
 
 ### Data Folder Paths ----
@@ -341,7 +334,7 @@ for m in aprx.listMaps():
         if l.isBasemapLayer:
             print(f"  - Removing Basemap: {l.name}")
             m.removeLayer(l)
-    print(f"  - Adding Basemap: Light Gray Canvas")
+    print("  - Adding Basemap: Light Gray Canvas")
     m.addBasemap("Light Gray Canvas")
 # Turn off the basemap reference layer for all maps
 for m in aprx.listMaps():
@@ -845,7 +838,7 @@ aprx.closeViews()
 # Open the roads map view
 map_collisions.openView()
 # set the main map as active map
-map = aprx.activeMap
+map_active = aprx.activeMap
 # Remove all layers from the active map
 for lyr in map_collisions.listLayers():
     if not lyr.isBasemapLayer:
@@ -890,7 +883,7 @@ print("- Layer Symbology")
 # Apply the symbology for the Collisions data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_collisions_lyr_collisions,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Collisions.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Collisions.lyrx"),
     symbology_fields = [["VALUE_FIELD", "coll_severity", "coll_severity"]],
     update_symbology = "MAINTAIN",
 )
@@ -900,7 +893,7 @@ print(arcpy.GetMessages())
 # Apply the symbology for the Roads data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_collisions_lyr_roads,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Roads.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Roads.lyrx"),
     symbology_fields = [["VALUE_FIELD", "road_cat", "road_cat"]],
     update_symbology = "MAINTAIN",
 )
@@ -910,7 +903,7 @@ print(arcpy.GetMessages())
 # Apply the symbology for the US Census 2020 Blocks data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_collisions_lyr_blocks,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Census Blocks.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Census Blocks.lyrx"),
     symbology_fields = [["VALUE_FIELD", "population_density", "population_density"]],
     update_symbology = "MAINTAIN",
 )
@@ -920,7 +913,7 @@ print(arcpy.GetMessages())
 # Apply the symbology for the Cities data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_collisions_lyr_cities,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Cities.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Cities.lyrx"),
     symbology_fields = [["VALUE_FIELD", "city_pop_dens", "city_pop_dens"]],
     update_symbology = "MAINTAIN",
 )
@@ -930,7 +923,7 @@ print(arcpy.GetMessages())
 # Apply the symbology for the Boundaries data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_collisions_lyr_boundaries,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Boundaries.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Boundaries.lyrx"),
     symbology_fields = None,
     update_symbology = "MAINTAIN",
 )
@@ -971,11 +964,11 @@ cim_collisions = map_collisions.getDefinition("V3")  # Collisions map CIM
 print("- Export Map and Map Layers")
 
 # Update the collisions map mapx file
-export_cim("map", map_collisions, "collisions")
+ocs.export_cim(aprx = aprx, cim_type = "map", cim_object = map_collisions, cim_name = "collisions")
 # Export map layers as CIM JSON `.lyrx` files to the layers folder directory of the project.
 for l in map_collisions.listLayers():
     if not l.isBasemapLayer:
-        export_cim("layer", l, l.name)
+        ocs.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
 
 
 ### Save Project ----
@@ -1001,7 +994,7 @@ aprx.closeViews()
 # Open the crashes map view
 map_crashes.openView()
 # set the main map as active map
-map = aprx.activeMap
+map_active = aprx.activeMap
 # Remove all layers from the active map
 for lyr in map_crashes.listLayers():
     if not lyr.isBasemapLayer:
@@ -1046,7 +1039,7 @@ print("- Layer Symbology")
 # Apply the symbology for the Collisions data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_crashes_lyr_crashes,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Crashes.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Crashes.lyrx"),
     symbology_fields = [["VALUE_FIELD", "coll_severity", "coll_severity"]],
     update_symbology = "MAINTAIN",
 )
@@ -1056,7 +1049,7 @@ print(arcpy.GetMessages())
 # Apply the symbology for the Roads data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_crashes_lyr_roads,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Roads.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Roads.lyrx"),
     symbology_fields = [["VALUE_FIELD", "road_cat", "road_cat"]],
     update_symbology = "MAINTAIN",
 )
@@ -1066,7 +1059,7 @@ print(arcpy.GetMessages())
 # Apply the symbology for the US Census 2020 Blocks data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_crashes_lyr_blocks,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Census Blocks.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Census Blocks.lyrx"),
     symbology_fields = [["VALUE_FIELD", "population_density", "population_density"]],
     update_symbology = "MAINTAIN",
 )
@@ -1076,7 +1069,7 @@ print(arcpy.GetMessages())
 # Apply the symbology for the Cities data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_crashes_lyr_cities,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Cities.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Cities.lyrx"),
     symbology_fields = [["VALUE_FIELD", "city_pop_dens", "city_pop_dens"]],
     update_symbology = "MAINTAIN",
 )
@@ -1086,7 +1079,7 @@ print(arcpy.GetMessages())
 # Apply the symbology for the Boundaries data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_crashes_lyr_boundaries,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Boundaries.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Boundaries.lyrx"),
     symbology_fields = None,
     update_symbology = "MAINTAIN",
 )
@@ -1127,12 +1120,12 @@ cim_crashes = map_crashes.getDefinition("V3")
 print("- Export Map and Map Layers")
 
 # Update the crashes map mapx file
-export_cim("map", map_crashes, "crashes")
+ocs.export_cim(aprx = aprx, cim_type = "map", cim_object = map_crashes, cim_name = "crashes")
 
 # Export map layers as CIM JSON `.lyrx` files to the layers folder directory of the project.
 for l in map_crashes.listLayers():
     if not l.isBasemapLayer:
-        export_cim("layer", l, l.name)
+        ocs.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
 
 
 ### Save Project ----
@@ -1158,7 +1151,7 @@ aprx.closeViews()
 # Open the parties map view
 map_parties.openView()
 # set the main map as active map
-map = aprx.activeMap
+map_active = aprx.activeMap
 # Remove all layers from the active map
 for lyr in map_parties.listLayers():
     if not lyr.isBasemapLayer:
@@ -1203,7 +1196,7 @@ print("- Layer Symbology")
 # Apply the symbology for the Parties data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_parties_lyr_parties,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Parties.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Parties.lyrx"),
     symbology_fields = [["VALUE_FIELD", "coll_severity", "coll_severity"]],
     update_symbology = "MAINTAIN",
 )
@@ -1213,7 +1206,7 @@ print(arcpy.GetMessages())
 # Apply the symbology for the Roads data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_parties_lyr_roads,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Roads.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Roads.lyrx"),
     symbology_fields = [["VALUE_FIELD", "road_cat", "road_cat"]],
     update_symbology = "MAINTAIN",
 )
@@ -1223,7 +1216,7 @@ print(arcpy.GetMessages())
 # Apply the symbology for the US Census 2020 Blocks data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_parties_lyr_blocks,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Census Blocks.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Census Blocks.lyrx"),
     symbology_fields = [["VALUE_FIELD", "population_density", "population_density"]],
     update_symbology = "MAINTAIN",
 )
@@ -1233,7 +1226,7 @@ print(arcpy.GetMessages())
 # Apply the symbology for the Cities data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_parties_lyr_cities,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Cities.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Cities.lyrx"),
     symbology_fields = [["VALUE_FIELD", "city_pop_dens", "city_pop_dens"]],
     update_symbology = "MAINTAIN",
 )
@@ -1243,7 +1236,7 @@ print(arcpy.GetMessages())
 # Apply the symbology for the Boundaries data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_parties_lyr_boundaries,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Boundaries.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Boundaries.lyrx"),
     symbology_fields = None,
     update_symbology = "MAINTAIN",
 )
@@ -1284,12 +1277,12 @@ cim_parties = map_parties.getDefinition("V3")
 print("- Export Map and Map Layers")
 
 # Update the parties map mapx file
-export_cim("map", map_parties, "parties")
+ocs.export_cim(aprx = aprx, cim_type = "map", cim_object = map_parties, cim_name = "parties")
 
 # Export map layers as CIM JSON `.lyrx` files to the layers folder directory of the project.
 for l in map_parties.listLayers():
     if not l.isBasemapLayer:
-        export_cim("layer", l, l.name)
+        ocs.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
 
 
 ### Save Project ----
@@ -1315,7 +1308,7 @@ aprx.closeViews()
 # Open the victims map view
 map_victims.openView()
 # set the main map as active map
-map = aprx.activeMap
+map_active = aprx.activeMap
 
 # Remove all the layers from the map
 for lyr in map_victims.listLayers():
@@ -1361,7 +1354,7 @@ print("- Layer Symbology")
 # Apply the symbology for the Roads data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_victims_lyr_victims,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Victims.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Victims.lyrx"),
     symbology_fields = [["VALUE_FIELD", "coll_severity", "coll_severity"]],
     update_symbology = "MAINTAIN",
 )
@@ -1371,7 +1364,7 @@ print(arcpy.GetMessages())
 # Apply the symbology for the US Census 2020 Blocks data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_victims_lyr_blocks,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Census Blocks.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Census Blocks.lyrx"),
     symbology_fields = [["VALUE_FIELD", "population_density", "population_density"]],
     update_symbology = "MAINTAIN",
 )
@@ -1381,7 +1374,7 @@ print(arcpy.GetMessages())
 # Apply the symbology for the Cities data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_victims_lyr_cities,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Cities.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Cities.lyrx"),
     symbology_fields = [["VALUE_FIELD", "city_pop_dens", "city_pop_dens"]],
     update_symbology = "MAINTAIN",
 )
@@ -1391,7 +1384,7 @@ print(arcpy.GetMessages())
 # Apply the symbology for the Boundaries data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_victims_lyr_boundaries,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Boundaries.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Boundaries.lyrx"),
     symbology_fields = None,
     update_symbology = "MAINTAIN",
 )
@@ -1432,12 +1425,12 @@ cim_victims = map_victims.getDefinition("V3")
 print("- Export Map and Map Layers")
 
 # Update the victims map mapx file
-export_cim("map", map_victims, "victims")
+ocs.export_cim(aprx = aprx, cim_type = "map", cim_object = map_victims, cim_name = "victims")
 
 # Export map layers as CIM JSON `.lyrx` files to the layers folder directory of the project.
 for l in map_victims.listLayers():
     if not l.isBasemapLayer:
-        export_cim("layer", l, l.name)
+        ocs.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
 
 
 ### Save Project ----
@@ -1463,7 +1456,7 @@ aprx.closeViews()
 # Open the injuries map view
 map_injuries.openView()
 # set the main map as active map
-map = aprx.activeMap
+map_active = aprx.activeMap
 
 # Remove all the layers from the map
 for lyr in map_injuries.listLayers():
@@ -1499,7 +1492,7 @@ print("- Layer Symbology")
 # Apply the symbology for the Roads data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_injuries_lyr_victims,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Victims.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Victims.lyrx"),
     symbology_fields = [["VALUE_FIELD", "coll_severity", "coll_severity"]],
     update_symbology = "MAINTAIN",
 )
@@ -1509,7 +1502,7 @@ print(arcpy.GetMessages())
 # Apply the symbology for the US Census 2020 Blocks data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_injuries_lyr_blocks,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Census Blocks.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Census Blocks.lyrx"),
     symbology_fields = [["VALUE_FIELD", "population_density", "population_density"]],
     update_symbology = "MAINTAIN",
 )
@@ -1519,7 +1512,7 @@ print(arcpy.GetMessages())
 # Apply the symbology for the Cities data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_injuries_lyr_cities,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Cities.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Cities.lyrx"),
     symbology_fields = [["VALUE_FIELD", "city_pop_dens", "city_pop_dens"]],
     update_symbology = "MAINTAIN",
 )
@@ -1529,7 +1522,7 @@ print(arcpy.GetMessages())
 # Apply the symbology for the Boundaries data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_injuries_lyr_boundaries,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Boundaries.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Boundaries.lyrx"),
     symbology_fields = None,
     update_symbology = "MAINTAIN",
 )
@@ -1567,12 +1560,12 @@ cim_injuries = map_injuries.getDefinition("V3")
 print("- Export Map and Map Layers")
 
 # Update the victims map mapx file
-export_cim("map", map_injuries, "injuries")
+ocs.export_cim(aprx = aprx, cim_type = "map", cim_object = map_injuries, cim_name = "injuries")
 
 # Export map layers as CIM JSON `.lyrx` files to the layers folder directory of the project.
 for l in map_injuries.listLayers():
     if not l.isBasemapLayer:
-        export_cim("layer", l, l.name)
+        ocs.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
 
 
 ### Save Project ----
@@ -1598,7 +1591,7 @@ aprx.closeViews()
 # Open the fatalities map view
 map_fatalities.openView()
 # set the main map as active map
-map = aprx.activeMap
+map_active = aprx.activeMap
 
 # Remove all the layers from the map
 for lyr in map_fatalities.listLayers():
@@ -1645,7 +1638,7 @@ print("- Layer Symbology")
 # Apply the symbology for the Fatalities data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_fatalities_lyr_fatalities,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Crashes Killed Victims.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Crashes Killed Victims.lyrx"),
     symbology_fields = [["VALUE_FIELD", "number_killed", "number_killed"]],
     update_symbology = "MAINTAIN",
 )
@@ -1655,7 +1648,7 @@ print(arcpy.GetMessages())
 # Apply the symbology for the Major Road Buffers data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_fatalities_lyr_roads_major_buffers,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Major Roads Buffers.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Major Roads Buffers.lyrx"),
     symbology_fields = None,
     update_symbology = "MAINTAIN",
 )
@@ -1665,7 +1658,7 @@ print(arcpy.GetMessages())
 # Apply the symbology for the Roads data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_fatalities_lyr_roads,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Roads.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Roads.lyrx"),
     symbology_fields = [["VALUE_FIELD", "road_cat", "road_cat"]],
     update_symbology = "MAINTAIN",
 )
@@ -1674,7 +1667,7 @@ arcpy.management.ApplySymbologyFromLayer(
 # Apply the symbology for the Boundaries data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_fatalities_lyr_boundaries,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Boundaries.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Boundaries.lyrx"),
     symbology_fields = None,
     update_symbology = "MAINTAIN",
 )
@@ -1712,12 +1705,12 @@ cim_fatalities = map_fatalities.getDefinition("V3")
 print("- Export Map and Map Layers")
 
 # Update the fatalities map mapx file
-export_cim("map", map_fatalities, "fatalities")
+ocs.export_cim(aprx = aprx, cim_type = "map", cim_object = map_fatalities, cim_name = "fatalities")
 
 # Export map layers as CIM JSON `.lyrx` files to the layers folder directory of the project.
 for l in map_fatalities.listLayers():
     if not l.isBasemapLayer:
-        export_cim("layer", l, l.name)
+        ocs.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
 
 
 ### Save Project ----
@@ -1743,7 +1736,7 @@ aprx.closeViews()
 # Open the hotspots_100m1km map view
 map_fhs_100m1km.openView()
 # set the main map as active map
-map = aprx.activeMap
+map_active = aprx.activeMap
 
 # Remove all the layers from the map
 for lyr in map_fhs_100m1km.listLayers():
@@ -1787,7 +1780,7 @@ print("- Layer Symbology")
 # Apply the symbology for the Roads data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_fhs_100m1km_lyr_roads,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Roads.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Roads.lyrx"),
     symbology_fields = [["VALUE_FIELD", "road_cat", "road_cat"]],
     update_symbology = "MAINTAIN",
 )
@@ -1797,7 +1790,7 @@ print(arcpy.GetMessages())
 # Apply the symbology for the US Census 2020 Blocks data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_fhs_100m1km_lyr_blocks,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Census Blocks.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Census Blocks.lyrx"),
     symbology_fields = [["VALUE_FIELD", "population_density", "population_density"]],
     update_symbology = "MAINTAIN",
 )
@@ -1807,7 +1800,7 @@ print(arcpy.GetMessages())
 # Apply the symbology for the Cities data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_fhs_100m1km_lyr_cities,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Cities.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Cities.lyrx"),
     symbology_fields = [["VALUE_FIELD", "city_pop_dens", "city_pop_dens"]],
     update_symbology = "MAINTAIN",
 )
@@ -1817,7 +1810,7 @@ print(arcpy.GetMessages())
 # Apply the symbology for the Boundaries data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_fhs_100m1km_lyr_boundaries,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Boundaries.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Boundaries.lyrx"),
     symbology_fields = None,
     update_symbology = "MAINTAIN",
 )
@@ -1858,12 +1851,12 @@ cim_fhs_100m1km = map_fhs_100m1km.getDefinition("V3")
 print("- Export Map and Map Layers")
 
 # Update the victims map mapx file
-export_cim("map", map_fhs_100m1km, "hotspots_100m1km")
+ocs.export_cim(aprx = aprx, cim_type = "map", cim_object = map_fhs_100m1km, cim_name = "hotspots_100m1km")
 
 # Export map layers as CIM JSON `.lyrx` files to the layers folder directory of the project.
 for l in map_fhs_100m1km.listLayers():
     if not l.isBasemapLayer:
-        export_cim("layer", l, l.name)
+        ocs.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
 
 
 ### Save Project ----
@@ -1889,7 +1882,7 @@ aprx.closeViews()
 # Open the hotspots_150m2km map view
 map_fhs_150m2km.openView()
 # set the main map as active map
-map = aprx.activeMap
+map_active = aprx.activeMap
 
 # Remove all the layers from the map
 for lyr in map_fhs_150m2km.listLayers():
@@ -1933,7 +1926,7 @@ print("- Layer Symbology")
 # Apply the symbology for the Roads data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_fhs_150m2km_lyr_roads,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Roads.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Roads.lyrx"),
     symbology_fields = [["VALUE_FIELD", "road_cat", "road_cat"]],
     update_symbology = "MAINTAIN",
 )
@@ -1943,7 +1936,7 @@ print(arcpy.GetMessages())
 # Apply the symbology for the US Census 2020 Blocks data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_fhs_150m2km_lyr_blocks,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Census Blocks.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Census Blocks.lyrx"),
     symbology_fields = [["VALUE_FIELD", "population_density", "population_density"]],
     update_symbology = "MAINTAIN",
 )
@@ -1953,7 +1946,7 @@ print(arcpy.GetMessages())
 # Apply the symbology for the Cities data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_fhs_150m2km_lyr_cities,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Cities.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Cities.lyrx"),
     symbology_fields = [["VALUE_FIELD", "city_pop_dens", "city_pop_dens"]],
     update_symbology = "MAINTAIN",
 )
@@ -1963,7 +1956,7 @@ print(arcpy.GetMessages())
 # Apply the symbology for the Boundaries data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_fhs_150m2km_lyr_boundaries,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Boundaries.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Boundaries.lyrx"),
     symbology_fields = None,
     update_symbology = "MAINTAIN",
 )
@@ -2004,12 +1997,12 @@ cim_fhs_150m2km = map_fhs_150m2km.getDefinition("V3")
 print("- Export Map and Map Layers")
 
 # Update the victims map mapx file
-export_cim("map", map_fhs_150m2km, "hotspots_150m2km")
+ocs.export_cim(aprx = aprx, cim_type = "map", cim_object = map_fhs_150m2km, cim_name = "hotspots_150m2km")
 
 # Export map layers as CIM JSON `.lyrx` files to the layers folder directory of the project.
 for l in map_fhs_150m2km.listLayers():
     if not l.isBasemapLayer:
-        export_cim("layer", l, l.name)
+        ocs.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
 
 
 ### Save Project ----
@@ -2035,7 +2028,7 @@ aprx.closeViews()
 # Open the hotspots_100m5km map view
 map_fhs_100m5km.openView()
 # set the main map as active map
-map = aprx.activeMap
+map_active = aprx.activeMap
 
 # Remove all the layers from the map
 for lyr in map_fhs_100m5km.listLayers():
@@ -2079,7 +2072,7 @@ print("- Layer Symbology")
 # Apply the symbology for the Roads data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_fhs_100m5km_lyr_roads,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Roads.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Roads.lyrx"),
     symbology_fields = [["VALUE_FIELD", "road_cat", "road_cat"]],
     update_symbology = "MAINTAIN",
 )
@@ -2089,7 +2082,7 @@ print(arcpy.GetMessages())
 # Apply the symbology for the US Census 2020 Blocks data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_fhs_100m5km_lyr_blocks,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Census Blocks.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Census Blocks.lyrx"),
     symbology_fields = [["VALUE_FIELD", "population_density", "population_density"]],
     update_symbology = "MAINTAIN",
 )
@@ -2099,7 +2092,7 @@ print(arcpy.GetMessages())
 # Apply the symbology for the Cities data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_fhs_100m5km_lyr_cities,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Cities.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Cities.lyrx"),
     symbology_fields = [["VALUE_FIELD", "city_pop_dens", "city_pop_dens"]],
     update_symbology = "MAINTAIN",
 )
@@ -2109,7 +2102,7 @@ print(arcpy.GetMessages())
 # Apply the symbology for the Boundaries data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_fhs_100m5km_lyr_boundaries,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Boundaries.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Boundaries.lyrx"),
     symbology_fields = None,
     update_symbology = "MAINTAIN",
 )
@@ -2150,12 +2143,12 @@ cim_fhs_100m5km = map_fhs_100m5km.getDefinition("V3")
 print("- Export Map and Map Layers")
 
 # Update the victims map mapx file
-export_cim("map", map_fhs_100m5km, "hotspots_100m5km")
+ocs.export_cim(aprx = aprx, cim_type = "map", cim_object = map_fhs_100m5km, cim_name = "hotspots_100m5km")
 
 # Export map layers as CIM JSON `.lyrx` files to the layers folder directory of the project.
 for l in map_fhs_100m5km.listLayers():
     if not l.isBasemapLayer:
-        export_cim("layer", l, l.name)
+        ocs.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
 
 
 ### Save Project ----
@@ -2182,7 +2175,7 @@ aprx.closeViews()
 # Open the hotspotsroads500ft map view
 map_fhs_roads_500ft.openView()
 # set the main map as active map
-map = aprx.activeMap
+map_active = aprx.activeMap
 
 # Remove all the layers from the map
 for lyr in map_fhs_roads_500ft.listLayers():
@@ -2228,7 +2221,7 @@ print("- Layer Symbology")
 # Apply the symbology for the Roads data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_fhs_roads_500ft_lyr_roads,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Roads.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Roads.lyrx"),
     symbology_fields = [["VALUE_FIELD", "road_cat", "road_cat"]],
     update_symbology = "MAINTAIN",
 )
@@ -2238,7 +2231,7 @@ print(arcpy.GetMessages())
 # Apply the symbology for the US Census 2020 Blocks data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_fhs_roads_500ft_lyr_blocks,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Census Blocks.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Census Blocks.lyrx"),
     symbology_fields = [["VALUE_FIELD", "population_density", "population_density"]],
     update_symbology = "MAINTAIN",
 )
@@ -2248,7 +2241,7 @@ print(arcpy.GetMessages())
 # Apply the symbology for the Cities data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_fhs_roads_500ft_lyr_cities,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Cities.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Cities.lyrx"),
     symbology_fields = [["VALUE_FIELD", "city_pop_dens", "city_pop_dens"]],
     update_symbology = "MAINTAIN",
 )
@@ -2258,7 +2251,7 @@ print(arcpy.GetMessages())
 # Apply the symbology for the Boundaries data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_fhs_roads_500ft_lyr_boundaries,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Boundaries.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Boundaries.lyrx"),
     symbology_fields = None,
     update_symbology = "MAINTAIN",
 )
@@ -2299,11 +2292,11 @@ cim_fhs_roads_500ft = map_fhs_roads_500ft.getDefinition("V3")
 print("- Export Map and Map Layers")
 
 # Update the victims map mapx file
-export_cim("map", map_fhs_roads_500ft, "hotspots_roads_500ft")
+ocs.export_cim(aprx = aprx, cim_type = "map", cim_object = map_fhs_roads_500ft, cim_name = "hotspots_roads_500ft")
 # Export map layers as CIM JSON `.lyrx` files to the layers folder directory of the project.
 for l in map_fhs_roads_500ft.listLayers():
     if not l.isBasemapLayer:
-        export_cim("layer", l, l.name)
+        ocs.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
 
 
 ### Save Project ----
@@ -2330,7 +2323,7 @@ aprx.closeViews()
 # Open the hotspotsroads500ft map view
 map_ohs_roads_500ft.openView()
 # set the main map as active map
-map = aprx.activeMap
+map_active = aprx.activeMap
 
 # Remove all the layers from the map
 for lyr in map_ohs_roads_500ft.listLayers():
@@ -2376,7 +2369,7 @@ print("- Layer Symbology")
 # Apply the symbology for the Boundaries data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_ohs_roads_500ft_lyr_boundaries,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Boundaries.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Boundaries.lyrx"),
     symbology_fields = None,
     update_symbology = "MAINTAIN",
 )
@@ -2385,7 +2378,7 @@ arcpy.management.ApplySymbologyFromLayer(
 # Apply the symbology for the cities data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_ohs_roads_500ft_lyr_cities,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Cities.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Cities.lyrx"),
     symbology_fields = [["VALUE_FIELD", "city_pop_dens", "city_pop_dens"]],
     update_symbology = "MAINTAIN",
 )
@@ -2394,7 +2387,7 @@ arcpy.management.ApplySymbologyFromLayer(
 # Apply the symbology for the US Census 2020 Blocks data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_ohs_roads_500ft_lyr_blocks,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Census Blocks.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Census Blocks.lyrx"),
     symbology_fields = [["VALUE_FIELD", "population_density", "population_density"]],
     update_symbology = "MAINTAIN",
 )
@@ -2403,7 +2396,7 @@ arcpy.management.ApplySymbologyFromLayer(
 # Apply the symbology for the roads data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_ohs_roads_500ft_lyr_roads,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Roads.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Roads.lyrx"),
     symbology_fields = [["VALUE_FIELD", "road_cat", "road_cat"]],
     update_symbology = "MAINTAIN",
 )
@@ -2443,12 +2436,12 @@ cim_ohs_roads_500ft = map_ohs_roads_500ft.getDefinition("V3")
 print("- Export Map and Map Layers")
 
 # Update the optimized hot spots map mapx file
-export_cim("map", map_ohs_roads_500ft, "optimized_hotspots_roads_500ft")
+ocs.export_cim(aprx = aprx, cim_type = "map", cim_object = map_ohs_roads_500ft, cim_name = "optimized_hotspots_roads_500ft")
 
 # Export map layers as CIM JSON `.lyrx` files to the layers folder directory of the project.
 for l in map_ohs_roads_500ft.listLayers():
     if not l.isBasemapLayer:
-        export_cim("layer", l, l.name)
+        ocs.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
 
 
 ### Save Project ----
@@ -2475,7 +2468,7 @@ aprx.closeViews()
 # Open the road crashes map view
 map_road_crashes.openView()
 # set the main map as active map
-map = aprx.activeMap
+map_active = aprx.activeMap
 
 # Remove all the layers from the map
 for lyr in map_road_crashes.listLayers():
@@ -2511,7 +2504,7 @@ print("- Layer Symbology")
 # Apply the symbology for the Crashes 500ft from Major Roads data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_road_crashes_lyr_crashes_500ft_roads,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Crashes.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Crashes.lyrx"),
     symbology_fields = [["VALUE_FIELD", "coll_severity", "coll_severity"]],
     update_symbology = "MAINTAIN",
 )
@@ -2521,7 +2514,7 @@ print(arcpy.GetMessages())
 # Apply the symbology for the major roads data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_road_crashes_lyr_roads_major,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Major Roads.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Major Roads.lyrx"),
     symbology_fields = [["VALUE_FIELD", "road_cat", "road_cat"]],
     update_symbology = "MAINTAIN",
 )
@@ -2531,7 +2524,7 @@ print(arcpy.GetMessages())
 # Apply the symbology for the US Census 2020 Blocks data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_road_crashes_lyr_blocks,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Census Blocks.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Census Blocks.lyrx"),
     symbology_fields = [["VALUE_FIELD", "population_density", "population_density"]],
     update_symbology = "MAINTAIN",
 )
@@ -2541,7 +2534,7 @@ print(arcpy.GetMessages())
 # Apply the symbology for the Boundaries data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_road_crashes_lyr_boundaries,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Boundaries.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Boundaries.lyrx"),
     symbology_fields = None,
     update_symbology = "MAINTAIN",
 )
@@ -2579,12 +2572,12 @@ cim_road_crashes = map_road_crashes.getDefinition("V3")
 print("- Export Map and Map Layers")
 
 # Update the victims map mapx file
-export_cim("map", map_road_crashes, "road_crashes")
+ocs.export_cim(aprx = aprx, cim_type = "map", cim_object = map_road_crashes, cim_name = "road_crashes")
 
 # Export map layers as CIM JSON `.lyrx` files to the layers folder directory of the project.
 for l in map_road_crashes.listLayers():
     if not l.isBasemapLayer:
-        export_cim("layer", l, l.name)
+        ocs.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
 
 
 ### Save Project ----
@@ -2611,7 +2604,7 @@ aprx.closeViews()
 # Open the road hotspots map view
 map_road_hotspots.openView()
 # set the main map as active map
-map = aprx.activeMap
+map_active = aprx.activeMap
 
 # Remove all the layers from the map
 for lyr in map_road_hotspots.listLayers():
@@ -2647,7 +2640,7 @@ print("- Layer Symbology")
 # Apply the symbology for the major roads data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_road_hotspots_lyr_roads_major,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Major Roads.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Major Roads.lyrx"),
     symbology_fields = [["VALUE_FIELD", "road_cat", "road_cat"]],
     update_symbology = "MAINTAIN",
 )
@@ -2657,7 +2650,7 @@ print(arcpy.GetMessages())
 # Apply the symbology for the census blocks data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_road_hotspots_lyr_blocks,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Census Blocks.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Census Blocks.lyrx"),
     symbology_fields = [["VALUE_FIELD", "population_density", "population_density"]],
     update_symbology = "MAINTAIN",
 )
@@ -2667,7 +2660,7 @@ print(arcpy.GetMessages())
 # Apply the symbology for the Boundaries data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_road_hotspots_lyr_boundaries,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Boundaries.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Boundaries.lyrx"),
     symbology_fields = None,
     update_symbology = "MAINTAIN",
 )
@@ -2705,12 +2698,12 @@ cim_road_hotspots = map_road_hotspots.getDefinition("V3")
 print("- Export Map and Map Layers")
 
 # Update the victims map mapx file
-export_cim("map", map_road_hotspots, "road_hotspots")
+ocs.export_cim(aprx = aprx, cim_type = "map", cim_object = map_road_hotspots, cim_name = "road_hotspots")
 
 # Export map layers as CIM JSON `.lyrx` files to the layers folder directory of the project.
 for l in map_road_hotspots.listLayers():
     if not l.isBasemapLayer:
-        export_cim("layer", l, l.name)
+        ocs.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
 
 
 ### Save Project ----
@@ -2737,7 +2730,7 @@ aprx.closeViews()
 # Open the regression map view
 map_road_buffers.openView()
 # set the main map as active map
-map = aprx.activeMap
+map_active = aprx.activeMap
 
 # Remove all the layers from the map
 for lyr in map_road_buffers.listLayers():
@@ -2773,7 +2766,7 @@ print("- Layer Symbology")
 # Apply the symbology for the Roads data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_road_buffers_lyr_road_buffers,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Major Roads Buffers Summary.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Major Roads Buffers Summary.lyrx"),
     symbology_fields = [["VALUE_FIELD", "sum_number_killed", "sum_number_killed"]],
     update_symbology = "MAINTAIN",
 )
@@ -2783,7 +2776,7 @@ print(arcpy.GetMessages())
 # Apply the symbology for the major roads data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_road_buffers_lyr_roads_major,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Major Roads.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Major Roads.lyrx"),
     symbology_fields = [["VALUE_FIELD", "road_cat", "road_cat"]],
     update_symbology = "MAINTAIN",
 )
@@ -2792,7 +2785,7 @@ arcpy.management.ApplySymbologyFromLayer(
 # Apply the symbology for the US Census 2020 Blocks data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_road_buffers_lyr_blocks,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Census Blocks.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Census Blocks.lyrx"),
     symbology_fields = [["VALUE_FIELD", "population_density", "population_density"]],
     update_symbology = "MAINTAIN",
 )
@@ -2801,7 +2794,7 @@ arcpy.management.ApplySymbologyFromLayer(
 # Apply the symbology for the Boundaries data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_road_buffers_lyr_boundaries,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Boundaries.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Boundaries.lyrx"),
     symbology_fields = None,
     update_symbology = "MAINTAIN",
 )
@@ -2838,12 +2831,12 @@ cim_road_buffers = map_road_buffers.getDefinition("V3")
 print("- Export Map and Map Layers")
 
 # Update the victims map mapx file
-export_cim("map", map_road_buffers, "road_buffers")
+ocs.export_cim(aprx = aprx, cim_type = "map", cim_object = map_road_buffers, cim_name = "road_buffers")
 
 # Export map layers as CIM JSON `.lyrx` files to the layers folder directory of the project.
 for l in map_road_buffers.listLayers():
     if not l.isBasemapLayer:
-        export_cim("layer", l, l.name)
+        ocs.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
 
 
 ### Save Project ----
@@ -2870,7 +2863,7 @@ aprx.closeViews()
 # Open the major road segments map view
 map_road_segments.openView()
 # set the main map as active map
-map = aprx.activeMap
+map_active = aprx.activeMap
 
 # Remove all the layers from the map
 for lyr in map_road_segments.listLayers():
@@ -2906,7 +2899,7 @@ print("- Layer Symbology")
 # Apply the symbology for the Roads data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_road_segments_lyr_roads_major_split,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Major Roads Split Buffer Summary.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Major Roads Split Buffer Summary.lyrx"),
     symbology_fields = [["VALUE_FIELD", "sum_victim_count", "sum_victim_count"]],
     update_symbology = "MAINTAIN",
 )
@@ -2916,7 +2909,7 @@ print(arcpy.GetMessages())
 # Apply the symbology for the major roads data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_road_segments_lyr_roads_major,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Major Roads.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Major Roads.lyrx"),
     symbology_fields = [["VALUE_FIELD", "road_cat", "road_cat"]],
     update_symbology = "MAINTAIN",
 )
@@ -2925,7 +2918,7 @@ arcpy.management.ApplySymbologyFromLayer(
 # Apply the symbology for the US Census 2020 Blocks data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_road_segments_lyr_blocks,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Census Blocks.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Census Blocks.lyrx"),
     symbology_fields = [["VALUE_FIELD", "population_density", "population_density"]],
     update_symbology = "MAINTAIN",
 )
@@ -2934,7 +2927,7 @@ arcpy.management.ApplySymbologyFromLayer(
 # Apply the symbology for the Boundaries data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_road_segments_lyr_boundaries,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Boundaries.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Boundaries.lyrx"),
     symbology_fields = None,
     update_symbology = "MAINTAIN",
 )
@@ -2971,12 +2964,12 @@ cim_road_segments = map_road_segments.getDefinition("V3")
 print("- Export Map and Map Layers")
 
 # Update the victims map mapx file
-export_cim("map", map_road_segments, "road_segments")
+ocs.export_cim(aprx = aprx, cim_type = "map", cim_object = map_road_segments, cim_name = "road_segments")
 
 # Export map layers as CIM JSON `.lyrx` files to the layers folder directory of the project.
 for l in map_road_segments.listLayers():
     if not l.isBasemapLayer:
-        export_cim("layer", l, l.name)
+        ocs.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
 
 
 ### Save Project ----
@@ -3003,7 +2996,7 @@ aprx.closeViews()
 # Open the roads map view
 map_roads.openView()
 # set the main map as active map
-map = aprx.activeMap
+map_active = aprx.activeMap
 
 # Remove all the layers from the map
 for lyr in map_roads.listLayers():
@@ -3066,7 +3059,7 @@ print("- Layer Symbology")
 # Apply the symbology for the Major Roads data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_roads_lyr_roads_major,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Major Roads.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Major Roads.lyrx"),
     symbology_fields = [["VALUE_FIELD", "road_cat", "road_cat"]],
     update_symbology = "MAINTAIN",
 )
@@ -3076,7 +3069,7 @@ print(arcpy.GetMessages())
 # Apply the symbology for the major roads layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_roads_lyr_roads_major_split,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Major Roads.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Major Roads.lyrx"),
     symbology_fields = [["VALUE_FIELD", "road_cat", "road_cat"]],
     update_symbology = "MAINTAIN",
 )
@@ -3140,12 +3133,12 @@ cim_roads = map_roads.getDefinition("V3")
 print("- Export Map and Map Layers")
 
 # Update the victims map mapx file
-export_cim("map", map_roads, "roads")
+ocs.export_cim(aprx = aprx, cim_type = "map", cim_object = map_roads, cim_name = "roads")
 
 # Export map layers as CIM JSON `.lyrx` files to the layers folder directory of the project.
 for l in map_roads.listLayers():
     if not l.isBasemapLayer:
-        export_cim("layer", l, l.name)
+        ocs.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
 
 
 ### Save Project ----
@@ -3172,7 +3165,7 @@ aprx.closeViews()
 # Open the hotspot points map view
 map_point_fhs.openView()
 # set the main map as active map
-map = aprx.activeMap
+map_active = aprx.activeMap
 
 # Remove all the layers from the map
 for lyr in map_point_fhs.listLayers():
@@ -3206,7 +3199,7 @@ print("- Layer Symbology")
 # Apply the symbology for the Major Roads data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_point_fhs_lyr_roads_major,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Major Roads.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Major Roads.lyrx"),
     symbology_fields = [["VALUE_FIELD", "road_cat", "road_cat"]],
     update_symbology = "MAINTAIN",
 )
@@ -3215,7 +3208,7 @@ arcpy.management.ApplySymbologyFromLayer(
 # Apply the symbology for the boundaires data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_point_fhs_lyr_boundaries,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Boundaries.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Boundaries.lyrx"),
     symbology_fields = None,
     update_symbology = "MAINTAIN",
 )
@@ -3249,12 +3242,12 @@ cim_point_fhs = map_point_fhs.getDefinition("V3")
 print("- Export Map and Map Layers")
 
 # Update the major roads map mapx file
-export_cim("map", map_point_fhs, "point_fhs")
+ocs.export_cim(aprx = aprx, cim_type = "map", cim_object = map_point_fhs, cim_name = "point_fhs")
 
 # Export map layers as CIM JSON `.lyrx` files to the layers folder directory of the project.
 for l in map_point_fhs.listLayers():
     if not l.isBasemapLayer:
-        export_cim("layer", l, l.name)
+        ocs.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
 
 
 ### Save Project ----
@@ -3281,7 +3274,7 @@ aprx.closeViews()
 # Open the optimized hot spot points map view
 map_point_ohs.openView()
 # set the main map as active map
-map = aprx.activeMap
+map_active = aprx.activeMap
 
 # Remove all the layers from the map
 for lyr in map_point_ohs.listLayers():
@@ -3315,7 +3308,7 @@ print("- Layer Symbology")
 # Apply the symbology for the Major Roads data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_point_ohs_lyr_roads_major,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Major Roads.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Major Roads.lyrx"),
     symbology_fields = [["VALUE_FIELD", "road_cat", "road_cat"]],
     update_symbology = "MAINTAIN",
 )
@@ -3324,7 +3317,7 @@ arcpy.management.ApplySymbologyFromLayer(
 # Apply the symbology for the boundaires data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_point_ohs_lyr_boundaries,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Boundaries.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Boundaries.lyrx"),
     symbology_fields = None,
     update_symbology = "MAINTAIN",
 )
@@ -3358,12 +3351,12 @@ cim_point_ohs = map_point_ohs.getDefinition("V3")
 print("- Export Map and Map Layers")
 
 # Update the road buffers map mapx file
-export_cim("map", map_point_ohs, "point_ohs")
+ocs.export_cim(aprx = aprx, cim_type = "map", cim_object = map_point_ohs, cim_name = "point_ohs")
 
 # Export map layers as CIM JSON `.lyrx` files to the layers folder directory of the project.
 for l in map_point_ohs.listLayers():
     if not l.isBasemapLayer:
-        export_cim("layer", l, l.name)
+        ocs.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
 
 
 ### Save Project ----
@@ -3390,7 +3383,7 @@ aprx.closeViews()
 # Open the population densities map view
 map_pop_dens.openView()
 # set the main map as active map
-map = aprx.activeMap
+map_active = aprx.activeMap
 
 # Remove all the layers from the map
 for lyr in map_pop_dens.listLayers():
@@ -3426,7 +3419,7 @@ print("- Layer Symbology")
 # Apply the symbology for the Housing Density data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_pop_dens_lyr_pop_dens,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Population Density.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Population Density.lyrx"),
     symbology_fields = [["VALUE_FIELD", "population_density", "population_density"]],
     update_symbology = "MAINTAIN",
 )
@@ -3436,7 +3429,7 @@ print(arcpy.GetMessages())
 # Apply the symbology for the major roads data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_pop_dens_lyr_roads_major,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Major Roads.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Major Roads.lyrx"),
     symbology_fields = [["VALUE_FIELD", "road_cat", "road_cat"]],
     update_symbology = "MAINTAIN",
 )
@@ -3445,7 +3438,7 @@ arcpy.management.ApplySymbologyFromLayer(
 # Apply the symbology for the Boundaries data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_pop_dens_lyr_boundaries,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Boundaries.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Boundaries.lyrx"),
     symbology_fields = None,
     update_symbology = "MAINTAIN",
 )
@@ -3480,12 +3473,12 @@ cim_pop_dens = map_pop_dens.getDefinition("V3")
 print("- Export Map and Map Layers")
 
 # Update the densities map mapx file
-export_cim("map", map_pop_dens, "pop_dens")
+ocs.export_cim(aprx = aprx, cim_type = "map", cim_object = map_pop_dens, cim_name = "pop_dens")
 
 # Export map layers as CIM JSON `.lyrx` files to the layers folder directory of the project.
 for l in map_pop_dens.listLayers():
     if not l.isBasemapLayer:
-        export_cim("layer", l, l.name)
+        ocs.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
 
 
 ### Save Project ----
@@ -3512,7 +3505,7 @@ aprx.closeViews()
 # Open the housing density map view
 map_hou_dens.openView()
 # set the main map as active map
-map = aprx.activeMap
+map_active = aprx.activeMap
 
 # Remove all the layers from the map
 for lyr in map_hou_dens.listLayers():
@@ -3548,7 +3541,7 @@ print("- Layer Symbology")
 # Apply the symbology for the Housing Density data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_hou_dens_lyr_hou_dens,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Housing Density.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Housing Density.lyrx"),
     symbology_fields = [["VALUE_FIELD", "housing_density", "housing_density"]],
     update_symbology = "MAINTAIN",
 )
@@ -3557,7 +3550,7 @@ arcpy.management.ApplySymbologyFromLayer(
 # Apply the symbology for the major roads data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_hou_dens_lyr_roads_major,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Major Roads.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Major Roads.lyrx"),
     symbology_fields = [["VALUE_FIELD", "road_cat", "road_cat"]],
     update_symbology = "MAINTAIN",
 )
@@ -3566,7 +3559,7 @@ arcpy.management.ApplySymbologyFromLayer(
 # Apply the symbology for the Boundaries data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_hou_dens_lyr_boundaries,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Boundaries.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Boundaries.lyrx"),
     symbology_fields = None,
     update_symbology = "MAINTAIN",
 )
@@ -3600,12 +3593,12 @@ cim_hou_dens = map_hou_dens.getDefinition("V3")
 print("- Export Map and Map Layers")
 
 # Update the victims map mapx file
-export_cim("map", map_hou_dens, "hou_dens")
+ocs.export_cim(aprx = aprx, cim_type = "map", cim_object = map_hou_dens, cim_name = "hou_dens")
 
 # Export map layers as CIM JSON `.lyrx` files to the layers folder directory of the project.
 for l in map_hou_dens.listLayers():
     if not l.isBasemapLayer:
-        export_cim("layer", l, l.name)
+        ocs.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
 
 
 ### Save Project ----
@@ -3632,7 +3625,7 @@ aprx.closeViews()
 # Open the city areas map layers
 map_area_cities.openView()
 # set the main map as active map
-map = aprx.activeMap
+map_active = aprx.activeMap
 
 # Remove all the layers from the map
 for lyr in map_area_cities.listLayers():
@@ -3666,7 +3659,7 @@ print("- Layer Symbology")
 # Apply the symbology for the boundaries data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_area_cities_lyr_boundaries,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Boundaries.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Boundaries.lyrx"),
     symbology_fields = None,
     update_symbology = "MAINTAIN",
 )
@@ -3675,7 +3668,7 @@ arcpy.management.ApplySymbologyFromLayer(
 # Apply the symbology for the major roads data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_area_cities_lyr_roads_major,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Major Roads.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Major Roads.lyrx"),
     symbology_fields = [["VALUE_FIELD", "road_cat", "road_cat"]],
     update_symbology = "MAINTAIN",
 )
@@ -3684,7 +3677,7 @@ arcpy.management.ApplySymbologyFromLayer(
 # Apply the symbology for the cities sum data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_area_cities_lyr_cities,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Cities Summary.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Cities Summary.lyrx"),
     symbology_fields = [["VALUE_FIELD", "sum_victim_count", "sum_victim_count"]],
     update_symbology = "MAINTAIN",
 )
@@ -3767,12 +3760,12 @@ cim_areas_cities = map_area_cities.getDefinition("V3")
 print("- Export Map and Map Layers")
 
 # Update the Cities map mapx file
-export_cim("map", map_area_cities, "area_cities")
+ocs.export_cim(aprx = aprx, cim_type = "map", cim_object = map_area_cities, cim_name = "area_cities")
 
 # Export map layers as CIM JSON `.lyrx` files to the layers folder directory of the project.
 for l in map_area_cities.listLayers():
     if not l.isBasemapLayer:
-        export_cim("layer", l, l.name)
+        ocs.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
 
 
 ### Save Project ----
@@ -3799,7 +3792,7 @@ aprx.closeViews()
 # Open the census blocks map view
 map_area_blocks.openView()
 # set the main map as active map
-map = aprx.activeMap
+map_active = aprx.activeMap
 
 # Remove all the layers from the map
 for lyr in map_area_blocks.listLayers():
@@ -3833,7 +3826,7 @@ print("- Layer Symbology")
 # Apply the symbology for the boundaries data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_area_blocks_lyr_boundaries,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Boundaries.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Boundaries.lyrx"),
     symbology_fields = None,
     update_symbology = "MAINTAIN",
 )
@@ -3842,7 +3835,7 @@ arcpy.management.ApplySymbologyFromLayer(
 # Apply the symbology for the major roads data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_area_blocks_lyr_roads_major,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Major Roads.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Major Roads.lyrx"),
     symbology_fields = [["VALUE_FIELD", "road_cat", "road_cat"]],
     update_symbology = "MAINTAIN",
 )
@@ -3851,7 +3844,7 @@ arcpy.management.ApplySymbologyFromLayer(
 # Apply the symbology for the census blocks sum data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_area_blocks_lyr_blocks,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Census Blocks Summary.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Census Blocks Summary.lyrx"),
     symbology_fields = [["VALUE_FIELD", "sum_victim_count", "sum_victim_count"]],
     update_symbology = "DEFAULT",
 )
@@ -3934,12 +3927,12 @@ cim_area_blocks = map_area_blocks.getDefinition("V3")
 print("- Export Map and Map Layers")
 
 # Update the Blocks map mapx file
-export_cim("map", map_area_blocks, "area_blocks")
+ocs.export_cim(aprx = aprx, cim_type = "map", cim_object = map_area_blocks, cim_name = "area_blocks")
 
 # Export map layers as CIM JSON `.lyrx` files to the layers folder directory of the project.
 for l in map_area_blocks.listLayers():
     if not l.isBasemapLayer:
-        export_cim("layer", l, l.name)
+        ocs.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
 
 
 ### Save Project ----
@@ -3966,7 +3959,7 @@ aprx.closeViews()
 # Open the summaries map view
 map_summaries.openView()
 # set the main map as active map
-map = aprx.activeMap
+map_active = aprx.activeMap
 
 # Remove all the layers from the map
 for lyr in map_summaries.listLayers():
@@ -4004,7 +3997,7 @@ print("- Layer Symbology")
 # Apply the symbology for the Census 2020 Blocks summary layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_summaries_lyr_blocks_sum,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Census Blocks.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Census Blocks.lyrx"),
     symbology_fields = [["VALUE_FIELD", "population_density", "population_density"]],
     update_symbology = "MAINTAIN",
 )
@@ -4014,7 +4007,7 @@ print(arcpy.GetMessages())
 # Apply the symbology for the Cities summary layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_summaries_lyr_cities_sum,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Cities.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Cities.lyrx"),
     symbology_fields = [["VALUE_FIELD", "city_pop_dens", "city_pop_dens"]],
     update_symbology = "MAINTAIN",
 )
@@ -4024,7 +4017,7 @@ print(arcpy.GetMessages())
 # Apply the symbology for the Crashes 500ft from Major Roads data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_summaries_lyr_crashes_500ft_from_major_roads,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Collisions.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Collisions.lyrx"),
     symbology_fields = [["VALUE_FIELD", "coll_severity", "coll_severity"]],
     update_symbology = "MAINTAIN",
 )
@@ -4058,13 +4051,13 @@ cim_summaries = map_summaries.getDefinition("V3")
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 print("- Export Map and Map Layers")
 
-# Update the victims map mapx file
-export_cim("map", map_summaries, "summaries")
+# Update the summaries map mapx file
+ocs.export_cim(aprx = aprx, cim_type = "map", cim_object = map_summaries, cim_name = "summaries")
 
 # Export map layers as CIM JSON `.lyrx` files to the layers folder directory of the project.
 for l in map_summaries.listLayers():
     if not l.isBasemapLayer:
-        export_cim("layer", l, l.name)
+        ocs.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
 
 
 ### Save Project ----
@@ -4091,7 +4084,7 @@ aprx.closeViews()
 # Open the analysis map view
 map_analysis.openView()
 # set the main map as active map
-map = aprx.activeMap
+map_active = aprx.activeMap
 
 # Remove all the layers from the map
 for lyr in map_analysis.listLayers():
@@ -4137,13 +4130,13 @@ map_analysis_cim_crashes_optimized_hotspots = map_analysis_lyr_crashes_optimized
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 print("- Export Map and Map Layers")
 
-# Update the victims map mapx file
-export_cim("map", map_analysis, "analysis")
+# Update the analysis map mapx file
+ocs.export_cim(aprx = aprx, cim_type = "map", cim_object = map_analysis, cim_name = "analysis")
 
 # Export map layers as CIM JSON `.lyrx` files to the layers folder directory of the project.
 for l in map_analysis.listLayers():
     if not l.isBasemapLayer:
-        export_cim("layer", l, l.name)
+        ocs.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
 
 
 ### Save Project ----
@@ -4170,7 +4163,7 @@ aprx.closeViews()
 # Open the regression map view
 map_regression.openView()
 # set the main map as active map
-map = aprx.activeMap
+map_active = aprx.activeMap
 
 # Remove all the layers from the map
 for lyr in map_regression.listLayers():
@@ -4206,7 +4199,7 @@ print("- Layer Symbology")
 # Apply the symbology for the Roads data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_regression_lyr_roads,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Roads.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Roads.lyrx"),
     symbology_fields = [["VALUE_FIELD", "road_cat", "road_cat"]],
     update_symbology = "MAINTAIN",
 )
@@ -4216,7 +4209,7 @@ print(arcpy.GetMessages())
 # Apply the symbology for the US Census 2020 Blocks data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_regression_lyr_blocks,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Census Blocks.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Census Blocks.lyrx"),
     symbology_fields = [["VALUE_FIELD", "population_density", "population_density"]],
     update_symbology = "MAINTAIN",
 )
@@ -4226,7 +4219,7 @@ print(arcpy.GetMessages())
 # Apply the symbology for the Cities data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_regression_lyr_cities,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Cities.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Cities.lyrx"),
     symbology_fields = [["VALUE_FIELD", "city_pop_dens", "city_pop_dens"]],
     update_symbology = "MAINTAIN",
 )
@@ -4236,7 +4229,7 @@ print(arcpy.GetMessages())
 # Apply the symbology for the Boundaries data layer
 arcpy.management.ApplySymbologyFromLayer(
     in_layer = map_regression_lyr_boundaries,
-    in_symbology_layer = os.path.join(prj_dirs.get("layers_templates", ""), "OCTraffic Boundaries.lyrx"),
+    in_symbology_layer = os.path.join(prj_dirs.get("gis_layers_templates", ""), "OCTraffic Boundaries.lyrx"),
     symbology_fields = None,
     update_symbology = "MAINTAIN",
 )
@@ -4273,13 +4266,13 @@ cim_regression = map_regression.getDefinition("V3")
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 print("- Export Map and Map Layers")
 
-# Update the victims map mapx file
-export_cim("map", map_regression, "regression")
+# Update the regression map mapx file
+ocs.export_cim(aprx = aprx, cim_type = "map", cim_object = map_regression, cim_name = "regression")
 
 # Export map layers as CIM JSON `.lyrx` files to the layers folder directory of the project.
 for l in map_regression.listLayers():
     if not l.isBasemapLayer:
-        export_cim("layer", l, l.name)
+        ocs.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
 
 
 ### Save Project ----
@@ -4425,7 +4418,7 @@ print("\n4.2 Export Maps to JSON")
 # Export maps to mapx CIM JSON files
 for m in aprx.listMaps():
     print(f"Exporting {m.name} map...")
-    export_cim("map", m, m.name)
+    ocs.export_cim(aprx = aprx, cim_type = "map", cim_object = m, cim_name = m.name)
 
 
 ### Save Project ----

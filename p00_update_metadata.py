@@ -3,7 +3,7 @@
 # Project: OCTraffic Data Processing
 # Title: Part 0 - Update Metadata for OCTraffic Datasets ----
 # Author: Dr. Kostas Alexandridis, GISP
-# Version: 2025.3, Date: December 2025
+# Version: 2025.3, Date: January 2026
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 print("\nOCTraffic Data Processing - Part 0: Update Metadata for OCTraffic Datasets\n")
@@ -51,11 +51,11 @@ print("\n1.3. Project and Workspace Variables")
 
 # Create a dictionary with the project metadata
 print("\nCreating project metadata")
-prj_meta = ocs.project_metadata(silent = False)
+prj_meta = ocs.prj_meta
 
 # Create a dictionary with the project directories
 print("\nCreating project directories")
-prj_dirs = ocs.project_directories(silent = False)
+prj_dirs = ocs.prj_dirs
 
 
 
@@ -183,7 +183,8 @@ with open(metadata_path, "w", encoding = "utf-8") as f:
     json.dump(prj_meta["tims"], f, indent = 4)
 
 # Update the metadata info
-prj_meta = ocs.project_metadata(silent = False)
+ocs = OCTraffic(part = 0, version = 2025.3)
+prj_meta = ocs.prj_meta
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -191,4 +192,4 @@ prj_meta = ocs.project_metadata(silent = False)
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 print("\nLast Execution:", datetime.datetime.now().strftime("%Y-%m-%d"))
 print("\nEnd of Script")
-# Last Execution: 2025-12-30
+# Last Execution: 2026-01-01

@@ -16,3 +16,7 @@ aprx, workspace = ocs.load_aprx(aprx_path = prj_dirs["agp_aprx"], gdb_path = prj
 
 aprx
 workspace
+
+ocs.prj_dirs
+ocs.prj_meta
+ocs.cb

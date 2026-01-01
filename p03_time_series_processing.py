@@ -3,7 +3,7 @@
 # Project: OCTraffic Data Processing
 # Title: Part 3 - Time Series Processing ----
 # Author: Dr. Kostas Alexandridis, GISP
-# Version: 2025.3, Date: December 2025
+# Version: 2025.3, Date: January 2026
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 print("\nOCTraffic Data Processing - Part 3 - Time Series Processing\n")
@@ -103,14 +103,11 @@ print("\n1.4. Loading Codebook from Disk")
 
 # Load the codebook from the project codebook directory
 print("- Loading the codebook from the project codebook directory")
-cb = ocs.load_cb()
+cb = ocs.cb
 
 # create a data frame from the codebook
 print("- Creating a data frame from the codebook")
-df_cb = pd.DataFrame(cb).transpose()
-# Add attributes to the codebook data frame
-df_cb.attrs["name"] = "Codebook"
-print(df_cb.head())
+df_cb = ocs.df_cb
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -281,4 +278,4 @@ ocs.save_to_disk(
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 print("\nLast Execution:", datetime.datetime.now().strftime("%Y-%m-%d"))
 print("\nEnd of Script")
-# Last Execution: 2025-12-30
+# Last Execution: 2026-01-01

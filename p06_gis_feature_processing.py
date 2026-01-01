@@ -76,13 +76,6 @@ gdb_path: str = prj_dirs.get("agp_gdb", "")
 aprx, workspace = ocs.load_aprx(aprx_path = aprx_path, gdb_path = gdb_path, add_to_map = False)
 # Close all map views
 aprx.closeViews()
-# Current ArcGIS workspace (arcpy)
-#arcpy.env.workspace = gdb_path
-#workspace = arcpy.env.workspace
-# Enable overwriting existing outputs
-#arcpy.env.overwriteOutput = True
-# Disable adding outputs to map
-#arcpy.env.addOutputsToMap = False
 
 
 ### Data Folder Paths ----

@@ -85,14 +85,14 @@ class OCTraffic:
         self.base_path = os.getcwd()
 
         # Create an prj_meta variable calling the function using the part and version variables from the initialization
-        self.prj_meta = self.project_metadata(silent = True)
+        self.prj_meta = self.project_metadata(silent = False)
 
         # Create an prj_dir variable calling the function using the part and version variables from the initialization
-        self.prj_dir = self.project_directories(silent = True)
+        self.prj_dirs = self.project_directories(silent = False)
 
         # Load the codebook
-        self.cb_path = os.path.join(self.prj_dir["codebook"], "cb.json")
-        self.cb = self.load_cb()
+        self.cb_path = os.path.join(self.prj_dirs["codebook"], "cb.json")
+        self.cb, self.df_cb = self.load_cb(silent = False)
 
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -195,7 +195,7 @@ class OCTraffic:
         # If it is not silent, print the metadata
         if not silent:
             print(
-                f"Project Metadata:\n- Name: {metadata['name']}\n- Title: {metadata['title']}\n- Description: {metadata['description']}\n- Version: {metadata['version']}\n- Author: {metadata['author']}\n- Start Date: {metadata['date_start'].strftime('%B %d, %Y')}\n- End Date: {metadata['date_end'].strftime('%B %d, %Y')}\n- Years: {list(metadata['years'])}\n- Last Updated: {metadata['date_updated'].strftime('%B %d, %Y')}"
+                f"\nProject Metadata:\n- Name: {metadata['name']}\n- Title: {metadata['title']}\n- Description: {metadata['description']}\n- Version: {metadata['version']}\n- Author: {metadata['author']}\n- Start Date: {metadata['date_start'].strftime('%B %d, %Y')}\n- End Date: {metadata['date_end'].strftime('%B %d, %Y')}\n- Years: {list(metadata['years'])}\n- Last Updated: {metadata['date_updated'].strftime('%B %d, %Y')}"
             )
 
         # Return the metadata
@@ -361,7 +361,7 @@ class OCTraffic:
         }
         # Print the project directories
         if not silent:
-            print("Project Directories:")
+            print("\nProject Directories:")
             for key, value in prj_dirs.items():
                 print(f"- {key}: {value}")
         # Return the project directories
@@ -371,23 +371,32 @@ class OCTraffic:
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ## 5. Load Codebook Function ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    def load_cb(self) -> dict:
+    def load_cb(self, silent: bool = False) -> tuple:
         """
         Load the codebook.
         Args:
-            None
+            silent (bool): If True, suppresses the print output. Default is False.
         Returns:
             cb (dict): The codebook.
+            df_cb (pd.DataFrame): The codebook data frame.
         Raises:
             Nothing
         Example:
-            >>>cb = load_cb()
+            >>>cb, df_cb = load_cb()
         Notes:
             This function loads the codebook from the codebook path.
         """
         with open(self.cb_path, encoding = "utf-8") as json_file:
             cb = json.load(json_file)
-        return cb
+        
+        # Create a codebook data frame
+        df_cb = pd.DataFrame(cb).transpose()
+        # Add attributes to the codebook data frame
+        df_cb.attrs["name"] = "Codebook"
+        
+        if not silent:
+            print("\nCodebook:\n", df_cb.head())
+        return cb, df_cb
     
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ## 6. Relocate Dataframe Column Function ----
@@ -2131,25 +2140,25 @@ class OCTraffic:
             case "map":
                 # Export the CIM object to a MAPX file
                 print(f"Exporting {cim_name} map to MAPX...")
-                cim_object.exportToMAPX(os.path.join(self.prj_dirs.get("maps", ""), cim_name + ".mapx"))
+                cim_object.exportToMAPX(os.path.join(self.prj_dirs.get("gis_maps", ""), cim_name + ".mapx"))
                 print(arcpy.GetMessages())
                 # Export the CIM object to a JSON file
                 print(f"Exporting {cim_name} map to JSON...\n")
-                with open(os.path.join(self.prj_dirs.get("maps", ""), cim_name + ".mapx"), "r", encoding = "utf-8") as f:
+                with open(os.path.join(self.prj_dirs.get("gis_maps", ""), cim_name + ".mapx"), "r", encoding = "utf-8") as f:
                     data = f.read()
-                with open(os.path.join(self.prj_dirs.get("maps", ""), cim_name + ".json"), "w", encoding = "utf-8") as f:
+                with open(os.path.join(self.prj_dirs.get("gis_maps", ""), cim_name + ".json"), "w", encoding = "utf-8") as f:
                     f.write(data)
             # When the CIM object is a layout
             case "layout":
                 # Export the CIM object to a PAGX file
                 print(f"Exporting {cim_name} layout to PAGX...")
-                cim_object.exportToPAGX(os.path.join(self.prj_dirs.get("layouts", ""), cim_name + ".pagx"))
+                cim_object.exportToPAGX(os.path.join(self.prj_dirs.get("gis_layouts", ""), cim_name + ".pagx"))
                 print(arcpy.GetMessages())
                 # Export the CIM object to a JSON file
                 print(f"Exporting {cim_name} layout to JSON...\n")
-                with open(os.path.join(self.prj_dirs.get("layouts", ""), cim_name + ".pagx"), "r", encoding = "utf-8") as f:
+                with open(os.path.join(self.prj_dirs.get("gis_layouts", ""), cim_name + ".pagx"), "r", encoding = "utf-8") as f:
                     data = f.read()
-                with open(os.path.join(self.prj_dirs.get("layouts", ""), cim_name + ".json"), "w", encoding = "utf-8") as f:
+                with open(os.path.join(self.prj_dirs.get("gis_layouts", ""), cim_name + ".json"), "w", encoding = "utf-8") as f:
                     f.write(data)
             # When the CIM object is a layer
             case "layer":
@@ -2165,14 +2174,14 @@ class OCTraffic:
                             )
                 # Save the layer to a LYRX file
                 arcpy.management.SaveToLayerFile(
-                    cim_object, os.path.join(self.prj_dirs.get("layers", ""), cim_new_name + ".lyrx")
+                    cim_object, os.path.join(self.prj_dirs.get("gis_layers", ""), cim_new_name + ".lyrx")
                 )
                 print(arcpy.GetMessages())
                 # Export the CIM object to a JSON file
                 print(f"Exporting {cim_name} layer to JSON...\n")
-                with open(os.path.join(self.prj_dirs.get("layers", ""), cim_new_name + ".lyrx"), "r", encoding = "utf-8") as f:
+                with open(os.path.join(self.prj_dirs.get("gis_layers", ""), cim_new_name + ".lyrx"), "r", encoding = "utf-8") as f:
                     data = f.read()
-                with open(os.path.join(self.prj_dirs.get("layers", ""), cim_new_name + ".json"), "w", encoding = "utf-8") as f:
+                with open(os.path.join(self.prj_dirs.get("gis_layers", ""), cim_new_name + ".json"), "w", encoding = "utf-8") as f:
                     f.write(data)
     
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
