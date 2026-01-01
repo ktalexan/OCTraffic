@@ -395,7 +395,7 @@ class OCTraffic:
         df_cb.attrs["name"] = "Codebook"
         
         if not silent:
-            print("\nCodebook:\n", df_cb.head())
+            print("\nCodebook:\n", df_cb)
         return cb, df_cb
     
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

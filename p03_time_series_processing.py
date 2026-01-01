@@ -43,11 +43,11 @@ print("\n1.2. Project and Workspace Variables")
 
 # Create a dictionary with the project metadata
 print("\nCreating project metadata")
-prj_meta = ocs.project_metadata(silent = False)
+prj_meta = ocs.prj_meta
 
 # Create a dictionary with the project directories
 print("\nCreating project directories")
-prj_dirs = ocs.project_directories(silent = False)
+prj_dirs = ocs.prj_dirs
 
 # Set the current working directory to the project root
 os.chdir(prj_dirs["root"])
@@ -116,10 +116,10 @@ df_cb = ocs.df_cb
 print("\n1.5. Adding Attributes to Data Frames")
 
 # Set column attributes for each data frame
-crashes = ocs.add_attributes(df=crashes, cb=cb)
-parties = ocs.add_attributes(df=parties, cb=cb)
-victims = ocs.add_attributes(df=victims, cb=cb)
-collisions = ocs.add_attributes(df=collisions, cb=cb)
+crashes = ocs.add_attributes(df = crashes, cb = cb)
+parties = ocs.add_attributes(df = parties, cb = cb)
+victims = ocs.add_attributes(df = victims, cb = cb)
+collisions = ocs.add_attributes(df = collisions, cb = cb)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
