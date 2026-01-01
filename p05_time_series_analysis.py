@@ -3,7 +3,7 @@
 # Project: OCTraffic Data Processing
 # Title: Part 5 - Time Series Analysis ----
 # Author: Dr. Kostas Alexandridis, GISP
-# Version: 2025.3, Date: December 2025
+# Version: 2025.3, Date: January 2026
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 print("\nOCTraffic Data Processing - Part 5 - Time Series Analysis\n")
@@ -49,11 +49,11 @@ print("\n1.2. Project and Workspace Variables")
 
 # Create a dictionary with the project metadata
 print("\nCreating project metadata")
-prj_meta = ocs.project_metadata(silent = False)
+prj_meta = ocs.prj_meta
 
 # Create a dictionary with the project directories
 print("\nCreating project directories")
-prj_dirs = ocs.project_directories(silent = False)
+prj_dirs = ocs.prj_dirs
 
 # Set the current working directory to the project root
 os.chdir(prj_dirs["root"])
@@ -134,14 +134,11 @@ print("\n1.4. Loading Codebook from Disk")
 
 # Load the codebook from the project codebook directory
 print("- Loading the codebook from the project codebook directory")
-cb = ocs.load_cb()
+cb = ocs.cb
 
 # create a data frame from the codebook
 print("- Creating a data frame from the codebook")
-df_cb = pd.DataFrame(cb).transpose()
-# Add attributes to the codebook data frame
-df_cb.attrs["name"] = "Codebook"
-print(df_cb.head())
+df_cb = ocs.df_cb
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -495,8 +492,8 @@ graphics_list = ocs.graphics_entry(
         "file": "STL Plot Weekly Crashes",
         "status": "final",
     },
-    gr_list=graphics_list,
-    gr_dirs=prj_dirs,
+    gr_list = graphics_list,
+    gr_dirs = prj_dirs,
 )
 
 
@@ -561,8 +558,8 @@ graphics_list = ocs.graphics_entry(
         "file": "STL Plot Weekly Fatalities",
         "status": "final",
     },
-    gr_list=graphics_list,
-    gr_dirs=prj_dirs,
+    gr_list = graphics_list,
+    gr_dirs = prj_dirs,
 )
 
 
@@ -627,8 +624,8 @@ graphics_list = ocs.graphics_entry(
         "file": "STL Plot Weekly Severity",
         "status": "final",
     },
-    gr_list=graphics_list,
-    gr_dirs=prj_dirs,
+    gr_list = graphics_list,
+    gr_dirs = prj_dirs,
 )
 
 
@@ -836,4 +833,4 @@ ocs.save_to_disk(
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 print("\nLast Execution:", dt.datetime.now().strftime("%Y-%m-%d"))
 print("\nEnd of Script")
-# Last Executed: 2025-12-30
+# Last Executed: 2026-01-01
