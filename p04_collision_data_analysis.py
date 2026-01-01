@@ -3,7 +3,7 @@
 # Project: OCTraffic Data Processing
 # Title: Part 4 - Collision Data Analysis ----
 # Author: Dr. Kostas Alexandridis, GISP
-# Version: 2025.3, Date: December 2025
+# Version: 2025.3, Date: January 2026
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 print("\nOCTraffic Data Processing - Part 4 - Collision Data Analysis\n")
@@ -49,11 +49,11 @@ print("\n1.2. Project and Workspace Variables")
 
 # Create a dictionary with the project metadata
 print("\nCreating project metadata")
-prj_meta = ocs.project_metadata(silent = False)
+prj_meta = ocs.prj_meta
 
 # Create a dictionary with the project directories
 print("\nCreating project directories")
-prj_dirs = ocs.project_directories(silent = False)
+prj_dirs = ocs.prj_dirs
 
 # Set the current working directory to the project root
 os.chdir(prj_dirs["root"])
@@ -135,14 +135,11 @@ print("\n1.4. Loading Codebook from Disk")
 
 # Load the codebook from the project codebook directory
 print("- Loading the codebook from the project codebook directory")
-cb = ocs.load_cb()
+cb = ocs.cb
 
 # create a data frame from the codebook
 print("- Creating a data frame from the codebook")
-df_cb = pd.DataFrame(cb).transpose()
-# Add attributes to the codebook data frame
-df_cb.attrs["name"] = "Codebook"
-print(df_cb.head())
+df_cb = ocs.df_cb
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -570,7 +567,7 @@ with open(tbl1_dataset_path, "wb") as f:
 # Save the updated latex_vars dictionary to the json file on disk replacing the old one
 latex_vars_path = os.path.join(prj_dirs["metadata"], "latex_vars.json")
 with open(latex_vars_path, "w", encoding = "utf-8") as json_file:
-    json.dump(latex_vars, json_file, indent=4)
+    json.dump(latex_vars, json_file, indent = 4)
     print(f"\n- Updated LaTeX variables saved to {latex_vars_path}")
 
 # Save the LaTeX variables dictionary to a .tex file
@@ -592,9 +589,9 @@ print("\n- Metadata")
 
 # Add graphics metadata for Table 2
 graphics_list = ocs.graphics_entry(
-    gr_type=1,
-    gr_id=2,
-    gr_attr={
+    gr_type = 1,
+    gr_id = 2,
+    gr_attr = {
         "name": "Collision severity rank classification statistics",
         "description": "Key classification and statistics of the collision severity rank variable",
         "caption": "Ranked collision severity ordinal classification, related parameters, and OCTraffic dataset counts",
@@ -603,8 +600,8 @@ graphics_list = ocs.graphics_entry(
         "file": "Collision Severity Rank Stats",
         "status": "final",
     },
-    gr_list=graphics_list,
-    gr_dirs=prj_dirs,
+    gr_list = graphics_list,
+    gr_dirs = prj_dirs,
 )
 
 
@@ -867,9 +864,9 @@ print("\n- Metadata")
 
 # Add graphics metadata for Figure 1
 graphics_list = ocs.graphics_entry(
-    gr_type=2,
-    gr_id=1,
-    gr_attr={
+    gr_type = 2,
+    gr_id = 1,
+    gr_attr = {
         "category": "histogram",
         "name": "Histogram of victim count in crashes",
         "description": "Histogram plot of the number of victims in crash incidents",
@@ -880,8 +877,8 @@ graphics_list = ocs.graphics_entry(
         "file": "Histogram Victim Count",
         "status": "final",
     },
-    gr_list=graphics_list,
-    gr_dirs=prj_dirs,
+    gr_list = graphics_list,
+    gr_dirs = prj_dirs,
 )
 
 
@@ -890,8 +887,8 @@ graphics_list = ocs.graphics_entry(
 print("\n- Create the Histogram Plot")
 
 # Run the function and get the figure and axes objects
-fig1, ax1 = plt.subplots(figsize=(12, 8))
-fig1, ax1 = ocs.plot_victim_count_histogram(crashes, fig=fig1, ax=ax1)
+fig1, ax1 = plt.subplots(figsize = (12, 8))
+fig1, ax1 = ocs.plot_victim_count_histogram(crashes, fig = fig1, ax = ax1)
 fig1.show()
 plt.close(fig1)
 
@@ -901,19 +898,19 @@ plt.close(fig1)
 print("\n- Save the Figure")
 
 # Save the figure to a file
-fig1, ax1 = plt.subplots(figsize=(12, 8))
-fig1, ax1 = ocs.plot_victim_count_histogram(crashes, fig=fig1, ax=ax1)
+fig1, ax1 = plt.subplots(figsize = (12, 8))
+fig1, ax1 = ocs.plot_victim_count_histogram(crashes, fig = fig1, ax = ax1)
 fig1.savefig(
-    fname=graphics_list["graphics"]["fig1"]["path"],
-    transparent=True,
-    dpi=graphics_list["graphics"]["fig1"]["resolution"],
-    format="png",
-    metadata=None,
-    bbox_inches="tight",
-    pad_inches=0.1,
-    facecolor="auto",
-    edgecolor="auto",
-    backend=None,
+    fname = graphics_list["graphics"]["fig1"]["path"],
+    transparent = True,
+    dpi = graphics_list["graphics"]["fig1"]["resolution"],
+    format = "png",
+    metadata = None,
+    bbox_inches = "tight",
+    pad_inches = 0.1,
+    facecolor = "auto",
+    edgecolor = "auto",
+    backend = None,
 )
 plt.close(fig1)
 
@@ -929,9 +926,9 @@ print("\n- Metadata")
 
 # Add graphics metadata for Figure 2
 graphics_list = ocs.graphics_entry(
-    gr_type=2,
-    gr_id=2,
-    gr_attr={
+    gr_type = 2,
+    gr_id = 2,
+    gr_attr = {
         "category": "bar",
         "name": "Bar graph of collision types",
         "description": "Bar graph of the number of collisions by type of collision",
@@ -942,8 +939,8 @@ graphics_list = ocs.graphics_entry(
         "file": "Bar Type of Collision",
         "status": "final",
     },
-    gr_list=graphics_list,
-    gr_dirs=prj_dirs,
+    gr_list = graphics_list,
+    gr_dirs = prj_dirs,
 )
 
 
@@ -952,8 +949,8 @@ graphics_list = ocs.graphics_entry(
 print("\n- Create the Bar Chart Plot")
 
 # Run the function to create the bar chart
-fig2, ax2 = plt.subplots(figsize=(12, 8))
-fig2, ax2 = ocs.plot_collision_type_bar(crashes, fig=fig2, ax=ax2)
+fig2, ax2 = plt.subplots(figsize = (12, 8))
+fig2, ax2 = ocs.plot_collision_type_bar(crashes, fig = fig2, ax = ax2)
 fig2.show()
 plt.close(fig2)
 
@@ -963,19 +960,19 @@ plt.close(fig2)
 print("\n- Save the Figure")
 
 # Save the figure to a file
-fig2, ax2 = plt.subplots(figsize=(12, 8))
-fig2, ax2 = ocs.plot_collision_type_bar(crashes, fig=fig2, ax=ax2)
+fig2, ax2 = plt.subplots(figsize = (12, 8))
+fig2, ax2 = ocs.plot_collision_type_bar(crashes, fig = fig2, ax = ax2)
 fig2.savefig(
-    fname=graphics_list["graphics"]["fig2"]["path"],
-    transparent=True,
-    dpi=graphics_list["graphics"]["fig2"]["resolution"],
-    format="png",
-    metadata=None,
-    bbox_inches="tight",
-    pad_inches=0.1,
-    facecolor="auto",
-    edgecolor="auto",
-    backend=None,
+    fname = graphics_list["graphics"]["fig2"]["path"],
+    transparent = True,
+    dpi = graphics_list["graphics"]["fig2"]["resolution"],
+    format = "png",
+    metadata = None,
+    bbox_inches = "tight",
+    pad_inches = 0.1,
+    facecolor = "auto",
+    edgecolor = "auto",
+    backend = None,
 )
 plt.close(fig2)
 
@@ -992,9 +989,9 @@ print("\n- Metadata")
 
 # Add graphics metadata for Figure 3
 graphics_list = ocs.graphics_entry(
-    gr_type=2,
-    gr_id=3,
-    gr_attr={
+    gr_type = 2,
+    gr_id = 3,
+    gr_attr = {
         "category": "bar",
         "name": "Cumulative Bars of Number of Fatalities by Type",
         "description": "Cumulative Bar graph of the number of fatal collisions by type",
@@ -1005,8 +1002,8 @@ graphics_list = ocs.graphics_entry(
         "file": "Cumulative Number of Fatalities",
         "status": "final",
     },
-    gr_list=graphics_list,
-    gr_dirs=prj_dirs,
+    gr_list = graphics_list,
+    gr_dirs = prj_dirs,
 )
 
 
@@ -1015,8 +1012,8 @@ graphics_list = ocs.graphics_entry(
 print("\n- Create the Cumulative Bar Chart Plot")
 
 # Call the function to plot
-fig3, ax3 = plt.subplots(figsize=(12, 8))
-fig3, ax3 = ocs.plot_fatalities_by_type_and_year(ts_year["crashes"], fig=fig3, ax=ax3)
+fig3, ax3 = plt.subplots(figsize = (12, 8))
+fig3, ax3 = ocs.plot_fatalities_by_type_and_year(ts_year["crashes"], fig = fig3, ax = ax3)
 fig3.show()
 plt.close(fig3)
 
@@ -1026,19 +1023,19 @@ plt.close(fig3)
 print("\n- Save the Figure")
 
 # Save the figure to a file
-fig3, ax3 = plt.subplots(figsize=(12, 8))
-fig3, ax3 = ocs.plot_fatalities_by_type_and_year(ts_year["crashes"], fig=fig3, ax=ax3)
+fig3, ax3 = plt.subplots(figsize = (12, 8))
+fig3, ax3 = ocs.plot_fatalities_by_type_and_year(ts_year["crashes"], fig = fig3, ax = ax3)
 fig3.savefig(
-    fname=graphics_list["graphics"]["fig3"]["path"],
-    transparent=True,
-    dpi=graphics_list["graphics"]["fig3"]["resolution"],
-    format="png",
-    metadata=None,
-    bbox_inches="tight",
-    pad_inches=0.1,
-    facecolor="auto",
-    edgecolor="auto",
-    backend=None,
+    fname = graphics_list["graphics"]["fig3"]["path"],
+    transparent = True,
+    dpi = graphics_list["graphics"]["fig3"]["resolution"],
+    format = "png",
+    metadata = None,
+    bbox_inches = "tight",
+    pad_inches = 0.1,
+    facecolor = "auto",
+    edgecolor = "auto",
+    backend = None,
 )
 plt.close(fig3)
 
@@ -1055,9 +1052,9 @@ print("\n- Metadata")
 
 # Add graphics metadata for Table 3
 graphics_list = ocs.graphics_entry(
-    gr_type=1,
-    gr_id=3,
-    gr_attr={
+    gr_type = 1,
+    gr_id = 3,
+    gr_attr = {
         "name": "Monthly Accident Summary Statistics",
         "description": "Key accident statistics for the summary variables in the OCTraffic datasets",
         "caption": (
@@ -1068,8 +1065,8 @@ graphics_list = ocs.graphics_entry(
         "file": "Monthly Summary Stats",
         "status": "final",
     },
-    gr_list=graphics_list,
-    gr_dirs=prj_dirs,
+    gr_list = graphics_list,
+    gr_dirs = prj_dirs,
 )
 
 
@@ -1121,7 +1118,7 @@ tbl3_labels = {
 # Filter rows where var.name ends with "sum"
 tbl3_data = stats_month[stats_month["var.name"].str.endswith("sum")].copy()
 # Remove the postfix "_sum" from var.name
-tbl3_data.loc[:, "var.name"] = tbl3_data["var.name"].str.replace("_sum$", "", regex=True)
+tbl3_data.loc[:, "var.name"] = tbl3_data["var.name"].str.replace("_sum$", "", regex = True)
 # Only keep rows where var.name is in tbl3_labels
 tbl3_data = tbl3_data[tbl3_data["var.name"].isin(tbl3_labels.keys())].copy()
 
@@ -1130,11 +1127,11 @@ tbl3_data.loc[:, "label"] = tbl3_data["var.name"].map(lambda x: tbl3_labels[x]["
 tbl3_data.loc[:, "order"] = tbl3_data["var.name"].map(lambda x: tbl3_labels[x]["var_order"])
 
 # Relocate the label and order columns
-ocs.relocate_column(df=tbl3_data, col_name="order", ref_col_name="stat.type", position="after")
-ocs.relocate_column(df=tbl3_data, col_name="label", ref_col_name="order", position="after")
+ocs.relocate_column(df = tbl3_data, col_name = "order", ref_col_name = "stat.type", position = "after")
+ocs.relocate_column(df = tbl3_data, col_name = "label", ref_col_name = "order", position = "after")
 
 # Remove the "var.name" column
-tbl3_data = tbl3_data.drop(columns=["var.name"])
+tbl3_data = tbl3_data.drop(columns = ["var.name"])
 
 # Reorder the columns by "order"
 tbl3_data = tbl3_data.sort_values("order")
@@ -1157,7 +1154,7 @@ tbl3_data = tbl3_data.sort_values("order")
 tbl3_data = tbl3_data[tbl3_data["order"] < 100]
 
 # Remove "stat.type" and "order" columns
-tbl3_data = tbl3_data.drop(columns=["stat.type", "order"])
+tbl3_data = tbl3_data.drop(columns = ["stat.type", "order"])
 
 # Rename columns
 col_rename = {
@@ -1170,7 +1167,7 @@ col_rename = {
     "SE.mean": "SE",
     "CI.mean.0.95": "CI",
 }
-tbl3_data = tbl3_data.rename(columns=col_rename)
+tbl3_data = tbl3_data.rename(columns = col_rename)
 
 # Ensuring that Total, Min, and Max are always integers
 for col in ["Total", "Min", "Max"]:
@@ -1200,27 +1197,27 @@ tbl3_mod = tbl3_mod.astype(str)
 
 # Create the LaTeX table from the data frame
 tbl3_latex = tbl3_mod.to_latex(
-    buf=None,
-    columns=None,
-    header=True,
-    index=False,
-    na_rep="NaN",
-    formatters=None,
-    float_format=None,
-    sparsify=None,
-    index_names=True,
-    bold_rows=False,
-    column_format="lrrrrrrr",
-    longtable=False,
-    escape=False,
-    encoding=None,
-    decimal=".",
-    multicolumn=True,
-    multicolumn_format="c",
-    multirow=True,
-    caption=graphics_list["tables"]["tbl3"]["caption"],
-    label=graphics_list["tables"]["tbl3"]["id"].lower(),
-    position=None,
+    buf = None,
+    columns = None,
+    header = True,
+    index = False,
+    na_rep = "NaN",
+    formatters = None,
+    float_format = None,
+    sparsify = None,
+    index_names = True,
+    bold_rows = False,
+    column_format = "lrrrrrrr",
+    longtable = False,
+    escape = False,
+    encoding = None,
+    decimal = ".",
+    multicolumn = True,
+    multicolumn_format = "c",
+    multirow = True,
+    caption = graphics_list["tables"]["tbl3"]["caption"],
+    label = graphics_list["tables"]["tbl3"]["id"].lower(),
+    position = None,
 )
 
 # Add option [h!] to the table
@@ -1265,7 +1262,7 @@ print(tbl3_latex)
 # Define the path to save the LaTeX table
 tbl3_path = graphics_list["tables"]["tbl3"]["path"]
 # Save the LaTeX table to a file
-with open(tbl3_path, "w", encoding="utf-8") as f:
+with open(tbl3_path, "w", encoding = "utf-8") as f:
     f.write(tbl3_latex)
     print(f"\n- Table 3 saved to {tbl3_path}")
 
@@ -1297,9 +1294,9 @@ print("\n- Metadata")
 
 # Add graphics metadata for Table 4
 graphics_list = ocs.graphics_entry(
-    gr_type=1,
-    gr_id=4,
-    gr_attr={
+    gr_type = 1,
+    gr_id = 4,
+    gr_attr = {
         "name": "Monthly Accident Average and Median Statistics",
         "description": "Key statistics for the average and median variable values in the OCTraffic datasets",
         "caption": (
@@ -1310,8 +1307,8 @@ graphics_list = ocs.graphics_entry(
         "file": "Monthly Average Stats",
         "status": "final",
     },
-    gr_list=graphics_list,
-    gr_dirs=prj_dirs,
+    gr_list = graphics_list,
+    gr_dirs = prj_dirs,
 )
 
 
@@ -1359,18 +1356,18 @@ tbl4_labels = {
 
 
 # Remove the "_mean" or "_median" suffix from var.name
-tbl4_data["var.name"] = tbl4_data["var.name"].str.replace(r"_(mean|median)$", "", regex=True)
+tbl4_data["var.name"] = tbl4_data["var.name"].str.replace(r"_(mean|median)$", "", regex = True)
 
 # Add label and order columns based on tbl3_labels
 tbl4_data.loc[:, "label"] = tbl4_data["var.name"].map(lambda x: tbl4_labels[x]["label"])
 tbl4_data.loc[:, "order"] = tbl4_data["var.name"].map(lambda x: tbl4_labels[x]["var_order"])
 
 # Relocate the label and order columns
-ocs.relocate_column(df=tbl4_data, col_name="order", ref_col_name="stat.type", position="after")
-ocs.relocate_column(df=tbl4_data, col_name="label", ref_col_name="order", position="after")
+ocs.relocate_column(df = tbl4_data, col_name = "order", ref_col_name = "stat.type", position = "after")
+ocs.relocate_column(df = tbl4_data, col_name = "label", ref_col_name = "order", position = "after")
 
 # Remove the "var.name" column
-tbl4_data = tbl4_data.drop(columns=["var.name"])
+tbl4_data = tbl4_data.drop(columns = ["var.name"])
 # Reorder the columns by "order"
 tbl4_data = tbl4_data.sort_values("order")
 
@@ -1392,7 +1389,7 @@ col_rename = {
     "std.dev": "SD",
     "median": "Median",
 }
-tbl4_data = tbl4_data.rename(columns=col_rename)
+tbl4_data = tbl4_data.rename(columns = col_rename)
 
 
 # Ensure that variables are floats with 3 decimal places
@@ -1418,27 +1415,27 @@ tbl4_mod = tbl4_mod.astype(str)
 
 # Create the LaTeX table from the data frame
 tbl4_latex = tbl4_mod.to_latex(
-    buf=None,
-    columns=None,
-    header=True,
-    index=False,
-    na_rep="NaN",
-    formatters=None,
-    float_format=None,
-    sparsify=None,
-    index_names=True,
-    bold_rows=False,
-    column_format="lrrrrrrr",
-    longtable=False,
-    escape=False,
-    encoding=None,
-    decimal=".",
-    multicolumn=True,
-    multicolumn_format="c",
-    multirow=True,
-    caption=graphics_list["tables"]["tbl4"]["caption"],
-    label=graphics_list["tables"]["tbl4"]["id"].lower(),
-    position=None,
+    buf = None,
+    columns = None,
+    header = True,
+    index = False,
+    na_rep = "NaN",
+    formatters = None,
+    float_format = None,
+    sparsify = None,
+    index_names = True,
+    bold_rows = False,
+    column_format = "lrrrrrrr",
+    longtable = False,
+    escape = False,
+    encoding = None,
+    decimal = ".",
+    multicolumn = True,
+    multicolumn_format = "c",
+    multirow = True,
+    caption = graphics_list["tables"]["tbl4"]["caption"],
+    label = graphics_list["tables"]["tbl4"]["id"].lower(),
+    position = None,
 )
 
 # Add option [h!] to the table
@@ -1520,9 +1517,9 @@ print("\n- Metadata")
 
 # Add graphics metadata for Table 5
 graphics_list = ocs.graphics_entry(
-    gr_type=1,
-    gr_id=5,
-    gr_attr={
+    gr_type = 1,
+    gr_id = 5,
+    gr_attr = {
         "name": "Collision Incidents by Year",
         "description": "Key statistics for the collision incidents by year in the OCTraffic datasets",
         "caption": "Collision Incidents Categorization by Year in the OCTraffic datasets",
@@ -1531,8 +1528,8 @@ graphics_list = ocs.graphics_entry(
         "file": "Collision Incidents by Year",
         "status": "final",
     },
-    gr_list=graphics_list,
-    gr_dirs=prj_dirs,
+    gr_list = graphics_list,
+    gr_dirs = prj_dirs,
 )
 
 
@@ -1587,12 +1584,12 @@ tbl5_data.columns = [
 
 
 # Add summary statistics rows (total, mean, sd) to the bottom of the DataFrame
-total_row = tbl5_data.sum(axis=0).round(0)
-mean_row = tbl5_data.mean(axis=0).round(0)
-std_row = tbl5_data.std(axis=0).round(0)
+total_row = tbl5_data.sum(axis = 0).round(0)
+mean_row = tbl5_data.mean(axis = 0).round(0)
+std_row = tbl5_data.std(axis = 0).round(0)
 
 # Create a new DataFrame with the statistics rows and concatenate with the original
-stats_df = pd.DataFrame([total_row, mean_row, std_row], index=["Total", "Mean", "SD"])
+stats_df = pd.DataFrame([total_row, mean_row, std_row], index = ["Total", "Mean", "SD"])
 
 # Concatenate the original DataFrame with the statistics DataFrame
 tbl5_data = pd.concat([tbl5_data, stats_df])
@@ -1704,4 +1701,4 @@ ocs.save_to_disk(
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 print("\nLast Execution:", datetime.datetime.now().strftime("%Y-%m-%d"))
 print("\nEnd of Script")
-# Last Execution: 2025-12-30
+# Last Execution: 2026-01-01
