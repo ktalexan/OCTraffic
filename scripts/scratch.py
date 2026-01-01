@@ -1,4 +1,8 @@
 
+import os, json
+import arcpy
+from arcpy import metadata as md
+
 from octraffic import OCTraffic
 
 # Initialize the OCTraffic object
