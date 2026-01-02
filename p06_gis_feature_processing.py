@@ -3,7 +3,7 @@
 # Project: OCTraffic Data Processing
 # Title: Part 6 - GIS Feature Processing ----
 # Author: Dr. Kostas Alexandridis, GISP
-# Version: 2025.3, Date: December 2025
+# Version: 2025.3, Date: January 2026
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 print("\nOCTraffic GIS Data Processing - Part 6 - GIS Feature Processing\n")
@@ -22,7 +22,6 @@ print("\n1.1. Referencing Libraries and Initialization")
 # Import Python libraries
 import os
 import datetime as dt
-import pandas as pd
 import pytz
 from dotenv import load_dotenv
 import arcpy
@@ -49,11 +48,11 @@ print("\n- Project and Geodatabase Paths")
 
 # Create a dictionary with the project metadata
 print("\nCreating project metadata")
-prj_meta = ocs.project_metadata(silent = False)
+prj_meta = ocs.prj_meta
 
 # Create a dictionary with the project directories
 print("\nCreating project directories")
-prj_dirs = ocs.project_directories(silent = False)
+prj_dirs = ocs.prj_dirs
 
 # Set the current working directory to the project root
 os.chdir(prj_dirs["root"])
@@ -107,14 +106,11 @@ print("\n- Codebook")
 
 # Load the codebook from the project codebook directory
 print("- Loading the codebook from the project codebook directory")
-cb = ocs.load_cb()
+cb = ocs.cb
 
 # create a data frame from the codebook
 print("- Creating a data frame from the codebook")
-df_cb = pd.DataFrame(cb).transpose()
-# Add attributes to the codebook data frame
-df_cb.attrs["name"] = "Codebook"
-print(df_cb.head())
+df_cb = ocs.df_cb
 
 
 ### JSON CIM Exports ----
@@ -1586,4 +1582,4 @@ aprx.save()
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 print("\nLast Execution:", dt.datetime.now().strftime("%Y-%m-%d"))
 print("\nEnd of Script")
-# Last Executed: 2025-12-31
+# Last Executed: 2026-01-01
