@@ -3,7 +3,7 @@
 # Project: OCTraffic Data Processing
 # Title: Part 8 - GIS Layout Processing ----
 # Author: Dr. Kostas Alexandridis, GISP
-# Version: 2025.3, Date: December 2025
+# Version: 2025.3, Date: January 2026
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 print("\nOCTraffic GIS Data Processing - Part 8 - GIS Layout Processing\n")
@@ -23,7 +23,7 @@ print("\n1.1. Referencing Libraries and Initialization")
 # Import Python libraries
 import os, math
 import datetime as dt
-import json, pickle
+import pickle
 import pandas as pd
 import pytz
 from dotenv import load_dotenv
@@ -51,11 +51,11 @@ print("\n- Project and Geodatabase Paths")
 
 # Create a dictionary with the project metadata
 print("\nCreating project metadata")
-prj_meta = ocs.project_metadata(silent = False)
+prj_meta = ocs.prj_meta
 
 # Create a dictionary with the project directories
 print("\nCreating project directories")
-prj_dirs = ocs.project_directories(silent = False)
+prj_dirs = ocs.prj_dirs
 
 # Set the current working directory to the project root
 os.chdir(prj_dirs["root"])
@@ -75,16 +75,9 @@ print("\n- ArcGIS Pro Paths")
 aprx_path: str = prj_dirs.get("agp_aprx", "")
 gdb_path: str = prj_dirs.get("agp_gdb", "")
 # ArcGIS Pro Project object
-aprx = arcpy.mp.ArcGISProject(aprx_path)
+aprx, workspace = ocs.load_aprx(aprx_path = aprx_path, gdb_path = gdb_path, add_to_map = False)
 # Close all map views
 aprx.closeViews()
-# Current ArcGIS workspace (arcpy)
-arcpy.env.workspace = gdb_path
-workspace = arcpy.env.workspace
-# Enable overwriting existing outputs
-arcpy.env.overwriteOutput = True
-# Disable adding outputs to map
-arcpy.env.addOutputsToMap = False
 
 
 ### Data Folder Paths ----
@@ -107,7 +100,7 @@ time_updated = today.strftime("%I:%M %p")
 # String defining the years of the raw data
 md_years = f"{date_start.year}-{date_end.year}"
 # String defining the start and end dates of the raw data
-md_dates = (f"Data from {date_start.strftime('%B %d, %Y')} to {date_end.strftime('%B %d, %Y')}")
+md_dates = f"Data from {date_start.strftime('%B %d, %Y')} to {date_end.strftime('%B %d, %Y')}"
 
 # Load the graphics_list pickle data file
 print("- Loading the graphics_list pickle data file")
@@ -120,14 +113,11 @@ print("\n- Codebook")
 
 # Load the codebook from the project codebook directory
 print("- Loading the codebook from the project codebook directory")
-cb = ocs.load_cb()
+cb = ocs.cb
 
 # create a data frame from the codebook
 print("- Creating a data frame from the codebook")
-df_cb = pd.DataFrame(cb).transpose()
-# Add attributes to the codebook data frame
-df_cb.attrs["name"] = "Codebook"
-print(df_cb.head())
+df_cb = ocs.df_cb
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1593,7 +1583,7 @@ print("\n3.8. Export Maps Layout")
 # Get maps layout CIM
 maps_layout_cim = maps_layout.getDefinition("V3")  # Maps layout CIM
 # Export maps layout to disk
-ocs.export_cim("layout", maps_layout, maps_layout.name)
+ocs.export_cim(aprx = aprx, cim_type = "layout", cim_object = maps_layout, cim_name = maps_layout.name)
 
 
 ### Export Layout Image ----
@@ -2018,7 +2008,7 @@ injuries_t1 = aprx.createTextElement(
     style_item = None,
     name = "t1",
     text_type = "POINT",
-    text = f"(a) Victim Injuries",
+    text = "(a) Victim Injuries",
 )
 
 # Set up title properties
@@ -2028,7 +2018,7 @@ injuries_t1.elementPositionX = lyt_dict["injuries"]["t1"]["coordX"]
 injuries_t1.elementPositionY = lyt_dict["injuries"]["t1"]["coordY"]
 injuries_t1.elementRotation = 0
 injuries_t1.visible = True
-injuries_t1.text = f"(a) Victim Injuries"
+injuries_t1.text = "(a) Victim Injuries"
 injuries_t1.textSize = 20
 injuries_t1_cim = injuries_t1.getDefinition("V3")
 
@@ -2050,7 +2040,7 @@ injuries_t2 = aprx.createTextElement(
     style_item = None,
     name = "t2",
     text_type = "POINT",
-    text = f"(b) Victim Fatalities",
+    text = "(b) Victim Fatalities",
 )
 
 # Set up title properties
@@ -2060,7 +2050,7 @@ injuries_t2.elementPositionX = lyt_dict["injuries"]["t2"]["coordX"]
 injuries_t2.elementPositionY = lyt_dict["injuries"]["t2"]["coordY"]
 injuries_t2.elementRotation = 0
 injuries_t2.visible = True
-injuries_t2.text = f"(b) Victim Fatalities"
+injuries_t2.text = "(b) Victim Fatalities"
 injuries_t2.textSize = 20
 injuries_t2_cim = injuries_t2.getDefinition("V3")
 
@@ -2074,7 +2064,7 @@ print("\n4.8. Export Injuries Layout")
 injuries_layout_cim = injuries_layout.getDefinition("V3")  # Injuries layout CIM
 
 # Export injuries layout to disk
-ocs.export_cim("layout", injuries_layout, injuries_layout.name)
+ocs.export_cim(aprx = aprx, cim_type = "layout", cim_object = injuries_layout, cim_name = injuries_layout.name)
 
 
 ### Export Layout Image ----
@@ -2580,7 +2570,7 @@ hotspots_t1 = aprx.createTextElement(
     style_item = None,
     name = "t1",
     text_type = "POINT",
-    text = f"(a) Crashes Hot Spots (100m Bins, 1km NN)",
+    text = "(a) Crashes Hot Spots (100m Bins, 1km NN)",
 )
 
 # Set up title properties
@@ -2590,7 +2580,7 @@ hotspots_t1.elementPositionX = lyt_dict["hotspots"]["t1"]["coordX"]
 hotspots_t1.elementPositionY = lyt_dict["hotspots"]["t1"]["coordY"]
 hotspots_t1.elementRotation = 0
 hotspots_t1.visible = True
-hotspots_t1.text = f"(a) Crashes Hot Spots (100m Bins, 1km NN)"
+hotspots_t1.text = "(a) Crashes Hot Spots (100m Bins, 1km NN)"
 hotspots_t1.textSize = 20
 findHotspots_t1_cim = hotspots_t1.getDefinition("V3")
 
@@ -2612,7 +2602,7 @@ hotspots_t2 = aprx.createTextElement(
     style_item = None,
     name = "t2",
     text_type = "POINT",
-    text = f"(b) Crashes Hot Spots (150m Bins, 2km NN)",
+    text = "(b) Crashes Hot Spots (150m Bins, 2km NN)",
 )
 
 # Set up title properties
@@ -2622,7 +2612,7 @@ hotspots_t2.elementPositionX = lyt_dict["hotspots"]["t2"]["coordX"]
 hotspots_t2.elementPositionY = lyt_dict["hotspots"]["t2"]["coordY"]
 hotspots_t2.elementRotation = 0
 hotspots_t2.visible = True
-hotspots_t2.text = f"(b) Crashes Hot Spots (150m Bins, 2km NN)"
+hotspots_t2.text = "(b) Crashes Hot Spots (150m Bins, 2km NN)"
 hotspots_t2.textSize = 20
 findHotspots_t2_cim = hotspots_t2.getDefinition("V3")
 
@@ -2644,7 +2634,7 @@ hotspots_t3 = aprx.createTextElement(
     style_item = None,
     name = "t3",
     text_type = "POINT",
-    text = f"(c) Crashes Hot Spots (100m Bins, 5km NN)",
+    text = "(c) Crashes Hot Spots (100m Bins, 5km NN)",
 )
 
 # Set up title properties
@@ -2654,7 +2644,7 @@ hotspots_t3.elementPositionX = lyt_dict["hotspots"]["t3"]["coordX"]
 hotspots_t3.elementPositionY = lyt_dict["hotspots"]["t3"]["coordY"]
 hotspots_t3.elementRotation = 0
 hotspots_t3.visible = True
-hotspots_t3.text = f"(c) Crashes Hot Spots (100m Bins, 5km NN)"
+hotspots_t3.text = "(c) Crashes Hot Spots (100m Bins, 5km NN)"
 hotspots_t3.textSize = 20
 hotspots_t3_cim = hotspots_t3.getDefinition("V3")
 
@@ -2676,7 +2666,7 @@ hotspots_t4 = aprx.createTextElement(
     style_item = None,
     name = "t4",
     text_type = "POINT",
-    text = f"(d) Crashes Hot Spots (500ft from Major Roads)",
+    text = "(d) Crashes Hot Spots (500ft from Major Roads)",
 )
 
 # Set up title properties
@@ -2686,7 +2676,7 @@ hotspots_t4.elementPositionX = lyt_dict["hotspots"]["t4"]["coordX"]
 hotspots_t4.elementPositionY = lyt_dict["hotspots"]["t4"]["coordY"]
 hotspots_t4.elementRotation = 0
 hotspots_t4.visible = True
-hotspots_t4.text = f"(d) Crashes Hot Spots (500ft from Major Roads)"
+hotspots_t4.text = "(d) Crashes Hot Spots (500ft from Major Roads)"
 hotspots_t4.textSize = 20
 hotspots_t4_cim = hotspots_t4.getDefinition("V3")
 
@@ -2699,7 +2689,7 @@ print("\n5.8. Export Hotspots Layout")
 # Get hotspots layout CIM
 hotspots_layout_cim = hotspots_layout.getDefinition("V3")  # Find Hotspots layout CIM
 # Export hotspots layout to disk
-ocs.export_cim("layout", hotspots_layout, hotspots_layout.name)
+ocs.export_cim(aprx = aprx, cim_type = "layout", cim_object = hotspots_layout, cim_name = hotspots_layout.name)
 
 
 ### Export Layout Image ----
@@ -3246,7 +3236,7 @@ roads_t1 = aprx.createTextElement(
     style_item = None,
     name = "t1",
     text_type = "POINT",
-    text = f"(a) Crashes (500ft from Major Roads)",
+    text = "(a) Crashes (500ft from Major Roads)",
 )
 
 # Set up title properties
@@ -3256,7 +3246,7 @@ roads_t1.elementPositionX = lyt_dict["roads"]["t1"]["coordX"]
 roads_t1.elementPositionY = lyt_dict["roads"]["t1"]["coordY"]
 roads_t1.elementRotation = 0
 roads_t1.visible = True
-roads_t1.text = f"(a) Crashes (500ft from Major Roads)"
+roads_t1.text = "(a) Crashes (500ft from Major Roads)"
 roads_t1.textSize = 20
 roads_t1_cim = roads_t1.getDefinition("V3")
 
@@ -3278,7 +3268,7 @@ roads_t2 = aprx.createTextElement(
     style_item = None,
     name = "t2",
     text_type = "POINT",
-    text = f"(b) Crashes Hot Spots (500ft from Major Roads)",
+    text = "(b) Crashes Hot Spots (500ft from Major Roads)",
 )
 
 # Set up title properties
@@ -3288,7 +3278,7 @@ roads_t2.elementPositionX = lyt_dict["roads"]["t2"]["coordX"]
 roads_t2.elementPositionY = lyt_dict["roads"]["t2"]["coordY"]
 roads_t2.elementRotation = 0
 roads_t2.visible = True
-roads_t2.text = f"(b) Crashes Hot Spots (500ft from Major Roads)"
+roads_t2.text = "(b) Crashes Hot Spots (500ft from Major Roads)"
 roads_t2.textSize = 20
 roads_t2_cim = roads_t2.getDefinition("V3")
 
@@ -3310,7 +3300,7 @@ roads_t3 = aprx.createTextElement(
     style_item = None,
     name = "t3",
     text_type = "POINT",
-    text = f"(c) Major Roads Buffers",
+    text = "(c) Major Roads Buffers",
 )
 
 # Set up title properties
@@ -3320,7 +3310,7 @@ roads_t3.elementPositionX = lyt_dict["roads"]["t3"]["coordX"]
 roads_t3.elementPositionY = lyt_dict["roads"]["t3"]["coordY"]
 roads_t3.elementRotation = 0
 roads_t3.visible = True
-roads_t3.text = f"(c) Major Roads Buffers"
+roads_t3.text = "(c) Major Roads Buffers"
 roads_t3.textSize = 20
 roads_t3_cim = roads_t3.getDefinition("V3")
 
@@ -3342,7 +3332,7 @@ roads_t4 = aprx.createTextElement(
     style_item = None,
     name = "t4",
     text_type = "POINT",
-    text = f"(d) Major Road Segments (1,000ft length)",
+    text = "(d) Major Road Segments (1,000ft length)",
 )
 
 # Set up title properties
@@ -3352,7 +3342,7 @@ roads_t4.elementPositionX = lyt_dict["roads"]["t4"]["coordX"]
 roads_t4.elementPositionY = lyt_dict["roads"]["t4"]["coordY"]
 roads_t4.elementRotation = 0
 roads_t4.visible = True
-roads_t4.text = f"(d) Major Road Segments (1,000ft length)"
+roads_t4.text = "(d) Major Road Segments (1,000ft length)"
 roads_t4.textSize = 20
 roads_t4_cim = roads_t4.getDefinition("V3")
 
@@ -3366,7 +3356,7 @@ print("\n6.8. Export Road Hotspots Layout")
 roads_layout_cim = roads_layout.getDefinition("V3")  # Roads layout CIM
 
 # Export roads layout to disk
-ocs.export_cim("layout", roads_layout, roads_layout.name)
+ocs.export_cim(aprx = aprx, cim_type = "layout", cim_object = roads_layout, cim_name = roads_layout.name)
 
 
 ### Export Layout Image ----
@@ -3765,7 +3755,7 @@ points_t1 = aprx.createTextElement(
     style_item = None,
     name = "t1",
     text_type = "POINT",
-    text = f"(a) Crashes Hot Spots",
+    text = "(a) Crashes Hot Spots",
 )
 
 # Set up title properties
@@ -3775,7 +3765,7 @@ points_t1.elementPositionX = lyt_dict["points"]["t1"]["coordX"]
 points_t1.elementPositionY = lyt_dict["points"]["t1"]["coordY"]
 points_t1.elementRotation = 0
 points_t1.visible = True
-points_t1.text = f"(a) Crashes Hot Spots"
+points_t1.text = "(a) Crashes Hot Spots"
 points_t1.textSize = 20
 points_t1_cim = points_t1.getDefinition("V3")
 
@@ -3797,7 +3787,7 @@ points_t2 = aprx.createTextElement(
     style_item = None,
     name = "t2",
     text_type = "POINT",
-    text = f"(b) Optimized Crashes Hot Spots",
+    text = "(b) Optimized Crashes Hot Spots",
 )
 
 # Set up title properties
@@ -3807,7 +3797,7 @@ points_t2.elementPositionX = lyt_dict["points"]["t2"]["coordX"]
 points_t2.elementPositionY = lyt_dict["points"]["t2"]["coordY"]
 points_t2.elementRotation = 0
 points_t2.visible = True
-points_t2.text = f"(b) Optimized Crashes Hot Spots"
+points_t2.text = "(b) Optimized Crashes Hot Spots"
 points_t2.textSize = 20
 points_t2_cim = points_t2.getDefinition("V3")
 
@@ -3821,7 +3811,7 @@ print("\n7.8. Export Points Hotspots Layout")
 points_layout_cim = points_layout.getDefinition("V3")  # Points layout CIM
 
 # Export points layout to disk
-ocs.export_cim("layout", points_layout, points_layout.name)
+ocs.export_cim(aprx = aprx, cim_type = "layout", cim_object = points_layout, cim_name = points_layout.name)
 
 
 ### Export Layout Image ----
@@ -4219,7 +4209,7 @@ densities_t1 = aprx.createTextElement(
     style_item = None,
     name = "t1",
     text_type = "POINT",
-    text = f"(a) Population Density",
+    text = "(a) Population Density",
 )
 
 # Set up title properties
@@ -4229,7 +4219,7 @@ densities_t1.elementPositionX = lyt_dict["densities"]["t1"]["coordX"]
 densities_t1.elementPositionY = lyt_dict["densities"]["t1"]["coordY"]
 densities_t1.elementRotation = 0
 densities_t1.visible = True
-densities_t1.text = f"(a) Population Density"
+densities_t1.text = "(a) Population Density"
 densities_t1.textSize = 20
 densities_t1_cim = densities_t1.getDefinition("V3")
 
@@ -4251,7 +4241,7 @@ densities_t2 = aprx.createTextElement(
     style_item = None,
     name = "t2",
     text_type = "POINT",
-    text = f"(b) Housing Density",
+    text = "(b) Housing Density",
 )
 
 # Set up title properties
@@ -4261,7 +4251,7 @@ densities_t2.elementPositionX = lyt_dict["densities"]["t2"]["coordX"]
 densities_t2.elementPositionY = lyt_dict["densities"]["t2"]["coordY"]
 densities_t2.elementRotation = 0
 densities_t2.visible = True
-densities_t2.text = f"(b) Housing Density"
+densities_t2.text = "(b) Housing Density"
 densities_t2.textSize = 20
 densities_t2_cim = densities_t2.getDefinition("V3")
 
@@ -4275,7 +4265,7 @@ print("\n8.8. Export Densities Layout")
 densities_layout_cim = densities_layout.getDefinition("V3")  # Density layout CIM
 
 # Export densities layout to disk
-ocs.export_cim("layout", densities_layout, densities_layout.name)
+ocs.export_cim(aprx = aprx, cim_type = "layout", cim_object = densities_layout, cim_name = densities_layout.name)
 
 
 ### Export Layout Image ----
@@ -4672,7 +4662,7 @@ areas_t1 = aprx.createTextElement(
     style_item = None,
     name = "t1",
     text_type = "POINT",
-    text = f"(a) Area Cities",
+    text = "(a) Area Cities",
 )
 
 # Set up title properties
@@ -4682,7 +4672,7 @@ areas_t1.elementPositionX = lyt_dict["areas"]["t1"]["coordX"]
 areas_t1.elementPositionY = lyt_dict["areas"]["t1"]["coordY"]
 areas_t1.elementRotation = 0
 areas_t1.visible = True
-areas_t1.text = f"(a) Area Cities"
+areas_t1.text = "(a) Area Cities"
 areas_t1.textSize = 20
 areas_t1_cim = areas_t1.getDefinition("V3")
 
@@ -4704,7 +4694,7 @@ areas_t2 = aprx.createTextElement(
     style_item = None,
     name = "t2",
     text_type = "POINT",
-    text = f"(b) Area Blocks",
+    text = "(b) Area Blocks",
 )
 
 # Set up title properties
@@ -4714,7 +4704,7 @@ areas_t2.elementPositionX = lyt_dict["areas"]["t2"]["coordX"]
 areas_t2.elementPositionY = lyt_dict["areas"]["t2"]["coordY"]
 areas_t2.elementRotation = 0
 areas_t2.visible = True
-areas_t2.text = f"(b) Area Blocks"
+areas_t2.text = "(b) Area Blocks"
 areas_t2.textSize = 20
 areas_t2_cim = areas_t2.getDefinition("V3")
 
@@ -4728,7 +4718,7 @@ print("\n9.8. Export City Areas Layout")
 areas_layout_cim = areas_layout.getDefinition("V3")  # Areas layout CIM
 
 # Export city areas layout to disk
-ocs.export_cim("layout", areas_layout, areas_layout.name)
+ocs.export_cim(aprx = aprx, cim_type = "layout", cim_object = areas_layout, cim_name = areas_layout.name)
 
 
 ### Export Layout Image ----
@@ -4809,7 +4799,7 @@ print("- Map Frames")
 
 # Get the map frames of the layout elements
 # List map frames
-print(f"Map Frames:")
+print("Map Frames:")
 for i in maps_layout_map_frames:
     print(f"- {i.name}")
 # Get map frames
@@ -4840,7 +4830,7 @@ print("- Legends")
 
 # Get the legends of the layout
 # List legends
-print(f"Legends:")
+print("Legends:")
 for i in maps_layout_legend_set:
     print(f"- {i.name}")
 # Get legends
@@ -4860,11 +4850,11 @@ print("- Scale Bars and North Arrows")
 
 # Get the scale bar and north arrow of the layout
 # List scale bars
-print(f"Scale Bars:")
+print("Scale Bars:")
 for i in maps_layout_scale_bars:
     print(f"- {i.name}")
 # List north arrows
-print(f"North Arrows:")
+print("North Arrows:")
 for i in maps_layout_north_arrows:
     print(f"- {i.name}")
 
@@ -4888,11 +4878,11 @@ print("- Titles and Text Elements")
 
 # Get the titles and text elements of the layout
 # List titles
-print(f"Titles:")
+print("Titles:")
 for i in maps_layout_titles:
     print(f"- {i.name}")
 # List text
-print(f"Text:")
+print("Text:")
 for i in maps_layout_text:
     print(f"- {i.name}")
 # Get titles and text
@@ -4918,7 +4908,7 @@ print("- Layout CIM")
 maps_layout_cim = maps_layout.getDefinition("V3")
 
 # Export the layout CIM to disk
-ocs.export_cim("layout", maps_layout, maps_layout.name)
+ocs.export_cim(aprx = aprx, cim_type = "layout", cim_object = maps_layout, cim_name = maps_layout.name)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -4955,7 +4945,7 @@ print("- Map Frames")
 
 # Get the map frames of the layout elements
 # List map frames
-print(f"Map Frames:")
+print("Map Frames:")
 for i in injuries_layout_map_frames:
     print(f"- {i.name}")
 # Get map frames
@@ -4977,7 +4967,7 @@ print("- Legends")
 
 # Get the legends of the layout
 # List legends
-print(f"Legends:")
+print("Legends:")
 for i in injuries_layout_legend_set:
     print(f"- {i.name}")
 # Get legends
@@ -4999,11 +4989,11 @@ print("- Scale Bars and North Arrows")
 
 # Get the scale bar and north arrow of the layout
 # List scale bars
-print(f"Scale Bars:")
+print("Scale Bars:")
 for i in injuries_layout_scale_bars:
     print(f"- {i.name}")
 # List north arrows
-print(f"North Arrows:")
+print("North Arrows:")
 for i in injuries_layout_north_arrows:
     print(f"- {i.name}")
 # Get scale bars and north arrows
@@ -5025,11 +5015,11 @@ print("- Titles and Text Elements")
 
 # Get the titles and text elements of the layout
 # List titles
-print(f"Titles:")
+print("Titles:")
 for i in injuries_layout_titles:
     print(f"- {i.name}")
 # List text
-print(f"Text:")
+print("Text:")
 for i in injuries_layout_text:
     print(f"- {i.name}")
 # Get titles and text
@@ -5057,7 +5047,7 @@ print("- Layout CIM")
 injuries_layout_cim = injuries_layout.getDefinition("V3")
 
 # Export the layout CIM to disk
-ocs.export_cim("layout", injuries_layout, injuries_layout.name)
+ocs.export_cim(aprx = aprx, cim_type = "layout", cim_object = injuries_layout, cim_name = injuries_layout.name)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -5094,7 +5084,7 @@ print("- Map Frames")
 
 # Get the map frames of the layout elements
 # List map frames
-print(f"Map Frames:")
+print("Map Frames:")
 for i in hotspots_layout_map_frames:
     print(f"- {i.name}")
 # Get map frames
@@ -5124,7 +5114,7 @@ print("- Legends")
 
 # Get the legends of the layout
 # List legends
-print(f"Legends:")
+print("Legends:")
 for i in hotspots_layout_legend_set:
     print(f"- {i.name}")
 # Get legends
@@ -5150,11 +5140,11 @@ print("- Scale Bars and North Arrows")
 
 # Get the scale bar and north arrow of the layout
 # List scale bars
-print(f"Scale Bars:")
+print("Scale Bars:")
 for i in hotspots_layout_scale_bars:
     print(f"- {i.name}")
 # List north arrows
-print(f"North Arrows:")
+print("North Arrows:")
 for i in hotspots_layout_north_arrows:
     print(f"- {i.name}")
 # Get scale bars and north arrows
@@ -5176,11 +5166,11 @@ print("- Titles and Text Elements")
 
 # Get the titles and text elements of the layout
 # List titles
-print(f"Titles:")
+print("Titles:")
 for i in hotspots_layout_titles:
     print(f"- {i.name}")
 # List text
-print(f"Text:")
+print("Text:")
 for i in hotspots_layout_text:
     print(f"- {i.name}")
 # Get titles and text
@@ -5216,7 +5206,7 @@ print("- Layout CIM")
 hotspots_layout_cim = hotspots_layout.getDefinition("V3")
 
 # Export the layout CIM to disk
-ocs.export_cim("layout", hotspots_layout, hotspots_layout.name)
+ocs.export_cim(aprx = aprx, cim_type = "layout", cim_object = hotspots_layout, cim_name = hotspots_layout.name)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -5249,7 +5239,7 @@ print("- Map Frames")
 
 # Get the map frames of the layout elements
 # List map frames
-print(f"Map Frames:")
+print("Map Frames:")
 for i in roads_layout_map_frames:
     print(f"- {i.name}")
 # Get map frames
@@ -5279,7 +5269,7 @@ print("- Legends")
 
 # Get the legends of the layout
 # List legends
-print(f"Legends:")
+print("Legends:")
 for i in roads_layout_legend_set:
     print(f"- {i.name}")
 # Get legends
@@ -5309,11 +5299,11 @@ print("- Scale Bars and North Arrows")
 
 # Get the scale bar and north arrow of the layout
 # List scale bars
-print(f"Scale Bars:")
+print("Scale Bars:")
 for i in roads_layout_scale_bars:
     print(f"- {i.name}")
 # List north arrows
-print(f"North Arrows:")
+print("North Arrows:")
 for i in roads_layout_north_arrows:
     print(f"- {i.name}")
 # Get scale bars and north arrows
@@ -5335,11 +5325,11 @@ print("- Titles and Text Elements")
 
 # Get the titles and text elements of the layout
 # List titles
-print(f"Titles:")
+print("Titles:")
 for i in roads_layout_titles:
     print(f"- {i.name}")
 # List text
-print(f"Text:")
+print("Text:")
 for i in roads_layout_text:
     print(f"- {i.name}")
 # Get titles and text
@@ -5366,7 +5356,7 @@ print("- Layout CIM")
 roads_layout_cim = roads_layout.getDefinition("V3")
 
 # Export the layout CIM to disk
-ocs.export_cim("layout", roads_layout, roads_layout.name)
+ocs.export_cim(aprx = aprx, cim_type = "layout", cim_object = roads_layout, cim_name = roads_layout.name)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -5401,7 +5391,7 @@ print("- Map Frames")
 
 # Get the map frames of the layout elements
 # List map frames
-print(f"Map Frames:")
+print("Map Frames:")
 for i in points_layout_map_frames:
     print(f"- {i.name}")
 # Get map frames
@@ -5423,7 +5413,7 @@ print("- Legends")
 
 # Get the legends of the layout
 # List legends
-print(f"Legends:")
+print("Legends:")
 for i in points_layout_legend_set:
     print(f"- {i.name}")
 # Get legends
@@ -5445,11 +5435,11 @@ print("- Scale Bars and North Arrows")
 
 # Get the scale bar and north arrow of the layout
 # List scale bars
-print(f"Scale Bars:")
+print("Scale Bars:")
 for i in points_layout_scale_bars:
     print(f"- {i.name}")
 # List north arrows
-print(f"North Arrows:")
+print("North Arrows:")
 for i in points_layout_north_arrows:
     print(f"- {i.name}")
 # Get scale bars and north arrows
@@ -5471,11 +5461,11 @@ print("- Titles and Text Elements")
 
 # Get the titles and text elements of the layout
 # List titles
-print(f"Titles:")
+print("Titles:")
 for i in points_layout_titles:
     print(f"- {i.name}")
 # List text
-print(f"Text:")
+print("Text:")
 for i in points_layout_text:
     print(f"- {i.name}")
 # Get titles and text
@@ -5503,7 +5493,7 @@ print("- Layout CIM")
 points_layout_cim = points_layout.getDefinition("V3")
 
 # Export the layout CIM to disk
-ocs.export_cim("layout", points_layout, points_layout.name)
+ocs.export_cim(aprx = aprx, cim_type = "layout", cim_object = points_layout, cim_name = points_layout.name)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -5540,7 +5530,7 @@ print("- Map Frames")
 
 # Get the map frames of the layout elements
 # List map frames
-print(f"Map Frames:")
+print("Map Frames:")
 for i in densities_layout_map_frames:
     print(f"- {i.name}")
 # Get map frames
@@ -5562,7 +5552,7 @@ print("- Legends")
 
 # Get the legends of the layout
 # List legends
-print(f"Legends:")
+print("Legends:")
 for i in densities_layout_legend_set:
     print(f"- {i.name}")
 # Get legends
@@ -5584,11 +5574,11 @@ print("- Scale Bars and North Arrows")
 
 # Get the scale bar and north arrow of the layout
 # List scale bars
-print(f"Scale Bars:")
+print("Scale Bars:")
 for i in densities_layout_scale_bars:
     print(f"- {i.name}")
 # List north arrows
-print(f"North Arrows:")
+print("North Arrows:")
 for i in densities_layout_north_arrows:
     print(f"- {i.name}")
 # Get scale bars and north arrows
@@ -5610,11 +5600,11 @@ print("- Titles and Text Elements")
 
 # Get the titles and text elements of the layout
 # List titles
-print(f"Titles:")
+print("Titles:")
 for i in densities_layout_titles:
     print(f"- {i.name}")
 # List text
-print(f"Text:")
+print("Text:")
 for i in densities_layout_text:
     print(f"- {i.name}")
 # Get titles and text
@@ -5642,7 +5632,7 @@ print("- Layout CIM")
 densities_layout_cim = densities_layout.getDefinition("V3")
 
 # Export the layout CIM to disk
-ocs.export_cim("layout", densities_layout, densities_layout.name)
+ocs.export_cim(aprx = aprx, cim_type = "layout", cim_object = densities_layout, cim_name = densities_layout.name)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -5675,7 +5665,7 @@ print("- Map Frames")
 
 # Get the map frames of the layout elements
 # List map frames
-print(f"Map Frames:")
+print("Map Frames:")
 for i in areas_layout_map_frames:
     print(f"- {i.name}")
 # Get map frames
@@ -5697,7 +5687,7 @@ print("- Legends")
 
 # Get the legends of the layout
 # List legends
-print(f"Legends:")
+print("Legends:")
 for i in areas_layout_legend_set:
     print(f"- {i.name}")
 # Get legends
@@ -5719,11 +5709,11 @@ print("- Scale Bars and North Arrows")
 
 # Get the scale bar and north arrow of the layout
 # List scale bars
-print(f"Scale Bars:")
+print("Scale Bars:")
 for i in areas_layout_scale_bars:
     print(f"- {i.name}")
 # List north arrows
-print(f"North Arrows:")
+print("North Arrows:")
 for i in areas_layout_north_arrows:
     print(f"- {i.name}")
 # Get scale bars and north arrows
@@ -5745,11 +5735,11 @@ print("- Titles and Text Elements")
 
 # Get the titles and text elements of the layout
 # List titles
-print(f"Titles:")
+print("Titles:")
 for i in areas_layout_titles:
     print(f"- {i.name}")
 # List text
-print(f"Text:")
+print("Text:")
 for i in areas_layout_text:
     print(f"- {i.name}")
 # Get titles and text
@@ -5771,7 +5761,7 @@ print("- Layout CIM")
 areas_layout_cim = areas_layout.getDefinition("V3")
 
 # Export the layout CIM to disk
-ocs.export_cim("layout", areas_layout, areas_layout.name)
+ocs.export_cim(aprx = aprx, cim_type = "layout", cim_object = areas_layout, cim_name = areas_layout.name)
 
 
 ### Save Project ----
@@ -5799,19 +5789,19 @@ with open(os.path.join(prj_dirs["data_python"], "graphics_list.pkl"), "wb") as f
 print("\n12. Export Data")
 
 # Setup the output folder for the archived data
-archive_gdb = os.path.join(prj_dirs["data_gis"], "OCTraffic.gdb")
-archive_gdb_supporting = os.path.join(archive_gdb, "supporting")
-archive_gdb_raw = os.path.join(archive_gdb, "raw")
+archive_gdb = prj_dirs["gdbmain"]
+archive_gdb_supporting = prj_dirs["gdbmain_supporting"]
+archive_gdb_raw = prj_dirs["gdbmain_raw"]
 
 # Export the feature classes to the archive geodatabase
 arcpy.management.CopyFeatures(collisions, os.path.join(archive_gdb_raw, "collisions"))
 arcpy.management.CopyFeatures(crashes, os.path.join(archive_gdb_raw, "crashes"))
 arcpy.management.CopyFeatures(parties, os.path.join(archive_gdb_raw, "parties"))
 arcpy.management.CopyFeatures(victims, os.path.join(archive_gdb_raw, "victims"))
+arcpy.management.CopyFeatures(boundaries, os.path.join(archive_gdb_supporting, "boundaries"))
 arcpy.management.CopyFeatures(roads, os.path.join(archive_gdb_supporting, "roads"))
 arcpy.management.CopyFeatures(cities, os.path.join(archive_gdb_supporting, "cities"))
 arcpy.management.CopyFeatures(blocks, os.path.join(archive_gdb_supporting, "blocks"))
-
 
 # Save the project
 aprx.save()
@@ -5822,4 +5812,4 @@ aprx.save()
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 print("\nLast Executed:", dt.datetime.now().strftime("%Y-%m-%d"))
 print("\nEnd of script")
-# Last Executed: 2025-10-21
+# Last Executed: 2026-01-02

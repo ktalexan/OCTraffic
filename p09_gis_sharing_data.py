@@ -46,10 +46,10 @@ print("\n1.2. Project and Workspace Variables")
 print("- Project and Geodatabase Paths")
 
 # Create a directory with the project metadata
-prj_meta = ocs.project_metadata(silent = False)
+prj_meta = ocs.prj_meta
 
 # Create a dictionary with the project directories
-prj_dirs = ocs.project_directories(silent = False)
+prj_dirs = ocs.prj_dirs
 
 # Set the current working directory to the project root
 os.chdir(prj_dirs["root"])
@@ -75,16 +75,9 @@ print("- ArcGIS Pro Paths")
 aprx_path: str = prj_dirs.get("agp_aprx", "")
 gdb_path: str = prj_dirs.get("agp_gdb", "")
 # ArcGIS Pro Project object
-aprx = arcpy.mp.ArcGISProject(aprx_path)
+aprx, workspace = ocs.load_aprx(aprx_path = aprx_path, gdb_path = gdb_path, add_to_map = False)
 # Close all map views
 aprx.closeViews()
-# Current ArcGIS workspace (arcpy)
-arcpy.env.workspace = gdb_path
-workspace = arcpy.env.workspace
-# Enable overwriting existing outputs
-arcpy.env.overwriteOutput = True
-# Disable adding outputs to map
-arcpy.env.addOutputsToMap = False
 
 
 ### Data Folder Paths ----
@@ -120,14 +113,11 @@ print("\n- Codebook")
 
 # Load the codebook from the project codebook directory
 print("- Loading the codebook from the project codebook directory")
-cb = ocs.load_cb()
+cb = ocs.cb
 
 # create a data frame from the codebook
 print("- Creating a data frame from the codebook")
-df_cb = pd.DataFrame(cb).transpose()
-# Add attributes to the codebook data frame
-df_cb.attrs["name"] = "Codebook"
-print(df_cb.head())
+df_cb = ocs.df_cb
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
