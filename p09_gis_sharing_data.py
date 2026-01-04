@@ -3,7 +3,7 @@
 # Project: OCTraffic Data Processing
 # Title: Part 9 - Sharing ArcGIS Online Data ----
 # Author: Dr. Kostas Alexandridis, GISP
-# Version: 2025.3, Date: December 2025
+# Version: 2025.3, Date: January 2026
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 print("\nOCTraffic GIS Data Processing - Part 9 - Sharing ArcGIS Data Online\n")
@@ -20,8 +20,10 @@ print("\n1. Preliminaries")
 print("\n1.1. Referencing Libraries and Initialization")
 
 # Import Python libraries
-import os, json, pytz, arcpy
+import os
 import datetime as dt
+import pytz
+import arcpy
 import pandas as pd
 from arcgis.gis import GIS
 from dotenv import load_dotenv
@@ -100,7 +102,7 @@ time_updated = today.strftime("%I:%M %p")
 # String defining the years of the raw data
 md_years = f"{date_start.year}-{date_end.year}"
 # String defining the start and end dates of the raw data
-md_dates = (f"Data from {date_start.strftime('%B %d, %Y')} to {date_end.strftime('%B %d, %Y')}")
+md_dates = f"Data from {date_start.strftime('%B %d, %Y')} to {date_end.strftime('%B %d, %Y')}"
 
 # Load the graphics_list pickle data file
 print("- Loading the graphics_list pickle data file")
@@ -206,7 +208,7 @@ try:
     print(f"✅ Connected to {portal_url} as {portal_username}")
 except Exception as e:
     print(f"❌ Failed to connect: {e}")
-    raise SystemExit
+    raise SystemExit from e
 
 # Define a new AGO portal metadata dictionary
 portal_meta = {}
@@ -477,7 +479,6 @@ arcpy.server.StageService(
     staging_version = 102
 )
 
-
 # Publish the service definition to ArcGIS Online portal (updating the existing service)
 print("Start Uploading")
 arcpy.server.UploadServiceDefinition(
@@ -712,4 +713,4 @@ print(arcpy.GetMessages())
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 print("\nLast Executed:", dt.datetime.now().strftime("%Y-%m-%d"))
 print("\nEnd of Script")
-# Last Executed: 2025-10-21
+# Last Executed: 2026-01-03
