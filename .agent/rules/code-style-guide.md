@@ -1,3 +1,7 @@
+---
+trigger: always_on
+---
+
 # Project general coding standards
 
 ## Code indentation
