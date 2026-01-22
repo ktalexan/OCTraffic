@@ -22,7 +22,8 @@ print("\n1.1. Referencing Libraries and Initialization")
 # Import Python libraries
 import os
 import datetime as dt
-import pytz, arcpy
+import pytz
+import arcpy
 from arcgis.gis import GIS
 from dotenv import load_dotenv
 
