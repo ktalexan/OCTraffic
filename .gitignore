@@ -197,14 +197,20 @@ cython_debug/
 # Desktop folder icon
 desktop.ini
 
-# All the content of the octagp folder (contains ArcGIS Pro project data, geodatabase, etc.), along with the main geodatabase
-octagp/*
-gis/octmain.gdb
-
-# Project Folder Exceptions (contains gis large files, archived, and misc data)
+# Project Folder Exceptions
 admin/*
-data/raw/*
-data/processed/*
-data/archived/*
-data/ago/*
-data/python/*
+data/*
+gis/*
+
+# Julia
+# Ignore user package directory, compiled caches and artifacts,
+# plus common build and editor temp files.
+.julia/
+.julia/compiled/
+.julia/artifacts/
+*.jl~
+*.ji
+sys.*
+*.o
+*.so
+*.dylib
