@@ -27,10 +27,10 @@ from dotenv import load_dotenv
 import arcpy
 from arcpy import metadata as md
 
-from octraffic import OCTraffic
+from octraffic import OCT
 
 # Initialize the OCTraffic object
-ocs = OCTraffic(part = 6, version = 2025.3)
+oct = OCT(part = 6, version = 2025.3)
 
 # Load environment variables from .env file
 load_dotenv()
@@ -48,11 +48,11 @@ print("\n- Project and Geodatabase Paths")
 
 # Create a dictionary with the project metadata
 print("\nCreating project metadata")
-prj_meta = ocs.prj_meta
+prj_meta = oct.prj_meta
 
 # Create a dictionary with the project directories
 print("\nCreating project directories")
-prj_dirs = ocs.prj_dirs
+prj_dirs = oct.prj_dirs
 
 # Set the current working directory to the project root
 os.chdir(prj_dirs["root"])
@@ -72,7 +72,7 @@ print("\n- ArcGIS Pro Paths")
 aprx_path: str = prj_dirs.get("agp_aprx", "")
 gdb_path: str = prj_dirs.get("agp_gdb", "")
 # ArcGIS Pro Project object
-aprx, workspace = ocs.load_aprx(aprx_path = aprx_path, gdb_path = gdb_path, add_to_map = False)
+aprx, workspace = oct.load_aprx(aprx_path = aprx_path, gdb_path = gdb_path, add_to_map = False)
 # Close all map views
 aprx.closeViews()
 
@@ -106,11 +106,11 @@ print("\n- Codebook")
 
 # Load the codebook from the project codebook directory
 print("- Loading the codebook from the project codebook directory")
-cb = ocs.cb
+cb = oct.cb
 
 # create a data frame from the codebook
 print("- Creating a data frame from the codebook")
-df_cb = ocs.df_cb
+df_cb = oct.df_cb
 
 
 ### JSON CIM Exports ----

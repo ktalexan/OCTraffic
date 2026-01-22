@@ -22,10 +22,10 @@ print("\n1.1. Referencing Libraries and Initialization")
 import os, datetime
 import json
 from dotenv import load_dotenv
-from octraffic import OCTraffic
+from octraffic import OCT
 
-# Initialize the OCTraffic class
-ocs = OCTraffic(part = 0, version = 2025.3)
+# Initialize the OCT class
+oct = OCT(part = 0, version = 2025.3)
 
 # Loading environment variables from .env file
 load_dotenv()
@@ -51,11 +51,11 @@ print("\n1.3. Project and Workspace Variables")
 
 # Create a dictionary with the project metadata
 print("\nCreating project metadata")
-prj_meta = ocs.prj_meta
+prj_meta = oct.prj_meta
 
 # Create a dictionary with the project directories
 print("\nCreating project directories")
-prj_dirs = ocs.prj_dirs
+prj_dirs = oct.prj_dirs
 
 
 
@@ -183,8 +183,8 @@ with open(metadata_path, "w", encoding = "utf-8") as f:
     json.dump(prj_meta["tims"], f, indent = 4)
 
 # Update the metadata info
-ocs = OCTraffic(part = 0, version = 2025.3)
-prj_meta = ocs.prj_meta
+oct = OCT(part = 0, version = 2025.3)
+prj_meta = oct.prj_meta
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -31,7 +31,7 @@ import codebook.cbl as cbl
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Class containing OCTraffic data processing functions ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-class OCTraffic:
+class OCT:
     """
     Class containing OCTraffic data processing functions.
     Attributes:

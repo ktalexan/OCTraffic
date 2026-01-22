@@ -28,10 +28,10 @@ from dotenv import load_dotenv
 
 # important as it "enhances" Pandas by importing these classes (from ArcGIS API for Python)
 from arcgis.features import GeoAccessor
-from octraffic import OCTraffic
+from octraffic import OCT
 
 # Initialize the OCTraffic object
-ocs = OCTraffic(part = 2, version = 2025.3)
+oct = OCT(part = 2, version = 2025.3)
 
 # Load environment variables from .env file
 load_dotenv()
@@ -46,11 +46,11 @@ print("\n1.2. Project and Workspace Variables")
 
 # Create a dictionary with the project metadata
 print("\nCreating project metadata")
-prj_meta = ocs.prj_meta
+prj_meta = oct.prj_meta
 
 # Create a dictionary with the project directories
 print("\nCreating project directories")
-prj_dirs = ocs.prj_dirs
+prj_dirs = oct.prj_dirs
 
 # Set the current working directory to the project root
 os.chdir(prj_dirs["root"])
@@ -347,11 +347,11 @@ print("\n2.4. Import Codebook")
 
 # Load the codebook from the project codebook directory
 print("- Loading the codebook from the project codebook directory")
-cb = ocs.cb
+cb = oct.cb
 
 # create a data frame from the codebook
 print("- Creating a data frame from the codebook")
-df_cb = ocs.df_cb
+df_cb = oct.df_cb
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # 3. Raw Data Operations ----
@@ -485,9 +485,9 @@ parties["cid"] = parties["case_id"].astype(str).str.strip()
 victims["cid"] = victims["case_id"].astype(str).str.strip()
 
 # Relocate the cid column after the case_iD column in the data frames
-ocs.relocate_column(df = crashes, col_name = "cid", ref_col_name = "case_id", position = "after")
-ocs.relocate_column(df = parties, col_name = "cid", ref_col_name = "case_id", position = "after")
-ocs.relocate_column(df = victims, col_name = "cid", ref_col_name = "case_id", position = "after")
+oct.relocate_column(df = crashes, col_name = "cid", ref_col_name = "case_id", position = "after")
+oct.relocate_column(df = parties, col_name = "cid", ref_col_name = "case_id", position = "after")
+oct.relocate_column(df = victims, col_name = "cid", ref_col_name = "case_id", position = "after")
 
 
 ### Add PID Columns ----
@@ -499,8 +499,8 @@ parties["pid"] = parties["case_id"].astype(str).str.strip() + "-" + parties["par
 victims["pid"] = victims["case_id"].astype(str).str.strip() + "-" + victims["party_number"].astype(str).str.strip()
 
 # Relocate the pid column after the cid column in the data frames
-ocs.relocate_column(df = parties, col_name = "pid", ref_col_name = "cid", position = "after")
-ocs.relocate_column(df = victims, col_name = "pid", ref_col_name = "cid", position = "after")
+oct.relocate_column(df = parties, col_name = "pid", ref_col_name = "cid", position = "after")
+oct.relocate_column(df = victims, col_name = "pid", ref_col_name = "cid", position = "after")
 
 
 ### Add VID Columns ----
@@ -517,7 +517,7 @@ victims["vid"] = (
 )
 
 # Relocate the vid column after the pid column in the data frames
-ocs.relocate_column(df = victims, col_name = "vid", ref_col_name = "pid", position = "after")
+oct.relocate_column(df = victims, col_name = "vid", ref_col_name = "pid", position = "after")
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -530,23 +530,23 @@ print("\n3.4. Add TotalCrashes, TotalParties, and TotalVictims Columns")
 # Add count of unique cid to the crashes data frame
 crashes["crashes_cid_count"] = crashes.groupby("cid")["cid"].transform("count")
 # Relocate the crashes_cid_count column after the cid column in the data frame
-ocs.relocate_column(df = crashes, col_name = "crashes_cid_count", ref_col_name = "cid", position = "after")
+oct.relocate_column(df = crashes, col_name = "crashes_cid_count", ref_col_name = "cid", position = "after")
 
 # add count of unique cid and pid to the parties data frame
 parties["parties_cid_count"] = parties.groupby("cid")["cid"].transform("count")
 parties["parties_pid_count"] = parties.groupby("pid")["pid"].transform("count")
 # Relocate the parties_cid_count and parties_pid_count columns after the pid column in the data frame
-ocs.relocate_column(df = parties, col_name = "parties_cid_count", ref_col_name = "pid", position = "after")
-ocs.relocate_column(df = parties, col_name = "parties_pid_count", ref_col_name = "parties_cid_count", position = "after")
+oct.relocate_column(df = parties, col_name = "parties_cid_count", ref_col_name = "pid", position = "after")
+oct.relocate_column(df = parties, col_name = "parties_pid_count", ref_col_name = "parties_cid_count", position = "after")
 
 # add count of unique cid, pid and vid to the victims data frame
 victims["victims_cid_count"] = victims.groupby("cid")["cid"].transform("count")
 victims["victims_pid_count"] = victims.groupby("pid")["pid"].transform("count")
 victims["victims_vid_count"] = victims.groupby("vid")["vid"].transform("count")
 # Relocate the victims_cid_count, victims_pid_count and victims_vid_count columns after the vid column in the data frame
-ocs.relocate_column(df = victims, col_name = "victims_cid_count", ref_col_name = "vid", position = "after")
-ocs.relocate_column(df = victims, col_name = "victims_pid_count", ref_col_name = "victims_cid_count", position = "after")
-ocs.relocate_column(df = victims, col_name = "victims_vid_count", ref_col_name = "victims_pid_count", position = "after")
+oct.relocate_column(df = victims, col_name = "victims_cid_count", ref_col_name = "vid", position = "after")
+oct.relocate_column(df = victims, col_name = "victims_pid_count", ref_col_name = "victims_cid_count", position = "after")
+oct.relocate_column(df = victims, col_name = "victims_vid_count", ref_col_name = "victims_pid_count", position = "after")
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -702,7 +702,7 @@ print("- Adding crashes dataset identifier")
 # Add a unique crash tag
 crashes["crash_tag"] = 1
 # Move the crash_tag column after the cid column in the data frame
-ocs.relocate_column(df = crashes, col_name = "crash_tag", ref_col_name = "cid", position = "after")
+oct.relocate_column(df = crashes, col_name = "crash_tag", ref_col_name = "cid", position = "after")
 
 
 ### Parties Dataset Identifier ----
@@ -712,7 +712,7 @@ print("- Adding parties dataset identifier")
 # Add a unique party tag
 parties["party_tag"] = 1
 # Move the party_tag column after the pid column in the data frame
-ocs.relocate_column(df = parties, col_name = "party_tag", ref_col_name = "pid", position = "after")
+oct.relocate_column(df = parties, col_name = "party_tag", ref_col_name = "pid", position = "after")
 
 
 ### Victims Dataset Identifier ----
@@ -722,7 +722,7 @@ print("- Adding victims dataset identifier")
 # Add a unique victim tag
 victims["victim_tag"] = 1
 # Move the victim_tag column after the vid column in the data frame
-ocs.relocate_column(df = victims, col_name = "victim_tag", ref_col_name = "vid", position = "after")
+oct.relocate_column(df = victims, col_name = "victim_tag", ref_col_name = "vid", position = "after")
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -741,7 +741,7 @@ print("- Adding crashes tag")
 crashes["crashes_case_tag"] = crashes.groupby("cid")["cid"].transform("count")
 
 # Relocate the crashes_case_tag column after the crash_tag column in the data frame
-ocs.relocate_column(df = crashes, col_name = "crashes_case_tag", ref_col_name = "crash_tag", position = "after")
+oct.relocate_column(df = crashes, col_name = "crashes_case_tag", ref_col_name = "crash_tag", position = "after")
 
 
 ### Parties Tag ----
@@ -751,7 +751,7 @@ print("- Adding parties tag")
 # Create a count of parties for each cid in the parties data frame
 parties["parties_case_tag"] = parties.groupby("cid")["cid"].transform("count")
 # Relocate the parties_case_tag column after the party_tag column in the data frame
-ocs.relocate_column(df = parties, col_name = "parties_case_tag", ref_col_name = "party_tag", position = "after")
+oct.relocate_column(df = parties, col_name = "parties_case_tag", ref_col_name = "party_tag", position = "after")
 
 
 ### Victims Tag ----
@@ -761,7 +761,7 @@ print("- Adding victims tag")
 # Create a count of victims for each cid in the victims data frame
 victims["victims_case_tag"] = victims.groupby("cid")["cid"].transform("count")
 # Move the victims_case_tag column after the victim_tag column in the data frame
-ocs.relocate_column(df = victims, col_name = "victims_case_tag", ref_col_name = "victim_tag", position = "after")
+oct.relocate_column(df = victims, col_name = "victims_case_tag", ref_col_name = "victim_tag", position = "after")
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -799,7 +799,7 @@ else:
     print("- coll_time is already an integer")
 
 # Create a temporary column to store the formatted time string
-crashes["coll_time_temp"] = crashes["coll_time"].apply(ocs.format_coll_time)
+crashes["coll_time_temp"] = crashes["coll_time"].apply(oct.format_coll_time)
 
 # Convert the coll_date and coll_time_temp columns to a datetime object with time zone "America/Los_Angeles"
 crashes["date_datetime"] = pd.to_datetime(
@@ -835,10 +835,10 @@ print("- Creating quarter column")
 crashes["dt_quarter"] = crashes["date_datetime"].dt.quarter
 
 # Apply the function to create date_quarter column
-crashes["date_quarter"] = crashes.apply(ocs.quarter_to_date, axis = 1)
+crashes["date_quarter"] = crashes.apply(oct.quarter_to_date, axis = 1)
 
 # Convert the dt_quarter column to categorical
-crashes["dt_quarter"] = ocs.categorical_series(var_series=crashes["dt_quarter"], var_name="dt_quarter", cb_dict=cb)
+crashes["dt_quarter"] = oct.categorical_series(var_series=crashes["dt_quarter"], var_name="dt_quarter", cb_dict=cb)
 
 
 ### Month (Date) ----
@@ -852,7 +852,7 @@ crashes["dt_month"] = crashes["date_datetime"].dt.month
 crashes["date_month"] = pd.to_datetime(crashes["date_datetime"].dt.strftime("%Y-%m"), format = "%Y-%m", errors = "coerce")
 
 # Convert the dt_month column to categorical
-crashes["dt_month"] = ocs.categorical_series(var_series = crashes["dt_month"], var_name = "dt_month", cb_dict = cb)
+crashes["dt_month"] = oct.categorical_series(var_series = crashes["dt_month"], var_name = "dt_month", cb_dict = cb)
 
 
 ### Week of the Year (Date) ----
@@ -891,7 +891,7 @@ print("- Creating week day column")
 crashes["dt_week_day"] = crashes["date_datetime"].dt.isocalendar().day
 
 # Convert the dt_week_day column to categorical
-crashes["dt_week_day"] = ocs.categorical_series(var_series = crashes["dt_week_day"], var_name = "dt_week_day", cb_dict = cb)
+crashes["dt_week_day"] = oct.categorical_series(var_series = crashes["dt_week_day"], var_name = "dt_week_day", cb_dict = cb)
 
 
 ### Day of the Month (Date) ----
@@ -926,16 +926,16 @@ crashes["dt_minute"] = crashes["date_datetime"].dt.minute
 print("- Creating daylight savings time and time zone columns")
 
 # Create a daylight savings time flag column (0 = no, 1 = yes, -1 = unknown)
-crashes["dt_dst"] = ocs.is_dst(crashes["date_datetime"])
+crashes["dt_dst"] = oct.is_dst(crashes["date_datetime"])
 
 # Create a time zone column from the dateTimeZone column
 crashes["dt_zone"] = crashes["dt_dst"] - 8
 
 # Convert the dt_dst column to categorical
-crashes["dt_dst"] = ocs.categorical_series(var_series=crashes["dt_dst"], var_name="dt_dst", cb_dict=cb)
+crashes["dt_dst"] = oct.categorical_series(var_series=crashes["dt_dst"], var_name="dt_dst", cb_dict=cb)
 
 # Convert the dt_zone column to categorical
-crashes["dt_zone"] = ocs.categorical_series(var_series=crashes["dt_zone"], var_name="dt_zone", cb_dict=cb)
+crashes["dt_zone"] = oct.categorical_series(var_series=crashes["dt_zone"], var_name="dt_zone", cb_dict=cb)
 
 
 ### Order the New Date and Time Columns ----
@@ -965,7 +965,7 @@ columns_to_relocate = [
 ]
 
 # Relocate the columns in the desired order
-ocs.relocate_column(df=crashes, col_name=columns_to_relocate, ref_col_name="city", position="after")
+oct.relocate_column(df=crashes, col_name=columns_to_relocate, ref_col_name="city", position="after")
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -979,12 +979,12 @@ crashes["coll_time_intervals"] = pd.cut(
 )
 
 # Convert the coll_time_intervals column to categorical
-crashes["coll_time_intervals"] = ocs.categorical_series(
+crashes["coll_time_intervals"] = oct.categorical_series(
     var_series=crashes["coll_time_intervals"], var_name="coll_time_intervals", cb_dict=cb
 )
 
 # Relocate the coll_time_intervals column after the coll_time column in the data frame
-ocs.relocate_column(df=crashes, col_name="coll_time_intervals", ref_col_name="coll_time", position="after")
+oct.relocate_column(df=crashes, col_name="coll_time_intervals", ref_col_name="coll_time", position="after")
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1013,10 +1013,10 @@ crashes.loc[
 crashes.loc[crashes["dt_hour"] > 2400, "rush_hours"] = 9
 
 # Convert the rush_hours column to categorical
-crashes["rush_hours"] = ocs.categorical_series(var_series=crashes["rush_hours"], var_name="rush_hours", cb_dict=cb)
+crashes["rush_hours"] = oct.categorical_series(var_series=crashes["rush_hours"], var_name="rush_hours", cb_dict=cb)
 
 # Relocate the rush_hours column after the coll_time_intervals column in the data frame
-ocs.relocate_column(df=crashes, col_name="rush_hours", ref_col_name="coll_time_intervals", position="after")
+oct.relocate_column(df=crashes, col_name="rush_hours", ref_col_name="coll_time_intervals", position="after")
 
 
 ### Rush Hours Indicators ----
@@ -1028,12 +1028,12 @@ crashes["rush_hours_bin"] = 0
 crashes.loc[crashes["rush_hours"].isin(["Morning (6-9am)", "Evening (4-7pm)"]), "rush_hours_bin"] = 1
 
 # Convert the rush_hours_bin column to categorical
-crashes["rush_hours_bin"] = ocs.categorical_series(
+crashes["rush_hours_bin"] = oct.categorical_series(
     var_series=crashes["rush_hours_bin"], var_name="rush_hours_bin", cb_dict=cb
 )
 
 # Relocate the rush_hours_bin column after the rush_hours column in the data frame
-ocs.relocate_column(df=crashes, col_name="rush_hours_bin", ref_col_name="rush_hours", position="after")
+oct.relocate_column(df=crashes, col_name="rush_hours_bin", ref_col_name="rush_hours", position="after")
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1056,7 +1056,7 @@ crashes["coll_severity"] = crashes["coll_severity"].map(
 )
 
 # Convert the coll_severity column to categorical
-crashes["coll_severity"] = ocs.categorical_series(
+crashes["coll_severity"] = oct.categorical_series(
     var_series=crashes["coll_severity"], var_name="coll_severity", cb_dict=cb
 )
 
@@ -1065,14 +1065,14 @@ crashes["coll_severity_num"] = crashes["coll_severity"].cat.codes.astype(int)
 # crashes["coll_severity_num"] = crashes["coll_severity"].astype(int)
 
 # Relocate the coll_severity_num column after the coll_severity column in the data frame
-ocs.relocate_column(df=crashes, col_name="coll_severity_num", ref_col_name="coll_severity", position="after")
+oct.relocate_column(df=crashes, col_name="coll_severity_num", ref_col_name="coll_severity", position="after")
 
 # Reverse the order of the coll_severity_num column so that higher numbers indicate more severe collisions
 max_severity = crashes["coll_severity_num"].max()
 crashes["coll_severity_hs"] = ((max_severity + 1) - crashes["coll_severity_num"]).astype(int)
 
 # Relocate the coll_severity_hs column after the coll_severity_num column in the data frame
-ocs.relocate_column(df=crashes, col_name="coll_severity_hs", ref_col_name="coll_severity_num", position="after")
+oct.relocate_column(df=crashes, col_name="coll_severity_hs", ref_col_name="coll_severity_num", position="after")
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1085,12 +1085,12 @@ crashes["coll_severity_bin"] = 0
 crashes.loc[crashes["coll_severity"].isin(["Serious or severe injury", "Fatal injury"]), "coll_severity_bin"] = 1
 
 # Convert the coll_severity_bin column to categorical
-crashes["coll_severity_bin"] = ocs.categorical_series(
+crashes["coll_severity_bin"] = oct.categorical_series(
     var_series=crashes["coll_severity_bin"], var_name="coll_severity_bin", cb_dict=cb
 )
 
 # Relocate the coll_severity_bin column after the coll_severity_num column in the data frame
-ocs.relocate_column(df=crashes, col_name="coll_severity_bin", ref_col_name="coll_severity_num", position="after")
+oct.relocate_column(df=crashes, col_name="coll_severity_bin", ref_col_name="coll_severity_num", position="after")
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1101,21 +1101,21 @@ print("\n6.3. Ranked Collision Severity")
 # Generate a new column in the crashes data frame called coll_severity_rank that ranks the collision severity based on the number of killed and severe injuries
 
 # Apply the function to the crashes data frame to create the coll_severity_rank column
-crashes["coll_severity_rank"] = crashes.apply(ocs.get_coll_severity_rank, axis = 1)
+crashes["coll_severity_rank"] = crashes.apply(oct.get_coll_severity_rank, axis = 1)
 
 # Create a numeric version of the coll_severity_rank column
 crashes["coll_severity_rank_num"] = crashes["coll_severity_rank"].astype(int)
 
 # Convert the coll_severity_rank column to categorical
-crashes["coll_severity_rank"] = ocs.categorical_series(
+crashes["coll_severity_rank"] = oct.categorical_series(
     var_series=crashes["coll_severity_rank"], var_name="coll_severity_rank", cb_dict=cb
 )
 
 # Relocate the coll_severity_rank column after the coll_severity_bin column in the data frame
-ocs.relocate_column(df=crashes, col_name="coll_severity_rank", ref_col_name="coll_severity_bin", position="after")
+oct.relocate_column(df=crashes, col_name="coll_severity_rank", ref_col_name="coll_severity_bin", position="after")
 
 # Relocate the coll_severity_rank_num column after the coll_severity_rank column in the data frame
-ocs.relocate_column(df=crashes, col_name="coll_severity_rank_num", ref_col_name="coll_severity_rank", position="after")
+oct.relocate_column(df=crashes, col_name="coll_severity_rank_num", ref_col_name="coll_severity_rank", position="after")
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1132,10 +1132,10 @@ print("- Creating Severe Injury Indicator")
 crashes["ind_severe"] = (crashes["coll_severity_num"] == 3).astype(int)
 
 # Convert the ind_severe column to categorical
-crashes["ind_severe"] = ocs.categorical_series(var_series = crashes["ind_severe"], var_name = "ind_severe", cb_dict = cb)
+crashes["ind_severe"] = oct.categorical_series(var_series = crashes["ind_severe"], var_name = "ind_severe", cb_dict = cb)
 
 # Relocate the ind_severe column after the coll_severity_rank_num column in the data frame
-ocs.relocate_column(df = crashes, col_name = "ind_severe", ref_col_name = "coll_severity_rank_num", position = "after")
+oct.relocate_column(df = crashes, col_name = "ind_severe", ref_col_name = "coll_severity_rank_num", position = "after")
 
 
 ### Fatal Injury Indicator ----
@@ -1146,10 +1146,10 @@ print("- Creating fatal Injury Indicator")
 crashes["ind_fatal"] = (crashes["coll_severity_num"] == 4).astype(int)
 
 # Convert the ind_fatal column to categorical
-crashes["ind_fatal"] = ocs.categorical_series(var_series = crashes["ind_fatal"], var_name = "ind_fatal", cb_dict = cb)
+crashes["ind_fatal"] = oct.categorical_series(var_series = crashes["ind_fatal"], var_name = "ind_fatal", cb_dict = cb)
 
 # Relocate the ind_fatal column after the ind_severe column in the data frame
-ocs.relocate_column(df = crashes, col_name = "ind_fatal", ref_col_name = "ind_severe", position = "after")
+oct.relocate_column(df = crashes, col_name = "ind_fatal", ref_col_name = "ind_severe", position = "after")
 
 
 ### Multiple Severe or Fatal Injuries Indicator ----
@@ -1160,10 +1160,10 @@ print("- Creating Multiple Severe or Fatal Injuries Indicator")
 crashes["ind_multi"] = crashes["coll_severity_rank_num"].isin([2, 5, 6, 7, 8]).astype(int)
 
 # Convert the ind_multi column to categorical
-crashes["ind_multi"] = ocs.categorical_series(var_series = crashes["ind_multi"], var_name = "ind_multi", cb_dict = cb)
+crashes["ind_multi"] = oct.categorical_series(var_series = crashes["ind_multi"], var_name = "ind_multi", cb_dict = cb)
 
 # Relocate the ind_multi column after the ind_fatal column in the data frame
-ocs.relocate_column(df = crashes, col_name = "ind_multi", ref_col_name = "ind_fatal", position = "after")
+oct.relocate_column(df = crashes, col_name = "ind_multi", ref_col_name = "ind_fatal", position = "after")
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1181,7 +1181,7 @@ print("\n7.1. Generate Victim Count")
 crashes["victim_count"] = (crashes["number_killed"] + crashes["number_inj"]).astype(int)
 
 # Relocate the victim_count column after the party_count column in the data frame
-ocs.relocate_column(df = crashes, col_name = "victim_count", ref_col_name = "party_count", position = "after")
+oct.relocate_column(df = crashes, col_name = "victim_count", ref_col_name = "party_count", position = "after")
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1193,13 +1193,13 @@ print("\n7.2. Generate Combined Fatality and Severity Counts")
 crashes["count_fatal_severe"] = (crashes["number_killed"] + crashes["count_severe_inj"]).astype(int)
 
 # Relocate the count_fatal_severe column after the count_complaint_pain column in the data frame
-ocs.relocate_column(df = crashes, col_name = "count_fatal_severe", ref_col_name = "count_complaint_pain", position = "after")
+oct.relocate_column(df = crashes, col_name = "count_fatal_severe", ref_col_name = "count_complaint_pain", position = "after")
 
 # Generate a new column in the crashes data frame called count_minor_pain that is the sum of the count_visible_inj and count_complaint_pain columns
 crashes["count_minor_pain"] = (crashes["count_visible_inj"] + crashes["count_complaint_pain"]).astype(int)
 
 # Relocate the count_minor_pain column after the count_fatal_severe column in the data frame
-ocs.relocate_column(df = crashes, col_name = "count_minor_pain", ref_col_name = "count_fatal_severe", position = "after")
+oct.relocate_column(df = crashes, col_name = "count_minor_pain", ref_col_name = "count_fatal_severe", position = "after")
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1213,7 +1213,7 @@ crashes["count_car_killed"] = (
 ).astype(int)
 
 # Relocate the count_car_killed column after the count_minor_pain column
-ocs.relocate_column(df = crashes, col_name = "count_car_killed", ref_col_name = "count_minor_pain", position = "after")
+oct.relocate_column(df = crashes, col_name = "count_car_killed", ref_col_name = "count_minor_pain", position = "after")
 
 # Generate a new column in the crashes data frame called count_car_inj that is the difference between the number_inj and the sum of count_ped_inj, count_bic_inj, and count_mc_inj columns
 crashes["count_car_inj"] = (
@@ -1221,7 +1221,7 @@ crashes["count_car_inj"] = (
 ).astype(int)
 
 # Relocate the count_car_inj column after the count_car_killed column
-ocs.relocate_column(df = crashes, col_name = "count_car_inj", ref_col_name = "count_car_killed", position = "after")
+oct.relocate_column(df = crashes, col_name = "count_car_inj", ref_col_name = "count_car_killed", position = "after")
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1243,7 +1243,7 @@ crashes["primary_coll_factor"] = (
 crashes.loc[crashes["primary_coll_factor"] == 999, "primary_coll_factor"] = np.nan
 
 # Convert the primary_coll_factor column to categorical
-crashes["primary_coll_factor"] = ocs.categorical_series(
+crashes["primary_coll_factor"] = oct.categorical_series(
     var_series = crashes["primary_coll_factor"], var_name = "primary_coll_factor", cb_dict = cb
 )
 
@@ -1259,7 +1259,7 @@ crashes["type_of_coll"] = crashes["type_of_coll"].map(cb["type_of_coll"]["recode
 crashes.loc[crashes["type_of_coll"] == 999, "type_of_coll"] = np.nan
 
 # Convert the type_of_coll column to categorical
-crashes["type_of_coll"] = ocs.categorical_series(
+crashes["type_of_coll"] = oct.categorical_series(
     var_series = crashes["type_of_coll"], var_name = "type_of_coll", cb_dict = cb
 )
 
@@ -1273,7 +1273,7 @@ print("\n8.3. Pedestrian Crash")
 crashes["ped_accident"] = crashes["ped_accident"].map(cb["ped_accident"]["recode"]).fillna(0).astype(int)
 
 # Convert the ped_accident column to categorical
-crashes["ped_accident"] = ocs.categorical_series(
+crashes["ped_accident"] = oct.categorical_series(
     var_series = crashes["ped_accident"], var_name = "ped_accident", cb_dict = cb
 )
 
@@ -1287,7 +1287,7 @@ print("\n8.4. Bicycle Crash")
 crashes["bic_accident"] = crashes["bic_accident"].map(cb["bic_accident"]["recode"]).fillna(0).astype(int)
 
 # Convert the bic_accident column to categorical
-crashes["bic_accident"] = ocs.categorical_series(
+crashes["bic_accident"] = oct.categorical_series(
     var_series = crashes["bic_accident"], var_name = "bic_accident", cb_dict = cb
 )
 
@@ -1301,7 +1301,7 @@ print("\n8.5. Motorcycle Crash")
 crashes["mc_accident"] = crashes["mc_accident"].map(cb["mc_accident"]["recode"]).fillna(0).astype(int)
 
 # Convert the mc_accident column to categorical
-crashes["mc_accident"] = ocs.categorical_series(var_series = crashes["mc_accident"], var_name = "mc_accident", cb_dict = cb)
+crashes["mc_accident"] = oct.categorical_series(var_series = crashes["mc_accident"], var_name = "mc_accident", cb_dict = cb)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1313,7 +1313,7 @@ print("\n8.6. Truck Crash")
 crashes["truck_accident"] = crashes["truck_accident"].map(cb["truck_accident"]["recode"]).fillna(0).astype(int)
 
 # Convert the truck_accident column to categorical
-crashes["truck_accident"] = ocs.categorical_series(
+crashes["truck_accident"] = oct.categorical_series(
     var_series = crashes["truck_accident"], var_name = "truck_accident", cb_dict = cb
 )
 
@@ -1332,7 +1332,7 @@ print("- Creating Hit and Run (type of)")
 crashes["hit_and_run"] = crashes["hit_and_run"].map(cb["hit_and_run"]["recode"]).fillna(0).astype(int)
 
 # Convert the hit_and_run column to categorical
-crashes["hit_and_run"] = ocs.categorical_series(var_series = crashes["hit_and_run"], var_name = "hit_and_run", cb_dict = cb)
+crashes["hit_and_run"] = oct.categorical_series(var_series = crashes["hit_and_run"], var_name = "hit_and_run", cb_dict = cb)
 
 
 ### Hit and Run (binary) ----
@@ -1344,12 +1344,12 @@ crashes["hit_and_run_bin"] = 0
 crashes.loc[crashes["hit_and_run"].isin(["Misdemeanor", "Felony"]), "hit_and_run_bin"] = 1
 
 # Convert the hit_and_run_bin column to categorical
-crashes["hit_and_run_bin"] = ocs.categorical_series(
+crashes["hit_and_run_bin"] = oct.categorical_series(
     var_series = crashes["hit_and_run_bin"], var_name = "hit_and_run_bin", cb_dict = cb
 )
 
 # Relocate the hit_and_run_bin column after the hit_and_run column in the data frame
-ocs.relocate_column(df = crashes, col_name = "hit_and_run_bin", ref_col_name = "hit_and_run", position = "after")
+oct.relocate_column(df = crashes, col_name = "hit_and_run_bin", ref_col_name = "hit_and_run", position = "after")
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1363,7 +1363,7 @@ crashes["alcohol_involved"] = (
 )
 
 # Convert the alcohol_involved column to categorical
-crashes["alcohol_involved"] = ocs.categorical_series(
+crashes["alcohol_involved"] = oct.categorical_series(
     var_series = crashes["alcohol_involved"], var_name = "alcohol_involved", cb_dict = cb
 )
 
@@ -1377,7 +1377,7 @@ print("\n8.9. CHP Shift")
 crashes["chp_shift"] = crashes["chp_shift"].astype(int)
 
 # Convert the chp_shift column to categorical
-crashes["chp_shift"] = ocs.categorical_series(var_series = crashes["chp_shift"], var_name = "chp_shift", cb_dict = cb)
+crashes["chp_shift"] = oct.categorical_series(var_series = crashes["chp_shift"], var_name = "chp_shift", cb_dict = cb)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1389,7 +1389,7 @@ print("\n8.10. Special Conditions")
 crashes["special_cond"] = crashes["special_cond"].map(cb["special_cond"]["recode"]).fillna(np.nan).astype(int)
 
 # Convert the special_cond column to categorical
-crashes["special_cond"] = ocs.categorical_series(
+crashes["special_cond"] = oct.categorical_series(
     var_series = crashes["special_cond"], var_name = "special_cond", cb_dict = cb
 )
 
@@ -1403,7 +1403,7 @@ print("\n8.11. Beat Type")
 crashes["beat_type"] = crashes["beat_type"].astype(int)
 
 # Convert the beat_type column to categorical
-crashes["beat_type"] = ocs.categorical_series(var_series = crashes["beat_type"], var_name = "beat_type", cb_dict = cb)
+crashes["beat_type"] = oct.categorical_series(var_series = crashes["beat_type"], var_name = "beat_type", cb_dict = cb)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1417,7 +1417,7 @@ crashes["chp_beat_type"] = (
 )
 
 # Convert the chp_beat_type column to categorical
-crashes["chp_beat_type"] = ocs.categorical_series(
+crashes["chp_beat_type"] = oct.categorical_series(
     var_series = crashes["chp_beat_type"], var_name = "chp_beat_type", cb_dict = cb
 )
 
@@ -1431,7 +1431,7 @@ print("\n8.13. CHP Beat Class")
 crashes["chp_beat_class"] = crashes["chp_beat_class"].astype(int)
 
 # Convert the chp_beat_class column to categorical
-crashes["chp_beat_class"] = ocs.categorical_series(
+crashes["chp_beat_class"] = oct.categorical_series(
     var_series = crashes["chp_beat_class"], var_name = "chp_beat_class", cb_dict = cb
 )
 
@@ -1447,7 +1447,7 @@ crashes["direction"] = crashes["direction"].map(cb["direction"]["recode"]).filln
 crashes.loc[crashes["direction"] == 999, "direction"] = np.nan
 
 # Convert the direction column to categorical
-crashes["direction"] = ocs.categorical_series(var_series = crashes["direction"], var_name = "direction", cb_dict = cb)
+crashes["direction"] = oct.categorical_series(var_series = crashes["direction"], var_name = "direction", cb_dict = cb)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1461,7 +1461,7 @@ crashes["intersection"] = crashes["intersection"].map(cb["intersection"]["recode
 crashes.loc[crashes["intersection"] == 999, "intersection"] = np.nan
 
 # Convert the intersection column to categorical
-crashes["intersection"] = ocs.categorical_series(
+crashes["intersection"] = oct.categorical_series(
     var_series = crashes["intersection"], var_name = "intersection", cb_dict = cb
 )
 
@@ -1485,18 +1485,18 @@ crashes.loc[crashes["weather_2"] == 999, "weather_2"] = np.nan
 crashes["weather_comb"] = (crashes["weather_1"].astype(float) * 10 + crashes["weather_2"].astype(float)).astype("Int64")
 
 # Convert the weather_1 column to categorical
-crashes["weather_1"] = ocs.categorical_series(var_series = crashes["weather_1"], var_name = "weather_1", cb_dict = cb)
+crashes["weather_1"] = oct.categorical_series(var_series = crashes["weather_1"], var_name = "weather_1", cb_dict = cb)
 
 # Convert the weather_2 column to categorical
-crashes["weather_2"] = ocs.categorical_series(var_series = crashes["weather_2"], var_name = "weather_2", cb_dict = cb)
+crashes["weather_2"] = oct.categorical_series(var_series = crashes["weather_2"], var_name = "weather_2", cb_dict = cb)
 
 # Convert the weather_comb column to categorical
-crashes["weather_comb"] = ocs.categorical_series(
+crashes["weather_comb"] = oct.categorical_series(
     var_series = crashes["weather_comb"], var_name = "weather_comb", cb_dict = cb
 )
 
 # Relocate the weather_comb column after the weather_2 column in the data frame
-ocs.relocate_column(df = crashes, col_name = "weather_comb", ref_col_name = "weather_2", position = "after")
+oct.relocate_column(df = crashes, col_name = "weather_comb", ref_col_name = "weather_2", position = "after")
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1511,7 +1511,7 @@ crashes["road_surface"] = crashes["road_surface"].map(cb["road_surface"]["recode
 crashes.loc[crashes["road_surface"] == 999, "road_surface"] = np.nan
 
 # Convert the road_surface column to categorical
-crashes["road_surface"] = ocs.categorical_series(
+crashes["road_surface"] = oct.categorical_series(
     var_series = crashes["road_surface"], var_name = "road_surface", cb_dict = cb
 )
 
@@ -1532,10 +1532,10 @@ crashes["road_cond_2"] = crashes["road_cond_2"].map(cb["road_cond_2"]["recode"])
 crashes.loc[crashes["road_cond_2"] == 999, "road_cond_2"] = np.nan
 
 # Convert the road_cond_1 column to categorical
-crashes["road_cond_1"] = ocs.categorical_series(var_series = crashes["road_cond_1"], var_name = "road_cond_1", cb_dict = cb)
+crashes["road_cond_1"] = oct.categorical_series(var_series = crashes["road_cond_1"], var_name = "road_cond_1", cb_dict = cb)
 
 # Convert the road_cond_2 column to categorical
-crashes["road_cond_2"] = ocs.categorical_series(var_series = crashes["road_cond_2"], var_name = "road_cond_2", cb_dict = cb)
+crashes["road_cond_2"] = oct.categorical_series(var_series = crashes["road_cond_2"], var_name = "road_cond_2", cb_dict = cb)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1549,7 +1549,7 @@ crashes["lighting"] = crashes["lighting"].map(cb["lighting"]["recode"]).fillna(9
 crashes.loc[crashes["lighting"] == 999, "lighting"] = np.nan
 
 # Convert the lighting column to categorical
-crashes["lighting"] = ocs.categorical_series(var_series = crashes["lighting"], var_name = "lighting", cb_dict = cb)
+crashes["lighting"] = oct.categorical_series(var_series = crashes["lighting"], var_name = "lighting", cb_dict = cb)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1565,7 +1565,7 @@ crashes["control_device"] = (
 crashes.loc[crashes["control_device"] == 999, "control_device"] = np.nan
 
 # Convert the control_device column to categorical
-crashes["control_device"] = ocs.categorical_series(var_series = crashes["control_device"], var_name = "control_device", cb_dict = cb)
+crashes["control_device"] = oct.categorical_series(var_series = crashes["control_device"], var_name = "control_device", cb_dict = cb)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1579,7 +1579,7 @@ crashes["state_hwy_ind"] = crashes["state_hwy_ind"].map(cb["state_hwy_ind"]["rec
 crashes.loc[crashes["state_hwy_ind"] == 999, "state_hwy_ind"] = np.nan
 
 # Convert the state_hwy_ind column to categorical
-crashes["state_hwy_ind"] = ocs.categorical_series(var_series = crashes["state_hwy_ind"], var_name = "state_hwy_ind", cb_dict = cb)
+crashes["state_hwy_ind"] = oct.categorical_series(var_series = crashes["state_hwy_ind"], var_name = "state_hwy_ind", cb_dict = cb)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1593,7 +1593,7 @@ crashes["side_of_hwy"] = crashes["side_of_hwy"].map(cb["side_of_hwy"]["recode"])
 crashes.loc[crashes["side_of_hwy"] == 999, "side_of_hwy"] = np.nan
 
 # Convert the side_of_hwy column to categorical
-crashes["side_of_hwy"] = ocs.categorical_series(var_series = crashes["side_of_hwy"], var_name = "side_of_hwy", cb_dict = cb)
+crashes["side_of_hwy"] = oct.categorical_series(var_series = crashes["side_of_hwy"], var_name = "side_of_hwy", cb_dict = cb)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1607,7 +1607,7 @@ crashes["tow_away"] = crashes["tow_away"].map(cb["tow_away"]["recode"]).fillna(9
 crashes.loc[crashes["tow_away"] == 999, "tow_away"] = np.nan
 
 # Convert the tow_away column to categorical
-crashes["tow_away"] = ocs.categorical_series(var_series = crashes["tow_away"], var_name = "tow_away", cb_dict = cb)
+crashes["tow_away"] = oct.categorical_series(var_series = crashes["tow_away"], var_name = "tow_away", cb_dict = cb)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1623,7 +1623,7 @@ crashes["pcf_code_of_viol"] = (
 crashes.loc[crashes["pcf_code_of_viol"] == 999, "pcf_code_of_viol"] = np.nan
 
 # Convert the pcf_code_of_viol column to categorical
-crashes["pcf_code_of_viol"] = ocs.categorical_series(var_series = crashes["pcf_code_of_viol"], var_name = "pcf_code_of_viol", cb_dict = cb)
+crashes["pcf_code_of_viol"] = oct.categorical_series(var_series = crashes["pcf_code_of_viol"], var_name = "pcf_code_of_viol", cb_dict = cb)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1639,7 +1639,7 @@ crashes["pcf_viol_category"] = (
 crashes.loc[crashes["pcf_viol_category"] == 999, "pcf_viol_category"] = np.nan
 
 # Convert the pcf_viol_category column to categorical
-crashes["pcf_viol_category"] = ocs.categorical_series(var_series = crashes["pcf_viol_category"], var_name = "pcf_viol_category", cb_dict = cb)
+crashes["pcf_viol_category"] = oct.categorical_series(var_series = crashes["pcf_viol_category"], var_name = "pcf_viol_category", cb_dict = cb)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1653,7 +1653,7 @@ crashes["mviw"] = crashes["mviw"].map(cb["mviw"]["recode"]).fillna(999).astype(i
 crashes.loc[crashes["mviw"] == 999, "mviw"] = np.nan
 
 # Convert the mviw column to categorical
-crashes["mviw"] = ocs.categorical_series(var_series = crashes["mviw"], var_name = "mviw", cb_dict = cb)
+crashes["mviw"] = oct.categorical_series(var_series = crashes["mviw"], var_name = "mviw", cb_dict = cb)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1667,7 +1667,7 @@ crashes["ped_action"] = crashes["ped_action"].map(cb["ped_action"]["recode"]).fi
 crashes.loc[crashes["ped_action"] == 999, "ped_action"] = np.nan
 
 # Convert the ped_action column to categorical
-crashes["ped_action"] = ocs.categorical_series(var_series = crashes["ped_action"], var_name = "ped_action", cb_dict = cb)
+crashes["ped_action"] = oct.categorical_series(var_series = crashes["ped_action"], var_name = "ped_action", cb_dict = cb)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1681,7 +1681,7 @@ crashes["not_private_property"] = (
 )
 
 # Convert the not_private_property column to categorical
-crashes["not_private_property"] = ocs.categorical_series(var_series = crashes["not_private_property"], var_name = "not_private_property", cb_dict = cb)
+crashes["not_private_property"] = oct.categorical_series(var_series = crashes["not_private_property"], var_name = "not_private_property", cb_dict = cb)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1697,7 +1697,7 @@ crashes["stwd_veh_type_at_fault"] = (
 crashes.loc[crashes["stwd_veh_type_at_fault"] == 999, "stwd_veh_type_at_fault"] = np.nan
 
 # Convert the stwd_veh_type_at_fault column to categorical
-crashes["stwd_veh_type_at_fault"] = ocs.categorical_series(var_series = crashes["stwd_veh_type_at_fault"], var_name = "stwd_veh_type_at_fault", cb_dict = cb)
+crashes["stwd_veh_type_at_fault"] = oct.categorical_series(var_series = crashes["stwd_veh_type_at_fault"], var_name = "stwd_veh_type_at_fault", cb_dict = cb)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1713,7 +1713,7 @@ crashes["chp_veh_type_at_fault"] = (
 crashes.loc[crashes["chp_veh_type_at_fault"] == 999, "chp_veh_type_at_fault"] = np.nan
 
 # Convert the chp_veh_type_at_fault column to categorical
-crashes["chp_veh_type_at_fault"] = ocs.categorical_series(var_series = crashes["chp_veh_type_at_fault"], var_name = "chp_veh_type_at_fault", cb_dict = cb)
+crashes["chp_veh_type_at_fault"] = oct.categorical_series(var_series = crashes["chp_veh_type_at_fault"], var_name = "chp_veh_type_at_fault", cb_dict = cb)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1727,7 +1727,7 @@ crashes["primary_ramp"] = crashes["primary_ramp"].map(cb["primary_ramp"]["recode
 crashes.loc[crashes["primary_ramp"] == 999, "primary_ramp"] = np.nan
 
 # Convert the primary_ramp column to categorical
-crashes["primary_ramp"] = ocs.categorical_series(var_series = crashes["primary_ramp"], var_name = "primary_ramp", cb_dict = cb)
+crashes["primary_ramp"] = oct.categorical_series(var_series = crashes["primary_ramp"], var_name = "primary_ramp", cb_dict = cb)
 
 # Recode the secondary ramp (secondary_ramp) to numeric
 crashes["secondary_ramp"] = crashes["secondary_ramp"].map(cb["secondary_ramp"]["recode"]).fillna(999).astype(int)
@@ -1735,7 +1735,7 @@ crashes["secondary_ramp"] = crashes["secondary_ramp"].map(cb["secondary_ramp"]["
 crashes.loc[crashes["secondary_ramp"] == 999, "secondary_ramp"] = np.nan
 
 # Convert the secondary_ramp column to categorical
-crashes["secondary_ramp"] = ocs.categorical_series(var_series = crashes["secondary_ramp"], var_name = "secondary_ramp", cb_dict = cb)
+crashes["secondary_ramp"] = oct.categorical_series(var_series = crashes["secondary_ramp"], var_name = "secondary_ramp", cb_dict = cb)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1755,7 +1755,7 @@ parties["party_type"] = parties["party_type"].map(cb["party_type"]["recode"]).fi
 parties.loc[parties["party_type"] == 999, "party_type"] = np.nan
 
 # Convert the party_type column to categorical
-parties["party_type"] = ocs.categorical_series(var_series = parties["party_type"], var_name = "party_type", cb_dict = cb)
+parties["party_type"] = oct.categorical_series(var_series = parties["party_type"], var_name = "party_type", cb_dict = cb)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1769,7 +1769,7 @@ parties["at_fault"] = parties["at_fault"].map(cb["at_fault"]["recode"]).fillna(9
 parties.loc[parties["at_fault"] == 999, "at_fault"] = np.nan
 
 # Convert the at_fault column to categorical
-parties["at_fault"] = ocs.categorical_series(var_series = parties["at_fault"], var_name = "at_fault", cb_dict = cb)
+parties["at_fault"] = oct.categorical_series(var_series = parties["at_fault"], var_name = "at_fault", cb_dict = cb)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1783,7 +1783,7 @@ parties["party_sex"] = parties["party_sex"].map(cb["party_sex"]["recode"]).filln
 parties.loc[parties["party_sex"] == 999, "party_sex"] = np.nan
 
 # Convert the party_sex column to categorical
-parties["party_sex"] = ocs.categorical_series(var_series = parties["party_sex"], var_name = "party_sex", cb_dict = cb)
+parties["party_sex"] = oct.categorical_series(var_series = parties["party_sex"], var_name = "party_sex", cb_dict = cb)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1808,7 +1808,7 @@ parties["party_age_group"] = pd.cut(
 )
 
 # Relocate the party_age_group column after the party_age column in the data frame
-ocs.relocate_column(df = parties, col_name = "party_age_group", ref_col_name = "party_age", position = "after")
+oct.relocate_column(df = parties, col_name = "party_age_group", ref_col_name = "party_age", position = "after")
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1822,7 +1822,7 @@ parties["party_race"] = parties["party_race"].map(cb["party_race"]["recode"]).fi
 parties.loc[parties["party_race"] == 999, "party_race"] = np.nan
 
 # Convert the party_race column to categorical
-parties["party_race"] = ocs.categorical_series(var_series = parties["party_race"], var_name = "party_race", cb_dict = cb)
+parties["party_race"] = oct.categorical_series(var_series = parties["party_race"], var_name = "party_race", cb_dict = cb)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1836,7 +1836,7 @@ parties["inattention"] = parties["inattention"].map(cb["inattention"]["recode"])
 parties.loc[parties["inattention"] == 999, "inattention"] = np.nan
 
 # Convert the inattention column to categorical
-parties["inattention"] = ocs.categorical_series(var_series = parties["inattention"], var_name = "inattention", cb_dict = cb)
+parties["inattention"] = oct.categorical_series(var_series = parties["inattention"], var_name = "inattention", cb_dict = cb)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1850,7 +1850,7 @@ parties["party_sobriety"] = parties["party_sobriety"].map(cb["party_sobriety"]["
 parties.loc[parties["party_sobriety"] == 999, "party_sobriety"] = np.nan
 
 # Convert the party_sobriety column to categorical
-parties["party_sobriety"] = ocs.categorical_series(var_series = parties["party_sobriety"], var_name = "party_sobriety", cb_dict = cb)
+parties["party_sobriety"] = oct.categorical_series(var_series = parties["party_sobriety"], var_name = "party_sobriety", cb_dict = cb)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1862,10 +1862,10 @@ print("\n9.8. Party Sobriety Indicator")
 parties["dui_alcohol_ind"] = np.where(parties["party_sobriety"] == "Had Been Drinking, Under Influence", 1, 0)
 
 # Convert the dui_alcohol_ind column to categorical
-parties["dui_alcohol_ind"] = ocs.categorical_series(var_series = parties["dui_alcohol_ind"], var_name = "dui_alcohol_ind", cb_dict = cb)
+parties["dui_alcohol_ind"] = oct.categorical_series(var_series = parties["dui_alcohol_ind"], var_name = "dui_alcohol_ind", cb_dict = cb)
 
 # Relocate the dui_alcohol_ind column after the party_sobriety column in the data frame
-ocs.relocate_column(df = parties, col_name = "dui_alcohol_ind", ref_col_name = "party_sobriety", position = "after")
+oct.relocate_column(df = parties, col_name = "dui_alcohol_ind", ref_col_name = "party_sobriety", position = "after")
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1879,7 +1879,7 @@ parties["party_drug_physical"] = parties["party_drug_physical"].map(cb["party_dr
 parties.loc[parties["party_drug_physical"] == 999, "party_drug_physical"] = np.nan
 
 # Convert the party_drug_physical column to categorical
-parties["party_drug_physical"] = ocs.categorical_series(var_series = parties["party_drug_physical"], var_name = "party_drug_physical", cb_dict = cb)
+parties["party_drug_physical"] = oct.categorical_series(var_series = parties["party_drug_physical"], var_name = "party_drug_physical", cb_dict = cb)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1891,10 +1891,10 @@ print("\n9.10. Party Drug Physical Indicator (dui drug indicator)")
 parties["dui_drug_ind"] = np.where(parties["party_drug_physical"] == "Under Drug Influence", 1, 0)
 
 # Convert the dui_drug_ind column to categorical
-parties["dui_drug_ind"] = ocs.categorical_series(var_series = parties["dui_drug_ind"], var_name = "dui_drug_ind", cb_dict = cb)
+parties["dui_drug_ind"] = oct.categorical_series(var_series = parties["dui_drug_ind"], var_name = "dui_drug_ind", cb_dict = cb)
 
 # Relocate the dui_drug_ind column after the party_drug_physical column in the data frame
-ocs.relocate_column(df = parties, col_name = "dui_drug_ind", ref_col_name = "party_drug_physical", position = "after")
+oct.relocate_column(df = parties, col_name = "dui_drug_ind", ref_col_name = "party_drug_physical", position = "after")
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1908,7 +1908,7 @@ parties["dir_of_travel"] = parties["dir_of_travel"].map(cb["dir_of_travel"]["rec
 parties.loc[parties["dir_of_travel"] == 999, "dir_of_travel"] = np.nan
 
 # Convert the dir_of_travel column to categorical
-parties["dir_of_travel"] = ocs.categorical_series(var_series = parties["dir_of_travel"], var_name = "dir_of_travel", cb_dict = cb)
+parties["dir_of_travel"] = oct.categorical_series(var_series = parties["dir_of_travel"], var_name = "dir_of_travel", cb_dict = cb)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1927,7 +1927,7 @@ parties["party_safety_eq_1"] = parties["party_safety_eq_1"].map(cb["party_safety
 parties.loc[parties["party_safety_eq_1"] == 999, "party_safety_eq_1"] = np.nan
 
 # Convert the party_safety_eq_1 column to categorical
-parties["party_safety_eq_1"] = ocs.categorical_series(var_series = parties["party_safety_eq_1"], var_name = "party_safety_eq_1", cb_dict = cb)
+parties["party_safety_eq_1"] = oct.categorical_series(var_series = parties["party_safety_eq_1"], var_name = "party_safety_eq_1", cb_dict = cb)
 
 
 ### Party Safety Equipment 2 ----
@@ -1940,7 +1940,7 @@ parties["party_safety_eq_2"] = parties["party_safety_eq_2"].map(cb["party_safety
 parties.loc[parties["party_safety_eq_2"] == 999, "party_safety_eq_2"] = np.nan
 
 # Convert the party_safety_eq_2 column to categorical
-parties["party_safety_eq_2"] = ocs.categorical_series(var_series = parties["party_safety_eq_2"], var_name = "party_safety_eq_2", cb_dict = cb)
+parties["party_safety_eq_2"] = oct.categorical_series(var_series = parties["party_safety_eq_2"], var_name = "party_safety_eq_2", cb_dict = cb)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1954,7 +1954,7 @@ parties["finan_respons"] = parties["finan_respons"].map(cb["finan_respons"]["rec
 parties.loc[parties["finan_respons"] == 999, "finan_respons"] = np.nan
 
 # Convert the finan_respons column to categorical
-parties["finan_respons"] = ocs.categorical_series(var_series = parties["finan_respons"], var_name = "finan_respons", cb_dict = cb)
+parties["finan_respons"] = oct.categorical_series(var_series = parties["finan_respons"], var_name = "finan_respons", cb_dict = cb)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1973,7 +1973,7 @@ parties["sp_info_1"] = parties["sp_info_1"].map(cb["sp_info_1"]["recode"]).filln
 parties.loc[parties["sp_info_1"] == 999, "sp_info_1"] = np.nan
 
 # Convert the sp_info_1 column to categorical
-parties["sp_info_1"] = ocs.categorical_series(var_series = parties["sp_info_1"], var_name = "sp_info_1", cb_dict = cb)
+parties["sp_info_1"] = oct.categorical_series(var_series = parties["sp_info_1"], var_name = "sp_info_1", cb_dict = cb)
 
 
 ### Party Special Information 2 ----
@@ -1986,7 +1986,7 @@ parties["sp_info_2"] = parties["sp_info_2"].map(cb["sp_info_2"]["recode"]).filln
 parties.loc[parties["sp_info_2"] == 999, "sp_info_2"] = np.nan
 
 # Convert the sp_info_2 column to categorical
-parties["sp_info_2"] = ocs.categorical_series(var_series = parties["sp_info_2"], var_name = "sp_info_2", cb_dict = cb)
+parties["sp_info_2"] = oct.categorical_series(var_series = parties["sp_info_2"], var_name = "sp_info_2", cb_dict = cb)
 
 
 ### Party Special Information 3 ----
@@ -1999,7 +1999,7 @@ parties["sp_info_3"] = parties["sp_info_3"].map(cb["sp_info_3"]["recode"]).filln
 parties.loc[parties["sp_info_3"] == 999, "sp_info_3"] = np.nan
 
 # Convert the sp_info_3 column to categorical
-parties["sp_info_3"] = ocs.categorical_series(var_series = parties["sp_info_3"], var_name = "sp_info_3", cb_dict = cb)
+parties["sp_info_3"] = oct.categorical_series(var_series = parties["sp_info_3"], var_name = "sp_info_3", cb_dict = cb)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2013,7 +2013,7 @@ parties["oaf_viol_code"] = parties["oaf_viol_code"].map(cb["oaf_viol_code"]["rec
 parties.loc[parties["oaf_viol_code"] == 999, "oaf_viol_code"] = np.nan
 
 # Convert the oaf_viol_code column to categorical
-parties["oaf_viol_code"] = ocs.categorical_series(var_series = parties["oaf_viol_code"], var_name = "oaf_viol_code", cb_dict = cb)
+parties["oaf_viol_code"] = oct.categorical_series(var_series = parties["oaf_viol_code"], var_name = "oaf_viol_code", cb_dict = cb)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2027,7 +2027,7 @@ parties["oaf_viol_cat"] = parties["oaf_viol_cat"].map(cb["oaf_viol_cat"]["recode
 parties.loc[parties["oaf_viol_cat"] == 999, "oaf_viol_cat"] = np.nan
 
 # Convert the oaf_viol_cat column to categorical
-parties["oaf_viol_cat"] = ocs.categorical_series(var_series = parties["oaf_viol_cat"], var_name = "oaf_viol_cat", cb_dict = cb)
+parties["oaf_viol_cat"] = oct.categorical_series(var_series = parties["oaf_viol_cat"], var_name = "oaf_viol_cat", cb_dict = cb)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2046,7 +2046,7 @@ parties["oaf_1"] = parties["oaf_1"].map(cb["oaf_1"]["recode"]).fillna(999).astyp
 parties.loc[parties["oaf_1"] == 999, "oaf_1"] = np.nan
 
 # Convert the oaf_1 column to categorical
-parties["oaf_1"] = ocs.categorical_series(var_series = parties["oaf_1"], var_name = "oaf_1", cb_dict = cb)
+parties["oaf_1"] = oct.categorical_series(var_series = parties["oaf_1"], var_name = "oaf_1", cb_dict = cb)
 
 
 ### OAF Violation Section 2 ----
@@ -2059,7 +2059,7 @@ parties["oaf_2"] = parties["oaf_2"].map(cb["oaf_2"]["recode"]).fillna(999).astyp
 parties.loc[parties["oaf_2"] == 999, "oaf_2"] = np.nan
 
 # Convert the oaf_2 column to categorical
-parties["oaf_2"] = ocs.categorical_series(var_series = parties["oaf_2"], var_name = "oaf_2", cb_dict = cb)
+parties["oaf_2"] = oct.categorical_series(var_series = parties["oaf_2"], var_name = "oaf_2", cb_dict = cb)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2073,7 +2073,7 @@ parties["move_pre_acc"] = parties["move_pre_acc"].map(cb["move_pre_acc"]["recode
 parties.loc[parties["move_pre_acc"] == 999, "move_pre_acc"] = np.nan
 
 # Convert the move_pre_acc column to categorical
-parties["move_pre_acc"] = ocs.categorical_series(var_series = parties["move_pre_acc"], var_name = "move_pre_acc", cb_dict = cb)
+parties["move_pre_acc"] = oct.categorical_series(var_series = parties["move_pre_acc"], var_name = "move_pre_acc", cb_dict = cb)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2111,7 +2111,7 @@ parties["vehicle_year_group"] = pd.cut(
 )
 
 # Relocate the vehicle_year_group column after the vehicle_year column in the data frame
-ocs.relocate_column(df = parties, col_name = "vehicle_year_group", ref_col_name = "vehicle_year", position = "after")
+oct.relocate_column(df = parties, col_name = "vehicle_year_group", ref_col_name = "vehicle_year", position = "after")
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2127,7 +2127,7 @@ parties["stwd_vehicle_type"] = (
 parties.loc[parties["stwd_vehicle_type"] == 999, "stwd_vehicle_type"] = np.nan
 
 # Convert the stwd_vehicle_type column to categorical
-parties["stwd_vehicle_type"] = ocs.categorical_series(var_series = parties["stwd_vehicle_type"], var_name = "stwd_vehicle_type", cb_dict = cb)
+parties["stwd_vehicle_type"] = oct.categorical_series(var_series = parties["stwd_vehicle_type"], var_name = "stwd_vehicle_type", cb_dict = cb)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2143,7 +2143,7 @@ parties["chp_veh_type_towing"] = (
 parties.loc[parties["chp_veh_type_towing"] == 999, "chp_veh_type_towing"] = np.nan
 
 # Convert the chp_veh_type_towing column to categorical
-parties["chp_veh_type_towing"] = ocs.categorical_series(var_series = parties["chp_veh_type_towing"], var_name = "chp_veh_type_towing", cb_dict = cb)
+parties["chp_veh_type_towing"] = oct.categorical_series(var_series = parties["chp_veh_type_towing"], var_name = "chp_veh_type_towing", cb_dict = cb)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2159,7 +2159,7 @@ parties["chp_veh_type_towed"] = (
 parties.loc[parties["chp_veh_type_towed"] == 999, "chp_veh_type_towed"] = np.nan
 
 # Convert the chp_veh_type_towed column to categorical
-parties["chp_veh_type_towed"] = ocs.categorical_series(var_series = parties["chp_veh_type_towed"], var_name = "chp_veh_type_towed", cb_dict = cb)
+parties["chp_veh_type_towed"] = oct.categorical_series(var_series = parties["chp_veh_type_towed"], var_name = "chp_veh_type_towed", cb_dict = cb)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2180,7 +2180,7 @@ parties["special_info_f"] = (
 parties.loc[parties["special_info_f"] == 999, "special_info_f"] = np.nan
 
 # Convert the special_info_f column to categorical
-parties["special_info_f"] = ocs.categorical_series(var_series = parties["special_info_f"], var_name = "special_info_f", cb_dict = cb)
+parties["special_info_f"] = oct.categorical_series(var_series = parties["special_info_f"], var_name = "special_info_f", cb_dict = cb)
 
 
 ### Special Info G ----
@@ -2195,7 +2195,7 @@ parties["special_info_g"] = (
 parties.loc[parties["special_info_g"] == 999, "special_info_g"] = np.nan
 
 # Convert the special_info_g column to categorical
-parties["special_info_g"] = ocs.categorical_series(var_series = parties["special_info_g"], var_name = "special_info_g", cb_dict = cb)
+parties["special_info_g"] = oct.categorical_series(var_series = parties["special_info_g"], var_name = "special_info_g", cb_dict = cb)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2215,7 +2215,7 @@ victims["victim_role"] = victims["victim_role"].fillna(999).astype(int)
 victims.loc[victims["victim_role"] == 999, "victim_role"] = np.nan
 
 # Convert the victim_role column to categorical
-victims["victim_role"] = ocs.categorical_series(var_series = victims["victim_role"], var_name = "victim_role", cb_dict = cb)
+victims["victim_role"] = oct.categorical_series(var_series = victims["victim_role"], var_name = "victim_role", cb_dict = cb)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2229,7 +2229,7 @@ victims["victim_sex"] = victims["victim_sex"].map(cb["victim_sex"]["recode"]).fi
 victims.loc[victims["victim_sex"] == 999, "victim_sex"] = np.nan
 
 # Convert the victim_sex column to categorical
-victims["victim_sex"] = ocs.categorical_series(var_series = victims["victim_sex"], var_name = "victim_sex", cb_dict = cb)
+victims["victim_sex"] = oct.categorical_series(var_series = victims["victim_sex"], var_name = "victim_sex", cb_dict = cb)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2254,7 +2254,7 @@ victims["victim_age_group"] = pd.cut(
 )
 
 # Relocate the victim_age_group column after the victim_age column in the data frame
-ocs.relocate_column(df = victims, col_name = "victim_age_group", ref_col_name = "victim_age", position = "after")
+oct.relocate_column(df = victims, col_name = "victim_age_group", ref_col_name = "victim_age", position = "after")
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2275,13 +2275,13 @@ victims["victim_degree_of_injury"] = victims["victim_degree_of_injury"].map(cb["
 victims.loc[victims["victim_degree_of_injury"] == 999, "victim_degree_of_injury"] = np.nan
 
 # Convert the victim_degree_of_injury column to categorical
-victims["victim_degree_of_injury"] = ocs.categorical_series(var_series = victims["victim_degree_of_injury"], var_name = "victim_degree_of_injury", cb_dict = cb)
+victims["victim_degree_of_injury"] = oct.categorical_series(var_series = victims["victim_degree_of_injury"], var_name = "victim_degree_of_injury", cb_dict = cb)
 
 # Convert the victim_degree_of_injury_bin column to categorical
-victims["victim_degree_of_injury_bin"] = ocs.categorical_series(var_series = victims["victim_degree_of_injury_bin"], var_name = "victim_degree_of_injury_bin", cb_dict = cb)
+victims["victim_degree_of_injury_bin"] = oct.categorical_series(var_series = victims["victim_degree_of_injury_bin"], var_name = "victim_degree_of_injury_bin", cb_dict = cb)
 
 # Relocate the victim_degree_of_injury_bin column after the victim_degree_of_injury column
-ocs.relocate_column(df = victims, col_name = "victim_degree_of_injury_bin", ref_col_name = "victim_degree_of_injury", position = "after")
+oct.relocate_column(df = victims, col_name = "victim_degree_of_injury_bin", ref_col_name = "victim_degree_of_injury", position = "after")
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2295,7 +2295,7 @@ victims["victim_seating_position"] = victims["victim_seating_position"].map(cb["
 victims.loc[victims["victim_seating_position"] == 999, "victim_seating_position"] = np.nan
 
 # Convert the victim_seating_position column to categorical
-victims["victim_seating_position"] = ocs.categorical_series(var_series = victims["victim_seating_position"], var_name = "victim_seating_position", cb_dict = cb)
+victims["victim_seating_position"] = oct.categorical_series(var_series = victims["victim_seating_position"], var_name = "victim_seating_position", cb_dict = cb)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2314,7 +2314,7 @@ victims["victim_safety_eq_1"] = victims["victim_safety_eq_1"].map(cb["victim_saf
 victims.loc[victims["victim_safety_eq_1"] == 999, "victim_safety_eq_1"] = np.nan
 
 # Convert the victim_safety_eq_1 column to categorical
-victims["victim_safety_eq_1"] = ocs.categorical_series(var_series = victims["victim_safety_eq_1"], var_name = "victim_safety_eq_1", cb_dict = cb)
+victims["victim_safety_eq_1"] = oct.categorical_series(var_series = victims["victim_safety_eq_1"], var_name = "victim_safety_eq_1", cb_dict = cb)
 
 
 ### Victim Safety Equipment 2 ----
@@ -2327,7 +2327,7 @@ victims["victim_safety_eq_2"] = victims["victim_safety_eq_2"].map(cb["victim_saf
 victims.loc[victims["victim_safety_eq_2"] == 999, "victim_safety_eq_2"] = np.nan
 
 # Convert the victim_safety_eq_2 column to categorical
-victims["victim_safety_eq_2"] = ocs.categorical_series(var_series = victims["victim_safety_eq_2"], var_name = "victim_safety_eq_2", cb_dict = cb)
+victims["victim_safety_eq_2"] = oct.categorical_series(var_series = victims["victim_safety_eq_2"], var_name = "victim_safety_eq_2", cb_dict = cb)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2341,7 +2341,7 @@ victims["victim_ejected"] = victims["victim_ejected"].map(cb["victim_ejected"]["
 victims.loc[victims["victim_ejected"] == 999, "victim_ejected"] = np.nan
 
 # Convert the victim_ejected column to categorical
-victims["victim_ejected"] = ocs.categorical_series(var_series = victims["victim_ejected"], var_name = "victim_ejected", cb_dict = cb)
+victims["victim_ejected"] = oct.categorical_series(var_series = victims["victim_ejected"], var_name = "victim_ejected", cb_dict = cb)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # 11. Add Column Attributes ----
@@ -2349,13 +2349,13 @@ victims["victim_ejected"] = ocs.categorical_series(var_series = victims["victim_
 print("\n11. Add Column Attributes")
 
 # Add column attributes to the crashes data frame
-crashes = ocs.add_attributes(df = crashes, cb = cb)
+crashes = oct.add_attributes(df = crashes, cb = cb)
 
 # Add column attributes to the parties data frame
-parties = ocs.add_attributes(df = parties, cb = cb)
+parties = oct.add_attributes(df = parties, cb = cb)
 
 # Add column attributes to the victims data frame
-victims = ocs.add_attributes(df = victims, cb = cb)
+victims = oct.add_attributes(df = victims, cb = cb)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2548,7 +2548,7 @@ cb_keys = [key for key in cb.keys() if key in collisions.columns]
 collisions = collisions[cb_keys]
 
 # Add the column attributes to the collisions data frame
-collisions = ocs.add_attributes(df = collisions, cb = cb)
+collisions = oct.add_attributes(df = collisions, cb = cb)
 
 # We can now remove all the temporary datasets (except of the aggregated roads data frame)
 del (crashes_parties, crashes_parties_victims, crashes_parties_victims_cities, roads_aggr, cb_keys)
@@ -2598,7 +2598,7 @@ cb_keys = [key for key in cb.keys() if key in parties.columns]
 parties = parties[cb_keys]
 
 # Add the column attributes to the parties data frame
-parties = ocs.add_attributes(df = parties, cb = cb)
+parties = oct.add_attributes(df = parties, cb = cb)
 
 # Add date and time variables from the crashes data frame to the victims data frame on the CID column
 victims = victims.merge(crashes[datetime_cols], on = "cid", how = "left", suffixes = (".victims", ".crashes"))
@@ -2610,7 +2610,7 @@ cb_keys = [key for key in cb.keys() if key in victims.columns]
 victims = victims[cb_keys]
 
 # Add the column attributes to the victims data frame
-victims = ocs.add_attributes(df = victims, cb = cb)
+victims = oct.add_attributes(df = victims, cb = cb)
 
 del datetime_cols, cb_keys
 
@@ -2654,15 +2654,15 @@ collisions["combined_ind"] = (
 collisions.loc[collisions["combined_ind"] == 999, "combined_ind"] = np.nan
 
 # Convert the combined_ind column to categorical
-collisions["combined_ind"] = ocs.categorical_series(
+collisions["combined_ind"] = oct.categorical_series(
     var_series = collisions["combined_ind"], var_name = "combined_ind", cb_dict = cb
 )
 
 # Relocate the collisions combined_ind column after the victim_tag column
-ocs.relocate_column(df = collisions, col_name = "combined_ind", ref_col_name = "victim_tag", position = "after")
+oct.relocate_column(df = collisions, col_name = "combined_ind", ref_col_name = "victim_tag", position = "after")
 
 # Add the column attributes to the collisions data frame
-collisions = ocs.add_attributes(df = collisions, cb = cb)
+collisions = oct.add_attributes(df = collisions, cb = cb)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2756,13 +2756,13 @@ collisions.attrs = {
 print("- Define the Column Attributes")
 
 # Add column attributes to the crashes data frame
-crashes = ocs.add_attributes(df = crashes, cb = cb)
+crashes = oct.add_attributes(df = crashes, cb = cb)
 # Add column attributes to the parties data frame
-parties = ocs.add_attributes(df = parties, cb = cb)
+parties = oct.add_attributes(df = parties, cb = cb)
 # Add column attributes to the victims data frame
-victims = ocs.add_attributes(df = victims, cb = cb)
+victims = oct.add_attributes(df = victims, cb = cb)
 # Add column attributes to the collisions data frame
-collisions = ocs.add_attributes(df = collisions, cb = cb)
+collisions = oct.add_attributes(df = collisions, cb = cb)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2844,9 +2844,9 @@ date_field = datetime.datetime.now().strftime("%Y-%m-%d")
 # Loop through the years in the project metadata and calculate counts for each year
 for year in prj_meta.get("years", []):
     #print(f"Processing year: {year}")
-    crashes_year = ocs.counts_by_year(crashes, year)
-    parties_year = ocs.counts_by_year(parties, year)
-    victims_year = ocs.counts_by_year(victims, year)
+    crashes_year = oct.counts_by_year(crashes, year)
+    parties_year = oct.counts_by_year(parties, year)
+    victims_year = oct.counts_by_year(victims, year)
     # Update the project metadata with the counts for the year as the geocoded data
     prj_meta["tims"][str(year)]["geocoded"]["crashes"] = crashes_year
     prj_meta["tims"][str(year)]["geocoded"]["parties"] = parties_year
@@ -2866,7 +2866,7 @@ with open(metadata_path, "w", encoding = "utf-8") as f:
     json.dump(prj_meta["tims"], f, indent = 4)
 
 # Update the metadata info
-prj_meta = ocs.project_metadata(silent=False)
+prj_meta = oct.project_metadata(silent=False)
 
 
 # Delete the temporary variables
@@ -2910,11 +2910,11 @@ collisions_agp.spatial.project(3857, transformation_name = None)
 
 # Delete the feature classes in the agp/raw geodatabase if they exist
 for fc in ["crashes", "parties", "victims", "collisions", "collisions1"]:
-    ocs.delete_feature_class(fc, gdb_path = prj_dirs["agp_gdb"], dataset = "raw")
+    oct.delete_feature_class(fc, gdb_path = prj_dirs["agp_gdb"], dataset = "raw")
 
 # Delete the feature classes in the main/raw geodatabase if they exist
 for fc in ["crashes", "parties", "victims", "collisions", "collisions1"]:
-    ocs.delete_feature_class(fc, gdb_path = prj_dirs["gdbmain"], dataset = "raw")
+    oct.delete_feature_class(fc, gdb_path = prj_dirs["gdbmain"], dataset = "raw")
 
 # Define the paths to the raw geodatabases
 gdb_raw = prj_dirs["agp_gdb_raw"]
@@ -2992,7 +2992,7 @@ max_year = max(crashes_agp_counts.keys())
 # Create a dictionary to store the geoprocessing counts
 for year in range(min_year, max_year + 1):
     # Update the TIMS metadata for the geocoded data counts
-    ocs.update_tims_metadata(
+    oct.update_tims_metadata(
         year = year,
         data_type = "geocoded",
         data_counts = [crashes_agp_counts.get(year, 0), parties_agp_counts.get(year, 0), victims_agp_counts.get(year, 0)]
@@ -3027,7 +3027,7 @@ del f
 print("\n15. Save to Disk")
 
 # Save the data to disk
-ocs.save_to_disk(dir_list = prj_dirs, local_vars = locals(), global_vars = globals())
+oct.save_to_disk(dir_list = prj_dirs, local_vars = locals(), global_vars = globals())
 
 # Save the latex variables to a JSON file
 latex_vars_path = os.path.join(prj_dirs["metadata"], "latex_vars.json")

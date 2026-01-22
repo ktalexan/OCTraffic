@@ -27,10 +27,10 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from dotenv import load_dotenv
 
-from octraffic import OCTraffic
+from octraffic import OCT
 
 # Initialize the OCTraffic object
-ocs = OCTraffic(part = 4, version = 2025.3)
+oct = OCT(part = 4, version = 2025.3)
 
 # Set default fonts for matplotlib and seaborn
 plt.rcParams["font.family"] = "serif"
@@ -49,11 +49,11 @@ print("\n1.2. Project and Workspace Variables")
 
 # Create a dictionary with the project metadata
 print("\nCreating project metadata")
-prj_meta = ocs.prj_meta
+prj_meta = oct.prj_meta
 
 # Create a dictionary with the project directories
 print("\nCreating project directories")
-prj_dirs = ocs.prj_dirs
+prj_dirs = oct.prj_dirs
 
 # Set the current working directory to the project root
 os.chdir(prj_dirs["root"])
@@ -135,11 +135,11 @@ print("\n1.4. Loading Codebook from Disk")
 
 # Load the codebook from the project codebook directory
 print("- Loading the codebook from the project codebook directory")
-cb = ocs.cb
+cb = oct.cb
 
 # create a data frame from the codebook
 print("- Creating a data frame from the codebook")
-df_cb = ocs.df_cb
+df_cb = oct.df_cb
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -159,7 +159,7 @@ print("\n2.1. Table 1 - Collision Severity Stats")
 print("\n- Metadata")
 
 # Add graphics metadata for Table 1
-graphics_list = ocs.graphics_entry(
+graphics_list = oct.graphics_entry(
     gr_type = 1,
     gr_id = 1,
     gr_attr = {
@@ -354,12 +354,12 @@ print("\n- Conduct Non-Parametric Rank Tests")
 
 # Perform the chi-squared and Kruskal-Wallis tests for the crashes, parties, and victims by severity variable. Specifically, the chi-squared goodness of fit test for the crashes variable counts, the chi-squared test for the parties and victims variable counts (by party_count and victim_count respectively), and the Kruskal-Wallis test for the parties and victims variable counts (by party_count and victim_count respectively).
 # Perform the chi-squared test for the crashes, parties and victims variables
-crashes_chi2 = ocs.chi2_gof_test(df1, "severity")
-parties_chi2 = ocs.chi2_test(df2, "party_count", "severity")
-victims_chi2 = ocs.chi2_test(df3, "victim_count", "severity")
+crashes_chi2 = oct.chi2_gof_test(df1, "severity")
+parties_chi2 = oct.chi2_test(df2, "party_count", "severity")
+victims_chi2 = oct.chi2_test(df3, "victim_count", "severity")
 # Perform the Kruskal-Wallis test for the parties and victims variable counts
-parties_kw = ocs.kruskal_test(df2, "party_count", "severity")
-victims_kw = ocs.kruskal_test(df3, "victim_count", "severity")
+parties_kw = oct.kruskal_test(df2, "party_count", "severity")
+victims_kw = oct.kruskal_test(df3, "victim_count", "severity")
 
 tbl1_tests = pd.DataFrame(
     {
@@ -588,7 +588,7 @@ print("\n2.2. Table 2 - Ranked Collision Severity Stats")
 print("\n- Metadata")
 
 # Add graphics metadata for Table 2
-graphics_list = ocs.graphics_entry(
+graphics_list = oct.graphics_entry(
     gr_type = 1,
     gr_id = 2,
     gr_attr = {
@@ -690,7 +690,7 @@ for i in range(len(tbl2_data)):
             tbl2_data.loc[i, "Type"] = ""
 
 # Relocate the Fatalities, Injuries, and Type columns after the Level column
-ocs.relocate_column(df = tbl2_data, col_name = ["Fatalities", "Injuries", "Type"], ref_col_name = "Level", position = "after")
+oct.relocate_column(df = tbl2_data, col_name = ["Fatalities", "Injuries", "Type"], ref_col_name = "Level", position = "after")
 
 print(tbl2_data)
 
@@ -700,9 +700,9 @@ print(tbl2_data)
 print("\n- Conduct Non-Parametric Rank Tests")
 
 # Perform the chi-square tests for the crashes, parties, and victims by severity
-crashes_chi2 = ocs.chi2_gof_test(tbl2_raw[tbl2_raw["Crashes"] == 1], "Severity")
-parties_chi2 = ocs.chi2_gof_test(tbl2_raw[tbl2_raw["Parties"] == 1], "Severity")
-victims_chi2 = ocs.chi2_gof_test(tbl2_raw[tbl2_raw["Victims"] == 1], "Severity")
+crashes_chi2 = oct.chi2_gof_test(tbl2_raw[tbl2_raw["Crashes"] == 1], "Severity")
+parties_chi2 = oct.chi2_gof_test(tbl2_raw[tbl2_raw["Parties"] == 1], "Severity")
+victims_chi2 = oct.chi2_gof_test(tbl2_raw[tbl2_raw["Victims"] == 1], "Severity")
 
 # Create a DataFrame for the chi square test results
 tbl2_tests = pd.DataFrame(
@@ -863,7 +863,7 @@ print("\n2.3. Figure 1 - Histogram - Victim Count")
 print("\n- Metadata")
 
 # Add graphics metadata for Figure 1
-graphics_list = ocs.graphics_entry(
+graphics_list = oct.graphics_entry(
     gr_type = 2,
     gr_id = 1,
     gr_attr = {
@@ -888,7 +888,7 @@ print("\n- Create the Histogram Plot")
 
 # Run the function and get the figure and axes objects
 fig1, ax1 = plt.subplots(figsize = (12, 8))
-fig1, ax1 = ocs.plot_victim_count_histogram(crashes, fig = fig1, ax = ax1)
+fig1, ax1 = oct.plot_victim_count_histogram(crashes, fig = fig1, ax = ax1)
 fig1.show()
 plt.close(fig1)
 
@@ -899,7 +899,7 @@ print("\n- Save the Figure")
 
 # Save the figure to a file
 fig1, ax1 = plt.subplots(figsize = (12, 8))
-fig1, ax1 = ocs.plot_victim_count_histogram(crashes, fig = fig1, ax = ax1)
+fig1, ax1 = oct.plot_victim_count_histogram(crashes, fig = fig1, ax = ax1)
 fig1.savefig(
     fname = graphics_list["graphics"]["fig1"]["path"],
     transparent = True,
@@ -925,7 +925,7 @@ print("\n2.4. Figure 2 - Bar Chart-Type of Collision")
 print("\n- Metadata")
 
 # Add graphics metadata for Figure 2
-graphics_list = ocs.graphics_entry(
+graphics_list = oct.graphics_entry(
     gr_type = 2,
     gr_id = 2,
     gr_attr = {
@@ -950,7 +950,7 @@ print("\n- Create the Bar Chart Plot")
 
 # Run the function to create the bar chart
 fig2, ax2 = plt.subplots(figsize = (12, 8))
-fig2, ax2 = ocs.plot_collision_type_bar(crashes, fig = fig2, ax = ax2)
+fig2, ax2 = oct.plot_collision_type_bar(crashes, fig = fig2, ax = ax2)
 fig2.show()
 plt.close(fig2)
 
@@ -961,7 +961,7 @@ print("\n- Save the Figure")
 
 # Save the figure to a file
 fig2, ax2 = plt.subplots(figsize = (12, 8))
-fig2, ax2 = ocs.plot_collision_type_bar(crashes, fig = fig2, ax = ax2)
+fig2, ax2 = oct.plot_collision_type_bar(crashes, fig = fig2, ax = ax2)
 fig2.savefig(
     fname = graphics_list["graphics"]["fig2"]["path"],
     transparent = True,
@@ -988,7 +988,7 @@ print("\n2.5. Figure 3 - Bar Chart-Fatal Accidents")
 print("\n- Metadata")
 
 # Add graphics metadata for Figure 3
-graphics_list = ocs.graphics_entry(
+graphics_list = oct.graphics_entry(
     gr_type = 2,
     gr_id = 3,
     gr_attr = {
@@ -1013,7 +1013,7 @@ print("\n- Create the Cumulative Bar Chart Plot")
 
 # Call the function to plot
 fig3, ax3 = plt.subplots(figsize = (12, 8))
-fig3, ax3 = ocs.plot_fatalities_by_type_and_year(ts_year["crashes"], fig = fig3, ax = ax3)
+fig3, ax3 = oct.plot_fatalities_by_type_and_year(ts_year["crashes"], fig = fig3, ax = ax3)
 fig3.show()
 plt.close(fig3)
 
@@ -1024,7 +1024,7 @@ print("\n- Save the Figure")
 
 # Save the figure to a file
 fig3, ax3 = plt.subplots(figsize = (12, 8))
-fig3, ax3 = ocs.plot_fatalities_by_type_and_year(ts_year["crashes"], fig = fig3, ax = ax3)
+fig3, ax3 = oct.plot_fatalities_by_type_and_year(ts_year["crashes"], fig = fig3, ax = ax3)
 fig3.savefig(
     fname = graphics_list["graphics"]["fig3"]["path"],
     transparent = True,
@@ -1051,7 +1051,7 @@ print("\n2.6. Table 4 - Summary Monthly Collision Stats")
 print("\n- Metadata")
 
 # Add graphics metadata for Table 3
-graphics_list = ocs.graphics_entry(
+graphics_list = oct.graphics_entry(
     gr_type = 1,
     gr_id = 3,
     gr_attr = {
@@ -1075,7 +1075,7 @@ graphics_list = ocs.graphics_entry(
 print("\n- Construct Summary Table")
 
 # Applying the function to the collisions ts_month DataFrame (will be used in the next section)
-stats_month = ocs.compute_monthly_stats(ts_month["collisions"])
+stats_month = oct.compute_monthly_stats(ts_month["collisions"])
 
 # Dictionary for column labels and orders
 tbl3_labels = {
@@ -1127,8 +1127,8 @@ tbl3_data.loc[:, "label"] = tbl3_data["var.name"].map(lambda x: tbl3_labels[x]["
 tbl3_data.loc[:, "order"] = tbl3_data["var.name"].map(lambda x: tbl3_labels[x]["var_order"])
 
 # Relocate the label and order columns
-ocs.relocate_column(df = tbl3_data, col_name = "order", ref_col_name = "stat.type", position = "after")
-ocs.relocate_column(df = tbl3_data, col_name = "label", ref_col_name = "order", position = "after")
+oct.relocate_column(df = tbl3_data, col_name = "order", ref_col_name = "stat.type", position = "after")
+oct.relocate_column(df = tbl3_data, col_name = "label", ref_col_name = "order", position = "after")
 
 # Remove the "var.name" column
 tbl3_data = tbl3_data.drop(columns = ["var.name"])
@@ -1293,7 +1293,7 @@ print("\n2.7. Table 4 - Average and Median Monthly Collision Stats")
 print("\n- Metadata")
 
 # Add graphics metadata for Table 4
-graphics_list = ocs.graphics_entry(
+graphics_list = oct.graphics_entry(
     gr_type = 1,
     gr_id = 4,
     gr_attr = {
@@ -1363,8 +1363,8 @@ tbl4_data.loc[:, "label"] = tbl4_data["var.name"].map(lambda x: tbl4_labels[x]["
 tbl4_data.loc[:, "order"] = tbl4_data["var.name"].map(lambda x: tbl4_labels[x]["var_order"])
 
 # Relocate the label and order columns
-ocs.relocate_column(df = tbl4_data, col_name = "order", ref_col_name = "stat.type", position = "after")
-ocs.relocate_column(df = tbl4_data, col_name = "label", ref_col_name = "order", position = "after")
+oct.relocate_column(df = tbl4_data, col_name = "order", ref_col_name = "stat.type", position = "after")
+oct.relocate_column(df = tbl4_data, col_name = "label", ref_col_name = "order", position = "after")
 
 # Remove the "var.name" column
 tbl4_data = tbl4_data.drop(columns = ["var.name"])
@@ -1516,7 +1516,7 @@ print("\n2.8. Table 5 - Collision Incidents by Year")
 print("\n- Metadata")
 
 # Add graphics metadata for Table 5
-graphics_list = ocs.graphics_entry(
+graphics_list = oct.graphics_entry(
     gr_type = 1,
     gr_id = 5,
     gr_attr = {
@@ -1689,7 +1689,7 @@ with open(tbl5_dataset_path, "wb") as f:
 print("\n3. Save the Time Series Data")
 
 # Save the data to disk
-ocs.save_to_disk(
+oct.save_to_disk(
     dir_list = prj_dirs,
     local_vars = locals(),
     global_vars = globals()

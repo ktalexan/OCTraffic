@@ -24,10 +24,10 @@ import os, datetime
 import json
 import pandas as pd
 from dotenv import load_dotenv
-from octraffic import OCTraffic
+from octraffic import OCT
 
-# Initialize the OCTraffic class
-ocs = OCTraffic(part = 1, version = 2025.3)
+# Initialize the OCT class
+oct = OCT(part = 1, version = 2025.3)
 
 # Load environment variables from .env file
 load_dotenv()
@@ -40,17 +40,15 @@ print("\n1.2. Project and Workspace Variables")
 
 # Create a dictionary with the project metadata
 print("\nCreating project metadata")
-prj_meta = ocs.prj_meta
+prj_meta = oct.prj_meta
 
 # Create a dictionary with the project directories
 print("\nCreating project directories")
-prj_dirs = ocs.prj_dirs
-
+prj_dirs = oct.prj_dirs
 # Import the codeboom
 print("\nImporting codeboom")
-cb = ocs.cb
-df_cb = ocs.df_cb
-
+cb = oct.cb
+df_cb = oct.df_cb
 # Set the current working directory to the project root
 os.chdir(prj_dirs["root"])
 # Get the new current working directory
@@ -128,7 +126,7 @@ for year in list(prj_meta["years"]):
             data_dict.loc[i, "count_victims"] = count_victims
 
     # Update the tims metadata
-    ocs.update_tims_metadata(year, "reported", data_counts = [count_crashes, count_parties, count_victims])
+    oct.update_tims_metadata(year, "reported", data_counts = [count_crashes, count_parties, count_victims])
 
     # Increment the index
     i += 1
