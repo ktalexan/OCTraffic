@@ -33,7 +33,7 @@ from arcpy import metadata as md
 from octraffic import OCT
 
 # Initialize the OCTraffic object
-oct = OCT(part = 7, version = 2025.3)
+octr = OCT(part = 7, version = 2025.3)
 
 # Load environment variables from .env file
 load_dotenv()
@@ -51,11 +51,11 @@ print("\n- Project and Geodatabase Paths")
 
 # Create a dictionary with the project metadata
 print("\nCreating project metadata")
-prj_meta = oct.prj_meta
+prj_meta = octr.prj_meta
 
 # Create a dictionary with the project directories
 print("\nCreating project directories")
-prj_dirs = oct.prj_dirs
+prj_dirs = octr.prj_dirs
 
 # Set the current working directory to the project root
 os.chdir(prj_dirs["root"])
@@ -75,7 +75,7 @@ print("\n- ArcGIS Pro Paths")
 aprx_path = prj_dirs.get("agp_aprx", "")
 gdb_path = prj_dirs.get("agp_gdb", "")
 # ArcGIS Pro Project object
-aprx, workspace = oct.load_aprx(aprx_path = aprx_path, gdb_path = gdb_path, add_to_map = False)
+aprx, workspace = octr.load_aprx(aprx_path = aprx_path, gdb_path = gdb_path, add_to_map = False)
 # Close all map views
 aprx.closeViews()
 
@@ -109,11 +109,11 @@ print("\n- Codebook")
 
 # Load the codebook from the project codebook directory
 print("- Loading the codebook from the project codebook directory")
-cb = oct.cb
+cb = octr.cb
 
 # create a data frame from the codebook
 print("- Creating a data frame from the codebook")
-df_cb = oct.df_cb
+df_cb = octr.df_cb
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -866,7 +866,7 @@ map_collisions_lyr_collisions.visible = False
 print("- Enable Time Settings")
 
 # Setup and enable time settings for the collisions map layers
-oct.set_layer_time(time_settings = time_settings, layer = map_collisions_lyr_collisions)
+octr.set_layer_time(time_settings = time_settings, layer = map_collisions_lyr_collisions)
 
 
 ### Layer Symbology ----
@@ -960,11 +960,11 @@ cim_collisions = map_collisions.getDefinition("V3")  # Collisions map CIM
 print("- Export Map and Map Layers")
 
 # Update the collisions map mapx file
-oct.export_cim(aprx = aprx, cim_type = "map", cim_object = map_collisions, cim_name = "collisions")
+octr.export_cim(aprx = aprx, cim_type = "map", cim_object = map_collisions, cim_name = "collisions")
 # Export map layers as CIM JSON `.lyrx` files to the layers folder directory of the project.
 for l in map_collisions.listLayers():
     if not l.isBasemapLayer:
-        oct.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
+        octr.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
 
 
 ### Save Project ----
@@ -1022,7 +1022,7 @@ map_crashes_lyr_crashes.visible = False
 print("- Enable Time Settings")
 
 # Setup and enable time settings for the crashes map layers
-oct.set_layer_time(time_settings = time_settings, layer = map_crashes_lyr_crashes)
+octr.set_layer_time(time_settings = time_settings, layer = map_crashes_lyr_crashes)
 
 
 ### Layer Symbology ----
@@ -1116,12 +1116,12 @@ cim_crashes = map_crashes.getDefinition("V3")
 print("- Export Map and Map Layers")
 
 # Update the crashes map mapx file
-oct.export_cim(aprx = aprx, cim_type = "map", cim_object = map_crashes, cim_name = "crashes")
+octr.export_cim(aprx = aprx, cim_type = "map", cim_object = map_crashes, cim_name = "crashes")
 
 # Export map layers as CIM JSON `.lyrx` files to the layers folder directory of the project.
 for l in map_crashes.listLayers():
     if not l.isBasemapLayer:
-        oct.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
+        octr.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
 
 
 ### Save Project ----
@@ -1179,7 +1179,7 @@ map_parties_lyr_parties.visible = False
 print("- Enable Time Settings")
 
 # Setup and enable time settings for the parties map layers
-oct.set_layer_time(time_settings = time_settings, layer = map_parties_lyr_parties)
+octr.set_layer_time(time_settings = time_settings, layer = map_parties_lyr_parties)
 
 
 ### Layer Symbology ----
@@ -1273,12 +1273,12 @@ cim_parties = map_parties.getDefinition("V3")
 print("- Export Map and Map Layers")
 
 # Update the parties map mapx file
-oct.export_cim(aprx = aprx, cim_type = "map", cim_object = map_parties, cim_name = "parties")
+octr.export_cim(aprx = aprx, cim_type = "map", cim_object = map_parties, cim_name = "parties")
 
 # Export map layers as CIM JSON `.lyrx` files to the layers folder directory of the project.
 for l in map_parties.listLayers():
     if not l.isBasemapLayer:
-        oct.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
+        octr.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
 
 
 ### Save Project ----
@@ -1337,7 +1337,7 @@ map_victims_lyr_victims.visible = False
 print("- Enable Time Settings")
 
 # Setup and enable time settings for the victims map layers
-oct.set_layer_time(time_settings = time_settings, layer = map_victims_lyr_victims)
+octr.set_layer_time(time_settings = time_settings, layer = map_victims_lyr_victims)
 
 
 ### Layer Symbology ----
@@ -1421,12 +1421,12 @@ cim_victims = map_victims.getDefinition("V3")
 print("- Export Map and Map Layers")
 
 # Update the victims map mapx file
-oct.export_cim(aprx = aprx, cim_type = "map", cim_object = map_victims, cim_name = "victims")
+octr.export_cim(aprx = aprx, cim_type = "map", cim_object = map_victims, cim_name = "victims")
 
 # Export map layers as CIM JSON `.lyrx` files to the layers folder directory of the project.
 for l in map_victims.listLayers():
     if not l.isBasemapLayer:
-        oct.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
+        octr.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
 
 
 ### Save Project ----
@@ -1556,12 +1556,12 @@ cim_injuries = map_injuries.getDefinition("V3")
 print("- Export Map and Map Layers")
 
 # Update the victims map mapx file
-oct.export_cim(aprx = aprx, cim_type = "map", cim_object = map_injuries, cim_name = "injuries")
+octr.export_cim(aprx = aprx, cim_type = "map", cim_object = map_injuries, cim_name = "injuries")
 
 # Export map layers as CIM JSON `.lyrx` files to the layers folder directory of the project.
 for l in map_injuries.listLayers():
     if not l.isBasemapLayer:
-        oct.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
+        octr.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
 
 
 ### Save Project ----
@@ -1701,12 +1701,12 @@ cim_fatalities = map_fatalities.getDefinition("V3")
 print("- Export Map and Map Layers")
 
 # Update the fatalities map mapx file
-oct.export_cim(aprx = aprx, cim_type = "map", cim_object = map_fatalities, cim_name = "fatalities")
+octr.export_cim(aprx = aprx, cim_type = "map", cim_object = map_fatalities, cim_name = "fatalities")
 
 # Export map layers as CIM JSON `.lyrx` files to the layers folder directory of the project.
 for l in map_fatalities.listLayers():
     if not l.isBasemapLayer:
-        oct.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
+        octr.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
 
 
 ### Save Project ----
@@ -1847,12 +1847,12 @@ cim_fhs_100m1km = map_fhs_100m1km.getDefinition("V3")
 print("- Export Map and Map Layers")
 
 # Update the victims map mapx file
-oct.export_cim(aprx = aprx, cim_type = "map", cim_object = map_fhs_100m1km, cim_name = "hotspots_100m1km")
+octr.export_cim(aprx = aprx, cim_type = "map", cim_object = map_fhs_100m1km, cim_name = "hotspots_100m1km")
 
 # Export map layers as CIM JSON `.lyrx` files to the layers folder directory of the project.
 for l in map_fhs_100m1km.listLayers():
     if not l.isBasemapLayer:
-        oct.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
+        octr.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
 
 
 ### Save Project ----
@@ -1993,12 +1993,12 @@ cim_fhs_150m2km = map_fhs_150m2km.getDefinition("V3")
 print("- Export Map and Map Layers")
 
 # Update the victims map mapx file
-oct.export_cim(aprx = aprx, cim_type = "map", cim_object = map_fhs_150m2km, cim_name = "hotspots_150m2km")
+octr.export_cim(aprx = aprx, cim_type = "map", cim_object = map_fhs_150m2km, cim_name = "hotspots_150m2km")
 
 # Export map layers as CIM JSON `.lyrx` files to the layers folder directory of the project.
 for l in map_fhs_150m2km.listLayers():
     if not l.isBasemapLayer:
-        oct.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
+        octr.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
 
 
 ### Save Project ----
@@ -2139,12 +2139,12 @@ cim_fhs_100m5km = map_fhs_100m5km.getDefinition("V3")
 print("- Export Map and Map Layers")
 
 # Update the victims map mapx file
-oct.export_cim(aprx = aprx, cim_type = "map", cim_object = map_fhs_100m5km, cim_name = "hotspots_100m5km")
+octr.export_cim(aprx = aprx, cim_type = "map", cim_object = map_fhs_100m5km, cim_name = "hotspots_100m5km")
 
 # Export map layers as CIM JSON `.lyrx` files to the layers folder directory of the project.
 for l in map_fhs_100m5km.listLayers():
     if not l.isBasemapLayer:
-        oct.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
+        octr.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
 
 
 ### Save Project ----
@@ -2288,11 +2288,11 @@ cim_fhs_roads_500ft = map_fhs_roads_500ft.getDefinition("V3")
 print("- Export Map and Map Layers")
 
 # Update the victims map mapx file
-oct.export_cim(aprx = aprx, cim_type = "map", cim_object = map_fhs_roads_500ft, cim_name = "hotspots_roads_500ft")
+octr.export_cim(aprx = aprx, cim_type = "map", cim_object = map_fhs_roads_500ft, cim_name = "hotspots_roads_500ft")
 # Export map layers as CIM JSON `.lyrx` files to the layers folder directory of the project.
 for l in map_fhs_roads_500ft.listLayers():
     if not l.isBasemapLayer:
-        oct.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
+        octr.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
 
 
 ### Save Project ----
@@ -2432,12 +2432,12 @@ cim_ohs_roads_500ft = map_ohs_roads_500ft.getDefinition("V3")
 print("- Export Map and Map Layers")
 
 # Update the optimized hot spots map mapx file
-oct.export_cim(aprx = aprx, cim_type = "map", cim_object = map_ohs_roads_500ft, cim_name = "optimized_hotspots_roads_500ft")
+octr.export_cim(aprx = aprx, cim_type = "map", cim_object = map_ohs_roads_500ft, cim_name = "optimized_hotspots_roads_500ft")
 
 # Export map layers as CIM JSON `.lyrx` files to the layers folder directory of the project.
 for l in map_ohs_roads_500ft.listLayers():
     if not l.isBasemapLayer:
-        oct.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
+        octr.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
 
 
 ### Save Project ----
@@ -2568,12 +2568,12 @@ cim_road_crashes = map_road_crashes.getDefinition("V3")
 print("- Export Map and Map Layers")
 
 # Update the victims map mapx file
-oct.export_cim(aprx = aprx, cim_type = "map", cim_object = map_road_crashes, cim_name = "road_crashes")
+octr.export_cim(aprx = aprx, cim_type = "map", cim_object = map_road_crashes, cim_name = "road_crashes")
 
 # Export map layers as CIM JSON `.lyrx` files to the layers folder directory of the project.
 for l in map_road_crashes.listLayers():
     if not l.isBasemapLayer:
-        oct.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
+        octr.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
 
 
 ### Save Project ----
@@ -2694,12 +2694,12 @@ cim_road_hotspots = map_road_hotspots.getDefinition("V3")
 print("- Export Map and Map Layers")
 
 # Update the victims map mapx file
-oct.export_cim(aprx = aprx, cim_type = "map", cim_object = map_road_hotspots, cim_name = "road_hotspots")
+octr.export_cim(aprx = aprx, cim_type = "map", cim_object = map_road_hotspots, cim_name = "road_hotspots")
 
 # Export map layers as CIM JSON `.lyrx` files to the layers folder directory of the project.
 for l in map_road_hotspots.listLayers():
     if not l.isBasemapLayer:
-        oct.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
+        octr.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
 
 
 ### Save Project ----
@@ -2827,12 +2827,12 @@ cim_road_buffers = map_road_buffers.getDefinition("V3")
 print("- Export Map and Map Layers")
 
 # Update the victims map mapx file
-oct.export_cim(aprx = aprx, cim_type = "map", cim_object = map_road_buffers, cim_name = "road_buffers")
+octr.export_cim(aprx = aprx, cim_type = "map", cim_object = map_road_buffers, cim_name = "road_buffers")
 
 # Export map layers as CIM JSON `.lyrx` files to the layers folder directory of the project.
 for l in map_road_buffers.listLayers():
     if not l.isBasemapLayer:
-        oct.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
+        octr.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
 
 
 ### Save Project ----
@@ -2960,12 +2960,12 @@ cim_road_segments = map_road_segments.getDefinition("V3")
 print("- Export Map and Map Layers")
 
 # Update the victims map mapx file
-oct.export_cim(aprx = aprx, cim_type = "map", cim_object = map_road_segments, cim_name = "road_segments")
+octr.export_cim(aprx = aprx, cim_type = "map", cim_object = map_road_segments, cim_name = "road_segments")
 
 # Export map layers as CIM JSON `.lyrx` files to the layers folder directory of the project.
 for l in map_road_segments.listLayers():
     if not l.isBasemapLayer:
-        oct.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
+        octr.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
 
 
 ### Save Project ----
@@ -3129,12 +3129,12 @@ cim_roads = map_roads.getDefinition("V3")
 print("- Export Map and Map Layers")
 
 # Update the victims map mapx file
-oct.export_cim(aprx = aprx, cim_type = "map", cim_object = map_roads, cim_name = "roads")
+octr.export_cim(aprx = aprx, cim_type = "map", cim_object = map_roads, cim_name = "roads")
 
 # Export map layers as CIM JSON `.lyrx` files to the layers folder directory of the project.
 for l in map_roads.listLayers():
     if not l.isBasemapLayer:
-        oct.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
+        octr.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
 
 
 ### Save Project ----
@@ -3238,12 +3238,12 @@ cim_point_fhs = map_point_fhs.getDefinition("V3")
 print("- Export Map and Map Layers")
 
 # Update the major roads map mapx file
-oct.export_cim(aprx = aprx, cim_type = "map", cim_object = map_point_fhs, cim_name = "point_fhs")
+octr.export_cim(aprx = aprx, cim_type = "map", cim_object = map_point_fhs, cim_name = "point_fhs")
 
 # Export map layers as CIM JSON `.lyrx` files to the layers folder directory of the project.
 for l in map_point_fhs.listLayers():
     if not l.isBasemapLayer:
-        oct.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
+        octr.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
 
 
 ### Save Project ----
@@ -3347,12 +3347,12 @@ cim_point_ohs = map_point_ohs.getDefinition("V3")
 print("- Export Map and Map Layers")
 
 # Update the road buffers map mapx file
-oct.export_cim(aprx = aprx, cim_type = "map", cim_object = map_point_ohs, cim_name = "point_ohs")
+octr.export_cim(aprx = aprx, cim_type = "map", cim_object = map_point_ohs, cim_name = "point_ohs")
 
 # Export map layers as CIM JSON `.lyrx` files to the layers folder directory of the project.
 for l in map_point_ohs.listLayers():
     if not l.isBasemapLayer:
-        oct.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
+        octr.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
 
 
 ### Save Project ----
@@ -3469,12 +3469,12 @@ cim_pop_dens = map_pop_dens.getDefinition("V3")
 print("- Export Map and Map Layers")
 
 # Update the densities map mapx file
-oct.export_cim(aprx = aprx, cim_type = "map", cim_object = map_pop_dens, cim_name = "pop_dens")
+octr.export_cim(aprx = aprx, cim_type = "map", cim_object = map_pop_dens, cim_name = "pop_dens")
 
 # Export map layers as CIM JSON `.lyrx` files to the layers folder directory of the project.
 for l in map_pop_dens.listLayers():
     if not l.isBasemapLayer:
-        oct.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
+        octr.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
 
 
 ### Save Project ----
@@ -3589,12 +3589,12 @@ cim_hou_dens = map_hou_dens.getDefinition("V3")
 print("- Export Map and Map Layers")
 
 # Update the victims map mapx file
-oct.export_cim(aprx = aprx, cim_type = "map", cim_object = map_hou_dens, cim_name = "hou_dens")
+octr.export_cim(aprx = aprx, cim_type = "map", cim_object = map_hou_dens, cim_name = "hou_dens")
 
 # Export map layers as CIM JSON `.lyrx` files to the layers folder directory of the project.
 for l in map_hou_dens.listLayers():
     if not l.isBasemapLayer:
-        oct.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
+        octr.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
 
 
 ### Save Project ----
@@ -3756,12 +3756,12 @@ cim_areas_cities = map_area_cities.getDefinition("V3")
 print("- Export Map and Map Layers")
 
 # Update the Cities map mapx file
-oct.export_cim(aprx = aprx, cim_type = "map", cim_object = map_area_cities, cim_name = "area_cities")
+octr.export_cim(aprx = aprx, cim_type = "map", cim_object = map_area_cities, cim_name = "area_cities")
 
 # Export map layers as CIM JSON `.lyrx` files to the layers folder directory of the project.
 for l in map_area_cities.listLayers():
     if not l.isBasemapLayer:
-        oct.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
+        octr.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
 
 
 ### Save Project ----
@@ -3923,12 +3923,12 @@ cim_area_blocks = map_area_blocks.getDefinition("V3")
 print("- Export Map and Map Layers")
 
 # Update the Blocks map mapx file
-oct.export_cim(aprx = aprx, cim_type = "map", cim_object = map_area_blocks, cim_name = "area_blocks")
+octr.export_cim(aprx = aprx, cim_type = "map", cim_object = map_area_blocks, cim_name = "area_blocks")
 
 # Export map layers as CIM JSON `.lyrx` files to the layers folder directory of the project.
 for l in map_area_blocks.listLayers():
     if not l.isBasemapLayer:
-        oct.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
+        octr.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
 
 
 ### Save Project ----
@@ -4048,12 +4048,12 @@ cim_summaries = map_summaries.getDefinition("V3")
 print("- Export Map and Map Layers")
 
 # Update the summaries map mapx file
-oct.export_cim(aprx = aprx, cim_type = "map", cim_object = map_summaries, cim_name = "summaries")
+octr.export_cim(aprx = aprx, cim_type = "map", cim_object = map_summaries, cim_name = "summaries")
 
 # Export map layers as CIM JSON `.lyrx` files to the layers folder directory of the project.
 for l in map_summaries.listLayers():
     if not l.isBasemapLayer:
-        oct.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
+        octr.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
 
 
 ### Save Project ----
@@ -4127,12 +4127,12 @@ map_analysis_cim_crashes_optimized_hotspots = map_analysis_lyr_crashes_optimized
 print("- Export Map and Map Layers")
 
 # Update the analysis map mapx file
-oct.export_cim(aprx = aprx, cim_type = "map", cim_object = map_analysis, cim_name = "analysis")
+octr.export_cim(aprx = aprx, cim_type = "map", cim_object = map_analysis, cim_name = "analysis")
 
 # Export map layers as CIM JSON `.lyrx` files to the layers folder directory of the project.
 for l in map_analysis.listLayers():
     if not l.isBasemapLayer:
-        oct.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
+        octr.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
 
 
 ### Save Project ----
@@ -4263,12 +4263,12 @@ cim_regression = map_regression.getDefinition("V3")
 print("- Export Map and Map Layers")
 
 # Update the regression map mapx file
-oct.export_cim(aprx = aprx, cim_type = "map", cim_object = map_regression, cim_name = "regression")
+octr.export_cim(aprx = aprx, cim_type = "map", cim_object = map_regression, cim_name = "regression")
 
 # Export map layers as CIM JSON `.lyrx` files to the layers folder directory of the project.
 for l in map_regression.listLayers():
     if not l.isBasemapLayer:
-        oct.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
+        octr.export_cim(aprx = aprx, cim_type = "layer", cim_object = l, cim_name = l.name)
 
 
 ### Save Project ----
@@ -4414,7 +4414,7 @@ print("\n4.2 Export Maps to JSON")
 # Export maps to mapx CIM JSON files
 for m in aprx.listMaps():
     print(f"Exporting {m.name} map...")
-    oct.export_cim(aprx = aprx, cim_type = "map", cim_object = m, cim_name = m.name)
+    octr.export_cim(aprx = aprx, cim_type = "map", cim_object = m, cim_name = m.name)
 
 
 ### Save Project ----

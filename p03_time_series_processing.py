@@ -28,7 +28,7 @@ from dotenv import load_dotenv
 from octraffic import OCT
 
 # Initialize the OCTraffic object
-oct = OCT(part = 3, version = 2025.3)
+octr = OCT(part = 3, version = 2025.3)
 
 # Load environment variables from .env file
 load_dotenv()
@@ -43,11 +43,11 @@ print("\n1.2. Project and Workspace Variables")
 
 # Create a dictionary with the project metadata
 print("\nCreating project metadata")
-prj_meta = oct.prj_meta
+prj_meta = octr.prj_meta
 
 # Create a dictionary with the project directories
 print("\nCreating project directories")
-prj_dirs = oct.prj_dirs
+prj_dirs = octr.prj_dirs
 
 # Set the current working directory to the project root
 os.chdir(prj_dirs["root"])
@@ -103,11 +103,11 @@ print("\n1.4. Loading Codebook from Disk")
 
 # Load the codebook from the project codebook directory
 print("- Loading the codebook from the project codebook directory")
-cb = oct.cb
+cb = octr.cb
 
 # create a data frame from the codebook
 print("- Creating a data frame from the codebook")
-df_cb = oct.df_cb
+df_cb = octr.df_cb
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -116,10 +116,10 @@ df_cb = oct.df_cb
 print("\n1.5. Adding Attributes to Data Frames")
 
 # Set column attributes for each data frame
-crashes = oct.add_attributes(df = crashes, cb = cb)
-parties = oct.add_attributes(df = parties, cb = cb)
-victims = oct.add_attributes(df = victims, cb = cb)
-collisions = oct.add_attributes(df = collisions, cb = cb)
+crashes = octr.add_attributes(df = crashes, cb = cb)
+parties = octr.add_attributes(df = parties, cb = cb)
+victims = octr.add_attributes(df = victims, cb = cb)
+collisions = octr.add_attributes(df = collisions, cb = cb)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -133,10 +133,10 @@ print("\n2. Aggregation Functions")
 print("\n2.1. Aggregation by Year")
 
 # Aggregate the data frames by year
-ts_year_crashes = oct.ts_aggregate(dt = "date_year", df = crashes, cb = cb)
-ts_year_parties = oct.ts_aggregate(dt = "date_year", df = parties, cb = cb)
-ts_year_victims = oct.ts_aggregate(dt = "date_year", df = victims, cb = cb)
-ts_year_collisions = oct.ts_aggregate(dt = "date_year", df = collisions, cb = cb)
+ts_year_crashes = octr.ts_aggregate(dt = "date_year", df = crashes, cb = cb)
+ts_year_parties = octr.ts_aggregate(dt = "date_year", df = parties, cb = cb)
+ts_year_victims = octr.ts_aggregate(dt = "date_year", df = victims, cb = cb)
+ts_year_collisions = octr.ts_aggregate(dt = "date_year", df = collisions, cb = cb)
 
 # Combine the year aggregated data frames into a dictionary
 ts_year = {
@@ -153,10 +153,10 @@ ts_year = {
 print("\n2.2. Aggregation by Quarter")
 
 # Aggregate the data frames by quarter
-ts_quarter_crashes = oct.ts_aggregate(dt = "date_quarter", df = crashes, cb = cb)
-ts_quarter_parties = oct.ts_aggregate(dt = "date_quarter", df = parties, cb = cb)
-ts_quarter_victims = oct.ts_aggregate(dt = "date_quarter", df = victims, cb = cb)
-ts_quarter_collisions = oct.ts_aggregate(dt = "date_quarter", df = collisions, cb = cb)
+ts_quarter_crashes = octr.ts_aggregate(dt = "date_quarter", df = crashes, cb = cb)
+ts_quarter_parties = octr.ts_aggregate(dt = "date_quarter", df = parties, cb = cb)
+ts_quarter_victims = octr.ts_aggregate(dt = "date_quarter", df = victims, cb = cb)
+ts_quarter_collisions = octr.ts_aggregate(dt = "date_quarter", df = collisions, cb = cb)
 
 # Combine the quarter aggregated data frames into a dictionary
 ts_quarter = {
@@ -173,10 +173,10 @@ ts_quarter = {
 print("\n2.3. Aggregation by Month")
 
 # Aggregate the data frames by month
-ts_month_crashes = oct.ts_aggregate(dt = "date_month", df = crashes, cb = cb)
-ts_month_parties = oct.ts_aggregate(dt = "date_month", df = parties, cb = cb)
-ts_month_victims = oct.ts_aggregate(dt = "date_month", df = victims, cb = cb)
-ts_month_collisions = oct.ts_aggregate(dt = "date_month", df = collisions, cb = cb)
+ts_month_crashes = octr.ts_aggregate(dt = "date_month", df = crashes, cb = cb)
+ts_month_parties = octr.ts_aggregate(dt = "date_month", df = parties, cb = cb)
+ts_month_victims = octr.ts_aggregate(dt = "date_month", df = victims, cb = cb)
+ts_month_collisions = octr.ts_aggregate(dt = "date_month", df = collisions, cb = cb)
 
 # Combine the month aggregated data frames into a dictionary
 ts_month = {
@@ -193,10 +193,10 @@ ts_month = {
 print("\n2.4. Aggregation by Week")
 
 # Aggregate the data frames by week
-ts_week_crashes = oct.ts_aggregate(dt = "date_week", df = crashes, cb = cb)
-ts_week_parties = oct.ts_aggregate(dt = "date_week", df = parties, cb = cb)
-ts_week_victims = oct.ts_aggregate(dt = "date_week", df = victims, cb = cb)
-ts_week_collisions = oct.ts_aggregate(dt = "date_week", df = collisions, cb = cb)
+ts_week_crashes = octr.ts_aggregate(dt = "date_week", df = crashes, cb = cb)
+ts_week_parties = octr.ts_aggregate(dt = "date_week", df = parties, cb = cb)
+ts_week_victims = octr.ts_aggregate(dt = "date_week", df = victims, cb = cb)
+ts_week_collisions = octr.ts_aggregate(dt = "date_week", df = collisions, cb = cb)
 
 # Combine the week aggregated data frames into a dictionary
 ts_week = {
@@ -213,10 +213,10 @@ ts_week = {
 print("\n2.5. Aggregation by Day")
 
 # Aggregate the data frames by day
-ts_day_crashes = oct.ts_aggregate(dt = "date_day", df = crashes, cb = cb)
-ts_day_parties = oct.ts_aggregate(dt = "date_day", df = parties, cb = cb)
-ts_day_victims = oct.ts_aggregate(dt = "date_day", df = victims, cb = cb)
-ts_day_collisions = oct.ts_aggregate(dt = "date_day", df = collisions, cb = cb)
+ts_day_crashes = octr.ts_aggregate(dt = "date_day", df = crashes, cb = cb)
+ts_day_parties = octr.ts_aggregate(dt = "date_day", df = parties, cb = cb)
+ts_day_victims = octr.ts_aggregate(dt = "date_day", df = victims, cb = cb)
+ts_day_collisions = octr.ts_aggregate(dt = "date_day", df = collisions, cb = cb)
 
 # Combine the day aggregated data frames into a dictionary
 ts_day = {
@@ -266,7 +266,7 @@ ts_day["collisions"].index = pd.to_datetime(ts_day["collisions"]["date_day"])
 print("\n3. Save the Time Series Data")
 
 # Save the data to disk
-oct.save_to_disk(
+octr.save_to_disk(
     dir_list = prj_dirs,
     local_vars = locals(),
     global_vars = globals()

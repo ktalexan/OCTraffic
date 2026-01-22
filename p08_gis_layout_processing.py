@@ -33,7 +33,7 @@ from arcpy import metadata as md
 from octraffic import OCT
 
 # Initialize the OCTraffic object
-oct = OCT(part = 8, version = 2025.3)
+octr = OCT(part = 8, version = 2025.3)
 
 # Load environment variables from .env file
 load_dotenv()
@@ -51,11 +51,11 @@ print("\n- Project and Geodatabase Paths")
 
 # Create a dictionary with the project metadata
 print("\nCreating project metadata")
-prj_meta = oct.prj_meta
+prj_meta = octr.prj_meta
 
 # Create a dictionary with the project directories
 print("\nCreating project directories")
-prj_dirs = oct.prj_dirs
+prj_dirs = octr.prj_dirs
 
 # Set the current working directory to the project root
 os.chdir(prj_dirs["root"])
@@ -75,7 +75,7 @@ print("\n- ArcGIS Pro Paths")
 aprx_path: str = prj_dirs.get("agp_aprx", "")
 gdb_path: str = prj_dirs.get("agp_gdb", "")
 # ArcGIS Pro Project object
-aprx, workspace = oct.load_aprx(aprx_path = aprx_path, gdb_path = gdb_path, add_to_map = False)
+aprx, workspace = octr.load_aprx(aprx_path = aprx_path, gdb_path = gdb_path, add_to_map = False)
 # Close all map views
 aprx.closeViews()
 
@@ -113,11 +113,11 @@ print("\n- Codebook")
 
 # Load the codebook from the project codebook directory
 print("- Loading the codebook from the project codebook directory")
-cb = oct.cb
+cb = octr.cb
 
 # create a data frame from the codebook
 print("- Creating a data frame from the codebook")
-df_cb = oct.df_cb
+df_cb = octr.df_cb
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -785,13 +785,13 @@ print("- Layout Configuration")
 # Apply the layout configuration to all layouts
 
 # Define layout configurations for each map
-maps_lyt_config = oct.layout_configuration(4)
-injuries_lyt_config = oct.layout_configuration(2)
-hotspots_lyt_config = oct.layout_configuration(4)
-roads_lyt_config = oct.layout_configuration(4)
-points_lyt_config = oct.layout_configuration(2)
-densities_lyt_config = oct.layout_configuration(2)
-areas_lyt_config = oct.layout_configuration(2)
+maps_lyt_config = octr.layout_configuration(4)
+injuries_lyt_config = octr.layout_configuration(2)
+hotspots_lyt_config = octr.layout_configuration(4)
+roads_lyt_config = octr.layout_configuration(4)
+points_lyt_config = octr.layout_configuration(2)
+densities_lyt_config = octr.layout_configuration(2)
+areas_lyt_config = octr.layout_configuration(2)
 
 # Add the layout configurations to a new dictionary
 lyt_dict = {
@@ -1583,7 +1583,7 @@ print("\n3.8. Export Maps Layout")
 # Get maps layout CIM
 maps_layout_cim = maps_layout.getDefinition("V3")  # Maps layout CIM
 # Export maps layout to disk
-oct.export_cim(aprx = aprx, cim_type = "layout", cim_object = maps_layout, cim_name = maps_layout.name)
+octr.export_cim(aprx = aprx, cim_type = "layout", cim_object = maps_layout, cim_name = maps_layout.name)
 
 
 ### Export Layout Image ----
@@ -1591,7 +1591,7 @@ oct.export_cim(aprx = aprx, cim_type = "layout", cim_object = maps_layout, cim_n
 print("- Export Layout Image")
 
 # Add graphics metadata for Figure 9
-graphics_list = oct.graphics_entry(
+graphics_list = octr.graphics_entry(
     gr_type = 2,
     gr_id = 10,
     gr_attr = {
@@ -2064,7 +2064,7 @@ print("\n4.8. Export Injuries Layout")
 injuries_layout_cim = injuries_layout.getDefinition("V3")  # Injuries layout CIM
 
 # Export injuries layout to disk
-oct.export_cim(aprx = aprx, cim_type = "layout", cim_object = injuries_layout, cim_name = injuries_layout.name)
+octr.export_cim(aprx = aprx, cim_type = "layout", cim_object = injuries_layout, cim_name = injuries_layout.name)
 
 
 ### Export Layout Image ----
@@ -2072,7 +2072,7 @@ oct.export_cim(aprx = aprx, cim_type = "layout", cim_object = injuries_layout, c
 print("- Export Layout Image")
 
 # Add graphics metadata for Figure 9
-graphics_list = oct.graphics_entry(
+graphics_list = octr.graphics_entry(
     gr_type = 2,
     gr_id = 11,
     gr_attr = {
@@ -2689,7 +2689,7 @@ print("\n5.8. Export Hotspots Layout")
 # Get hotspots layout CIM
 hotspots_layout_cim = hotspots_layout.getDefinition("V3")  # Find Hotspots layout CIM
 # Export hotspots layout to disk
-oct.export_cim(aprx = aprx, cim_type = "layout", cim_object = hotspots_layout, cim_name = hotspots_layout.name)
+octr.export_cim(aprx = aprx, cim_type = "layout", cim_object = hotspots_layout, cim_name = hotspots_layout.name)
 
 
 ### Export Layout Image ----
@@ -2697,7 +2697,7 @@ oct.export_cim(aprx = aprx, cim_type = "layout", cim_object = hotspots_layout, c
 print("- Export Layout Image")
 
 # Add graphics metadata for Figure 12
-graphics_list = oct.graphics_entry(
+graphics_list = octr.graphics_entry(
     gr_type = 2,
     gr_id = 12,
     gr_attr = {
@@ -3356,7 +3356,7 @@ print("\n6.8. Export Road Hotspots Layout")
 roads_layout_cim = roads_layout.getDefinition("V3")  # Roads layout CIM
 
 # Export roads layout to disk
-oct.export_cim(aprx = aprx, cim_type = "layout", cim_object = roads_layout, cim_name = roads_layout.name)
+octr.export_cim(aprx = aprx, cim_type = "layout", cim_object = roads_layout, cim_name = roads_layout.name)
 
 
 ### Export Layout Image ----
@@ -3364,7 +3364,7 @@ oct.export_cim(aprx = aprx, cim_type = "layout", cim_object = roads_layout, cim_
 print("- Export Layout Image")
 
 # Add graphics metadata for Figure 13
-graphics_list = oct.graphics_entry(
+graphics_list = octr.graphics_entry(
     gr_type = 2,
     gr_id = 13,
     gr_attr = {
@@ -3811,7 +3811,7 @@ print("\n7.8. Export Points Hotspots Layout")
 points_layout_cim = points_layout.getDefinition("V3")  # Points layout CIM
 
 # Export points layout to disk
-oct.export_cim(aprx = aprx, cim_type = "layout", cim_object = points_layout, cim_name = points_layout.name)
+octr.export_cim(aprx = aprx, cim_type = "layout", cim_object = points_layout, cim_name = points_layout.name)
 
 
 ### Export Layout Image ----
@@ -3819,7 +3819,7 @@ oct.export_cim(aprx = aprx, cim_type = "layout", cim_object = points_layout, cim
 print("- Export Layout Image")
 
 # Add graphics metadata for Figure 14
-graphics_list = oct.graphics_entry(
+graphics_list = octr.graphics_entry(
     gr_type = 2,
     gr_id = 14,
     gr_attr = {
@@ -4265,7 +4265,7 @@ print("\n8.8. Export Densities Layout")
 densities_layout_cim = densities_layout.getDefinition("V3")  # Density layout CIM
 
 # Export densities layout to disk
-oct.export_cim(aprx = aprx, cim_type = "layout", cim_object = densities_layout, cim_name = densities_layout.name)
+octr.export_cim(aprx = aprx, cim_type = "layout", cim_object = densities_layout, cim_name = densities_layout.name)
 
 
 ### Export Layout Image ----
@@ -4273,7 +4273,7 @@ oct.export_cim(aprx = aprx, cim_type = "layout", cim_object = densities_layout, 
 print("- Export Layout Image")
 
 # Add graphics metadata for Figure 15
-graphics_list = oct.graphics_entry(
+graphics_list = octr.graphics_entry(
     gr_type = 2,
     gr_id = 15,
     gr_attr = {
@@ -4718,7 +4718,7 @@ print("\n9.8. Export City Areas Layout")
 areas_layout_cim = areas_layout.getDefinition("V3")  # Areas layout CIM
 
 # Export city areas layout to disk
-oct.export_cim(aprx = aprx, cim_type = "layout", cim_object = areas_layout, cim_name = areas_layout.name)
+octr.export_cim(aprx = aprx, cim_type = "layout", cim_object = areas_layout, cim_name = areas_layout.name)
 
 
 ### Export Layout Image ----
@@ -4726,7 +4726,7 @@ oct.export_cim(aprx = aprx, cim_type = "layout", cim_object = areas_layout, cim_
 print("- Export Layout Image")
 
 # Add graphics metadata for Figure 16
-graphics_list = oct.graphics_entry(
+graphics_list = octr.graphics_entry(
     gr_type = 2,
     gr_id = 16,
     gr_attr = {
@@ -4908,7 +4908,7 @@ print("- Layout CIM")
 maps_layout_cim = maps_layout.getDefinition("V3")
 
 # Export the layout CIM to disk
-oct.export_cim(aprx = aprx, cim_type = "layout", cim_object = maps_layout, cim_name = maps_layout.name)
+octr.export_cim(aprx = aprx, cim_type = "layout", cim_object = maps_layout, cim_name = maps_layout.name)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -5047,7 +5047,7 @@ print("- Layout CIM")
 injuries_layout_cim = injuries_layout.getDefinition("V3")
 
 # Export the layout CIM to disk
-oct.export_cim(aprx = aprx, cim_type = "layout", cim_object = injuries_layout, cim_name = injuries_layout.name)
+octr.export_cim(aprx = aprx, cim_type = "layout", cim_object = injuries_layout, cim_name = injuries_layout.name)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -5206,7 +5206,7 @@ print("- Layout CIM")
 hotspots_layout_cim = hotspots_layout.getDefinition("V3")
 
 # Export the layout CIM to disk
-oct.export_cim(aprx = aprx, cim_type = "layout", cim_object = hotspots_layout, cim_name = hotspots_layout.name)
+octr.export_cim(aprx = aprx, cim_type = "layout", cim_object = hotspots_layout, cim_name = hotspots_layout.name)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -5356,7 +5356,7 @@ print("- Layout CIM")
 roads_layout_cim = roads_layout.getDefinition("V3")
 
 # Export the layout CIM to disk
-oct.export_cim(aprx = aprx, cim_type = "layout", cim_object = roads_layout, cim_name = roads_layout.name)
+octr.export_cim(aprx = aprx, cim_type = "layout", cim_object = roads_layout, cim_name = roads_layout.name)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -5493,7 +5493,7 @@ print("- Layout CIM")
 points_layout_cim = points_layout.getDefinition("V3")
 
 # Export the layout CIM to disk
-oct.export_cim(aprx = aprx, cim_type = "layout", cim_object = points_layout, cim_name = points_layout.name)
+octr.export_cim(aprx = aprx, cim_type = "layout", cim_object = points_layout, cim_name = points_layout.name)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -5632,7 +5632,7 @@ print("- Layout CIM")
 densities_layout_cim = densities_layout.getDefinition("V3")
 
 # Export the layout CIM to disk
-oct.export_cim(aprx = aprx, cim_type = "layout", cim_object = densities_layout, cim_name = densities_layout.name)
+octr.export_cim(aprx = aprx, cim_type = "layout", cim_object = densities_layout, cim_name = densities_layout.name)
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -5761,7 +5761,7 @@ print("- Layout CIM")
 areas_layout_cim = areas_layout.getDefinition("V3")
 
 # Export the layout CIM to disk
-oct.export_cim(aprx = aprx, cim_type = "layout", cim_object = areas_layout, cim_name = areas_layout.name)
+octr.export_cim(aprx = aprx, cim_type = "layout", cim_object = areas_layout, cim_name = areas_layout.name)
 
 
 ### Save Project ----

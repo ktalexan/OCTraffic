@@ -26,11 +26,10 @@ import pytz
 import arcpy
 from arcgis.gis import GIS
 from dotenv import load_dotenv
-
 from octraffic import OCT
 
 # Initialize the OCTraffic object
-oct = OCT(part = 10, version = 2025.3)
+octr = OCT(part = 10, version = 2025.3)
 
 # Load environment variables from .env file
 load_dotenv()
@@ -47,10 +46,10 @@ print("\n1.2. Project and Workspace Variables")
 print("- Project and Geodatabase Paths")
 
 # Create a directory with the project metadata
-prj_meta = oct.prj_meta
+prj_meta = octr.prj_meta
 
 # Create a dictionary with the project directories
-prj_dirs = oct.prj_dirs
+prj_dirs = octr.prj_dirs
 
 # Set the current working directory to the project root
 os.chdir(prj_dirs["root"])
@@ -88,11 +87,11 @@ print("\n- Codebook")
 
 # Load the codebook from the project codebook directory
 print("- Loading the codebook from the project codebook directory")
-cb = oct.cb
+cb = octr.cb
 
 # create a data frame from the codebook
 print("- Creating a data frame from the codebook")
-df_cb = oct.df_cb
+df_cb = octr.df_cb
 
 
 

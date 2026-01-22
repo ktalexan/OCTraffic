@@ -25,7 +25,7 @@ from dotenv import load_dotenv
 from octraffic import OCT
 
 # Initialize the OCT class
-oct = OCT(part = 0, version = 2025.3)
+octr = OCT(part = 0, version = 2025.3)
 
 # Loading environment variables from .env file
 load_dotenv()
@@ -51,11 +51,11 @@ print("\n1.3. Project and Workspace Variables")
 
 # Create a dictionary with the project metadata
 print("\nCreating project metadata")
-prj_meta = oct.prj_meta
+prj_meta = octr.prj_meta
 
 # Create a dictionary with the project directories
 print("\nCreating project directories")
-prj_dirs = oct.prj_dirs
+prj_dirs = octr.prj_dirs
 
 
 
@@ -184,7 +184,7 @@ with open(metadata_path, "w", encoding = "utf-8") as f:
 
 # Update the metadata info
 oct = OCT(part = 0, version = 2025.3)
-prj_meta = oct.prj_meta
+prj_meta = octr.prj_meta
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

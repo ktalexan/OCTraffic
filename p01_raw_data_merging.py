@@ -27,7 +27,7 @@ from dotenv import load_dotenv
 from octraffic import OCT
 
 # Initialize the OCT class
-oct = OCT(part = 1, version = 2025.3)
+octr = OCT(part = 1, version = 2025.3)
 
 # Load environment variables from .env file
 load_dotenv()
@@ -40,15 +40,15 @@ print("\n1.2. Project and Workspace Variables")
 
 # Create a dictionary with the project metadata
 print("\nCreating project metadata")
-prj_meta = oct.prj_meta
+prj_meta = octr.prj_meta
 
 # Create a dictionary with the project directories
 print("\nCreating project directories")
-prj_dirs = oct.prj_dirs
+prj_dirs = octr.prj_dirs
 # Import the codeboom
 print("\nImporting codeboom")
-cb = oct.cb
-df_cb = oct.df_cb
+cb = octr.cb
+df_cb = octr.df_cb
 # Set the current working directory to the project root
 os.chdir(prj_dirs["root"])
 # Get the new current working directory
@@ -126,7 +126,7 @@ for year in list(prj_meta["years"]):
             data_dict.loc[i, "count_victims"] = count_victims
 
     # Update the tims metadata
-    oct.update_tims_metadata(year, "reported", data_counts = [count_crashes, count_parties, count_victims])
+    octr.update_tims_metadata(year, "reported", data_counts = [count_crashes, count_parties, count_victims])
 
     # Increment the index
     i += 1

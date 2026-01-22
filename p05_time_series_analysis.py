@@ -30,7 +30,7 @@ from dotenv import load_dotenv
 from octraffic import OCT
 
 # Initialize the OCTraffic object
-oct = OCT(part = 5, version = 2025.3)
+octr = OCT(part = 5, version = 2025.3)
 
 # Set default fonts for matplotlib and seaborn
 plt.rcParams["font.family"] = "serif"
@@ -49,11 +49,11 @@ print("\n1.2. Project and Workspace Variables")
 
 # Create a dictionary with the project metadata
 print("\nCreating project metadata")
-prj_meta = oct.prj_meta
+prj_meta = octr.prj_meta
 
 # Create a dictionary with the project directories
 print("\nCreating project directories")
-prj_dirs = oct.prj_dirs
+prj_dirs = octr.prj_dirs
 
 # Set the current working directory to the project root
 os.chdir(prj_dirs["root"])
@@ -134,11 +134,11 @@ print("\n1.4. Loading Codebook from Disk")
 
 # Load the codebook from the project codebook directory
 print("- Loading the codebook from the project codebook directory")
-cb = oct.cb
+cb = octr.cb
 
 # create a data frame from the codebook
 print("- Creating a data frame from the codebook")
-df_cb = oct.df_cb
+df_cb = octr.df_cb
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -212,7 +212,7 @@ print("\n2.2. Decompose Time Series")
 print("\n- Number of Crashes")
 
 # Create the STL decomposition for the monthly crashes time series
-stl_m_crashes, fig_m_crashes = oct.create_stl_plot(
+stl_m_crashes, fig_m_crashes = octr.create_stl_plot(
     ts_list_crashes["month"], season = "monthly", model = "additive", label = "Number of Crashes", covid = False, robust = True
 )
 
@@ -224,7 +224,7 @@ fig_m_crashes.savefig(os.path.join(prj_dirs["graphics"], "fig_m_crashes.png"), d
 # plt.close(fig_m_crashes)
 
 # Create the STL decomposition for the weekly crashes time series
-stl_w_crashes, fig_w_crashes = oct.create_stl_plot(
+stl_w_crashes, fig_w_crashes = octr.create_stl_plot(
     ts_list_crashes["week"], season = "weekly", model = "additive", label = "Number of Crashes", covid = False, robust = True
 )
 
@@ -241,7 +241,7 @@ fig_w_crashes.savefig(os.path.join(prj_dirs["graphics"], "fig_w_crashes.png"), d
 print("\n- Number of Victims")
 
 # Create the STL decomposition for the monthly victims time series
-stl_m_victims, fig_m_victims = oct.create_stl_plot(
+stl_m_victims, fig_m_victims = octr.create_stl_plot(
     ts_list_victims["month"], season = "monthly", model = "additive", label = "Number of Victims", covid = False, robust = True
 )
 
@@ -253,7 +253,7 @@ fig_m_victims.savefig(os.path.join(prj_dirs["graphics"], "fig_m_victims.png"), d
 # plt.close(fig_m_victims)
 
 # Create the STL decomposition for the weekly victims time series
-stl_w_victims, fig_w_victims = oct.create_stl_plot(
+stl_w_victims, fig_w_victims = octr.create_stl_plot(
     ts_list_victims["week"], season = "weekly", model = "additive", label = "Number of Victims", covid = False, robust = True
 )
 
@@ -270,7 +270,7 @@ fig_w_victims.savefig(os.path.join(prj_dirs["graphics"], "fig_w_victims.png"), d
 print("\n- Fatal Accidents")
 
 # Create the STL decomposition for the monthly fatal accidents time series
-stl_m_fatal, fig_m_fatal = oct.create_stl_plot(
+stl_m_fatal, fig_m_fatal = octr.create_stl_plot(
     ts_list_fatal["month"], season = "monthly", model = "additive", label = "Fatal Accidents", covid = False, robust = True
 )
 
@@ -282,7 +282,7 @@ fig_m_fatal.savefig(os.path.join(prj_dirs["graphics"], "fig_m_fatal.png"), dpi =
 # plt.close(fig_m_fatal)
 
 # Create the STL decomposition for the weekly fatal accidents time series
-stl_w_fatal, fig_w_fatal = oct.create_stl_plot(
+stl_w_fatal, fig_w_fatal = octr.create_stl_plot(
     ts_list_fatal["week"], season = "weekly", model = "additive", label = "Fatal Accidents", covid = False, robust = True
 )
 
@@ -299,7 +299,7 @@ fig_w_fatal.savefig(os.path.join(prj_dirs["graphics"], "fig_w_fatal.png"), dpi =
 print("\n- Fatal or Severe Accidents")
 
 # Create the STL decomposition for the monthly fatal or severe accidents time series
-stl_m_fatal_severe, fig_m_fatal_severe = oct.create_stl_plot(
+stl_m_fatal_severe, fig_m_fatal_severe = octr.create_stl_plot(
     ts_list_fatal_severe["month"],
     season = "monthly",
     model = "additive",
@@ -316,7 +316,7 @@ fig_m_fatal_severe.savefig(os.path.join(prj_dirs["graphics"], "fig_m_fatal_sever
 # plt.close(fig_m_fatal_severe)
 
 # Create the STL decomposition for the weekly fatal or severe accidents time series
-stl_w_fatal_severe, fig_w_fatal_severe = oct.create_stl_plot(
+stl_w_fatal_severe, fig_w_fatal_severe = octr.create_stl_plot(
     ts_list_fatal_severe["week"],
     season = "weekly",
     model = "additive",
@@ -338,7 +338,7 @@ fig_w_fatal_severe.savefig(os.path.join(prj_dirs["graphics"], "fig_w_fatal_sever
 print("\n- Number of Injuries")
 
 # Create the STL decomposition for the monthly injuries time series
-stl_m_injuries, fig_m_injuries = oct.create_stl_plot(
+stl_m_injuries, fig_m_injuries = octr.create_stl_plot(
     ts_list_injuries["month"], season = "monthly", model = "additive", label = "Number of Injuries", covid = False, robust = True
 )
 
@@ -350,7 +350,7 @@ fig_m_injuries.savefig(os.path.join(prj_dirs["graphics"], "fig_m_injuries.png"),
 # plt.close(fig_m_injuries)
 
 # Create the STL decomposition for the weekly injuries time series
-stl_w_injuries, fig_w_injuries = oct.create_stl_plot(
+stl_w_injuries, fig_w_injuries = octr.create_stl_plot(
     ts_list_injuries["week"], season = "weekly", model = "additive", label = "Number of Injuries", covid = False, robust = True
 )
 
@@ -367,7 +367,7 @@ fig_w_injuries.savefig(os.path.join(prj_dirs["graphics"], "fig_w_injuries.png"),
 print("\n- Mean Collision Severity")
 
 # Create the STL decomposition for the monthly mean collision severity time series
-stl_m_severity, fig_m_severity = oct.create_stl_plot(
+stl_m_severity, fig_m_severity = octr.create_stl_plot(
     ts_list_severity["month"],
     season = "monthly",
     model = "additive",
@@ -384,7 +384,7 @@ fig_m_severity.savefig(os.path.join(prj_dirs["graphics"], "fig_m_severity.png"),
 # plt.close(fig_m_severity)
 
 # Create the STL decomposition for the weekly mean collision severity time series
-stl_w_severity, fig_w_severity = oct.create_stl_plot(
+stl_w_severity, fig_w_severity = octr.create_stl_plot(
     ts_list_severity["week"],
     season = "weekly",
     model = "additive",
@@ -412,7 +412,7 @@ print("\n2.3. Figure 4 - Monthly Fatalities Time Series")
 print("\n- Metadata")
 
 # Add graphics metadata for Figure 3
-graphics_list = oct.graphics_entry(
+graphics_list = octr.graphics_entry(
     gr_type = 2,
     gr_id = 4,
     gr_attr = {
@@ -438,7 +438,7 @@ graphics_list = oct.graphics_entry(
 print("\n- Create the Overlay Figure")
 
 # Create the monthly fatalities time series figure
-fig4, ax = oct.create_monthly_fatalities_figure(ts_month)
+fig4, ax = octr.create_monthly_fatalities_figure(ts_month)
 # Show the figure
 fig4.show()
 plt.close(fig4)
@@ -449,7 +449,7 @@ plt.close(fig4)
 print("\n- Save the Figure")
 
 # Save the figure to a file
-fig4, ax = oct.create_monthly_fatalities_figure(ts_month)
+fig4, ax = octr.create_monthly_fatalities_figure(ts_month)
 fig4.savefig(
     fname = graphics_list["graphics"]["fig4"]["path"],
     transparent = True,
@@ -476,7 +476,7 @@ print("\n2.4. Weekly Crashes Decomposition Plots")
 print("\n- Metadata")
 
 # Add graphics metadata for Figure 5
-graphics_list = oct.graphics_entry(
+graphics_list = octr.graphics_entry(
     gr_type = 2,
     gr_id = 5,
     gr_attr = {
@@ -502,7 +502,7 @@ graphics_list = oct.graphics_entry(
 print("\n- Create the STL Decomposition Figure")
 
 # Create the STL decomposition for the weekly crashes time series
-stl_w_crashes, fig5 = oct.create_stl_plot(
+stl_w_crashes, fig5 = octr.create_stl_plot(
     ts_list_crashes["week"], season = "weekly", model = "additive", label = "Number of Crashes", covid = True, robust = True
 )
 
@@ -542,7 +542,7 @@ print("\n2.5. Figure 6 - Weekly Fatal Accidents Decomposition Plots")
 print("\n- Metadata")
 
 # Add graphics metadata for Figure 6
-graphics_list = oct.graphics_entry(
+graphics_list = octr.graphics_entry(
     gr_type = 2,
     gr_id = 6,
     gr_attr = {
@@ -568,7 +568,7 @@ graphics_list = oct.graphics_entry(
 print("\n- Create the STL Decomposition Figure")
 
 # Create the STL decomposition for the weekly fatal accidents time series
-stl_w_fatal, fig6 = oct.create_stl_plot(
+stl_w_fatal, fig6 = octr.create_stl_plot(
     ts_list_fatal["week"], season = "weekly", model = "additive", label = "Fatal Accidents", covid = True, robust = True
 )
 
@@ -608,7 +608,7 @@ print("\n2.6. Figure 7 - Mean Weekly Collision Severity Decomposition Plots")
 print("\n- Metadata")
 
 # Add graphics metadata for Figure 7
-graphics_list = oct.graphics_entry(
+graphics_list = octr.graphics_entry(
     gr_type = 2,
     gr_id = 7,
     gr_attr = {
@@ -634,7 +634,7 @@ graphics_list = oct.graphics_entry(
 print("\n- Create the STL Decomposition Figure")
 
 # Create the STL decomposition for the weekly mean collision severity time series
-stl_w_severity, fig7 = oct.create_stl_plot(
+stl_w_severity, fig7 = octr.create_stl_plot(
     ts_list_severity["week"],
     season = "weekly",
     model = "additive",
@@ -679,7 +679,7 @@ print("\n2.7. Figure 8 - Number of Victims vs. Mean Severity")
 print("\n- Metadata")
 
 # Add graphics metadata for Figure 8
-graphics_list = oct.graphics_entry(
+graphics_list = octr.graphics_entry(
     gr_type = 2,
     gr_id = 8,
     gr_attr = {
@@ -722,7 +722,7 @@ fig8_data.columns = ["time", "victims", "severity", "z_victims", "z_severity"]
 
 # Example usage of the function with the data we prepared above
 # create_victims_severity_plot(fig8_data, save_path="figure8_victims_vs_severity.png")
-fig8, ax1, ax2 = oct.create_victims_severity_plot(
+fig8, ax1, ax2 = octr.create_victims_severity_plot(
     fig8_data,
     show_plot = False
 )
@@ -763,7 +763,7 @@ print("\n2.8. Figure 9 - Median Age for Parties and Victims")
 print("\n- Metadata")
 
 # Add graphics metadata for Figure 9
-graphics_list = oct.graphics_entry(
+graphics_list = octr.graphics_entry(
     gr_type = 2,
     gr_id = 9,
     gr_attr = {
@@ -787,7 +787,7 @@ graphics_list = oct.graphics_entry(
 print("\n- Create the Median Age Figure")
 
 # Create the age pyramid plot for parties and victims
-fig9 = oct.create_age_pyramid_plot(collisions)
+fig9 = octr.create_age_pyramid_plot(collisions)
 # Show the figure
 fig9.show()
 # close the figure to free memory
@@ -821,7 +821,7 @@ plt.close(fig9)  # Close the figure to free memory
 print("\n3. Save the Time Series Data")
 
 # Save the data to disk
-oct.save_to_disk(
+octr.save_to_disk(
     dir_list = prj_dirs,
     local_vars = locals(),
     global_vars = globals()
