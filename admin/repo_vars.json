@@ -1,0 +1,8 @@
+{
+    "<PROJECT_TITLE>": "OCTraffic",
+    "<PROJECT_SUBTITLE>": "Orange County Traffic Project",
+    "<PROJECT_DESCRIPTION>": "This is a repository for the Orange County Traffic Project. It processes and analyzes historical traffic collision data in Orange County, California. It uses original data from the SWITRS and TIMS datasets, and processes the data using Python and ArcGIS. It also includes code for processing and analyzing the extracted information and object detection and recognition data.",
+    "<PROJECT_TAGS>": "GitHub, Python, GIS, Transportation, Orange County, California, AI, collisions, crashes, traffic accidents, traffic safety",
+    "<FOLDER>": "The folder name where the project files are stored.",
+    "<REPO_TYPE>": "geospatial"
+}
