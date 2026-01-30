@@ -20,14 +20,15 @@ print("\n1. Preliminaries")
 print("\n1.1. Referencing Libraries and Initialization")
 
 # Import necessary libraries
-import os, datetime
+import os
+import datetime
 import json
 import pandas as pd
 from dotenv import load_dotenv
-from octraffic import OCT
+from octraffic import OCTraffic
 
-# Initialize the OCT class
-octr = OCT(part = 1, version = 2025.3)
+# Initialize the OCTraffic class
+octr = OCTraffic(part = 1, version = 2025.3)
 
 # Load environment variables from .env file
 load_dotenv()

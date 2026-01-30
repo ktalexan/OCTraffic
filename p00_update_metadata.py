@@ -19,13 +19,14 @@ print("\n1. Preliminaries")
 print("\n1.1. Referencing Libraries and Initialization")
 
 # Importing necessary libraries
-import os, datetime
+import os
+import datetime
 import json
 from dotenv import load_dotenv
-from octraffic import OCT
+from octraffic import OCTraffic
 
-# Initialize the OCT class
-octr = OCT(part = 0, version = 2025.3)
+# Initialize the OCTraffic class
+octr = OCTraffic(part = 0, version = 2026.1)
 
 # Loading environment variables from .env file
 load_dotenv()
@@ -36,10 +37,10 @@ load_dotenv()
 print("\n1.2. Data Definition Variables")
 
 # Define the last year of data and the cutoff between final and provisional data
-first_year = 2012
-tims_start_year = 2013
-tims_final_year = 2023
-tims_end_year = 2025
+FIRST_YEAR = 2012
+TIMS_START_YEAR = 2013
+TIMS_FINAL_YEAR = 2023
+TIMS_END_YEAR = 2025
 # Create a string with the current month and year. The month is the month's name
 current_date = datetime.datetime.now().strftime("%B %Y")
 
@@ -65,10 +66,10 @@ prj_dirs = octr.prj_dirs
 print("\n2. Update TIMS Metadata")
 
 # get a range of years for the project
-project_years = list(range(first_year, tims_end_year + 1))
-excluded_years = list(range(first_year, tims_start_year))
-final_years = list(range(tims_start_year, tims_final_year + 1))
-provisional_years = list(range(tims_final_year + 1, tims_end_year + 1))
+project_years = list(range(FIRST_YEAR, TIMS_END_YEAR + 1))
+excluded_years = list(range(FIRST_YEAR, TIMS_START_YEAR))
+final_years = list(range(TIMS_START_YEAR, TIMS_FINAL_YEAR + 1))
+provisional_years = list(range(TIMS_FINAL_YEAR + 1, TIMS_END_YEAR + 1))
 missing_years = []
 json_template = {
     "year": "",
@@ -183,7 +184,7 @@ with open(metadata_path, "w", encoding = "utf-8") as f:
     json.dump(prj_meta["tims"], f, indent = 4)
 
 # Update the metadata info
-oct = OCT(part = 0, version = 2025.3)
+octr = OCTraffic(part = 0, version = 2025.3)
 prj_meta = octr.prj_meta
 
 

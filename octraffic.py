@@ -9,13 +9,25 @@
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Import necessary libraries ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-import os, datetime, pickle
+from __future__ import annotations
+import os
+import sys
+import datetime
+import pickle
 import textwrap
-from typing import Union, List, Optional
-import json, pytz
+from pathlib import Path
+import json
+import re
+import logging
+import unicodedata
+from typing import Union, List, Optional, Dict, Any
+#from fontTools.misc.plistlib import Data
+import wmi
+import pytz
 import pandas as pd
 from pandas.api.types import CategoricalDtype
 import numpy as np
+import requests
 from scipy import stats
 import statsmodels.api as sm
 from statsmodels.nonparametric.smoothers_lowess import lowess
@@ -25,13 +37,210 @@ import matplotlib.dates as mdates
 from matplotlib.patches import Rectangle, Patch
 import seaborn as sns
 import arcpy
+from arcpy import metadata as md
+from arcgis.features import GeoAccessor, GeoSeriesAccessor
 import codebook.cbl as cbl
+
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Define the DualOutput class for logging ----
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+class DualOutput:
+    """
+    A class to duplicate console output to a log file.
+    """
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ## fx: Class initialization ----
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    def __init__(self, filename: Optional[str] = None, meta: Optional[dict] = None):
+        self._orig = None
+        self._log = None
+        self._filename = filename
+        self._start_time = None
+        self._end_time = None
+        self._duration = None
+        self._filetype = "log"  # Default filetype
+        # Store optional project metadata so other methods can access it
+        self.meta: Optional[dict] = meta
+        self.project_name: Optional[str] = meta.get("name") if meta else None
+        self.project_title: Optional[str] = meta.get("title") if meta else None
+        self.project_version: Optional[float] = meta.get("version") if meta else None
+        self.project_author: Optional[str] = meta.get("author") if meta else None
+
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ## fx: Open log file ----
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    def _open_log(self, meta: dict, filename: str):
+        # From the filename, determine if it's a .log, .txt, or .md file
+        if filename.endswith(".md"):
+            self._filetype = "markdown"
+        elif filename.endswith(".log") or filename.endswith(".txt"):
+            self._filetype = "log"
+        if meta is not None:
+            self.project_name = meta.get("name")
+            self.project_title = meta.get("title")
+            self.project_version = meta.get("version")
+            self.project_author = meta.get("author")
+        # Open the log file in append mode in the tests directory
+        path = os.path.join(os.getcwd(), "tests", os.path.basename(filename))
+        # Ensure the directory exists
+        os.makedirs(os.path.dirname(path), exist_ok = True)
+        # If the file does not exist, open it and writh an initial line
+        if not os.path.isfile(path):
+            with open(path, "w", encoding="utf-8") as f:
+                # If it is a markdown file, write the header as the meta.get("project_name")
+                if self._filetype == "markdown":
+                    f.write(f"# {self.project_name}\n- Title: {self.project_title}\n- Version: {self.project_version}\n- Author: {self.project_author}\n- Filename: **{os.path.basename(filename)}**\n")
+                elif self._filetype == "log":
+                    # Wtite the project name and title in uppercase
+                    f.write(f"Project Name: {self.project_name.upper()}\nProject Title: {self.project_title.upper()}\nVersion: {self.project_version}\nAuthor: {self.project_author}\nFilename: {os.path.basename(filename)}\n\n")
+        # Return the opened file object
+        return open(path, "a", encoding="utf-8")
+
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ## fx: Enable logging ----
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    def enable(self, meta: Optional[dict] = None, filename: Optional[str] = None):
+        logid = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+        if self._orig is not None:
+            return
+        # Prefer provided meta, otherwise use stored meta
+        if meta is not None:
+            self.meta = meta
+        # Determine the filetype based on the filename extension
+        fn = filename or self._filename or "output.log"
+        if fn.endswith(".md"):
+            self._filetype = "markdown"
+        elif fn.endswith(".log"):
+            self._filetype = "log"
+        elif fn.endswith(".txt"):
+            self._filetype = "text"
+        else:
+            print("Warning: Unrecognized file extension. Defaulting to .log")
+            self._filetype = "log"  # Default to log if no extension provided
+            # Change filename to have .log extension
+            fn = os.path.splitext(fn)[0] + ".log"
+        self._orig = sys.stdout
+        self._log = self._open_log(meta, fn)
+        sys.stdout = self
+        self._start_time = datetime.datetime.now()
+
+        if self._filetype == "markdown":
+            print("----\n")
+            print(f"\n> [!NOTE]\n> - Log ID: {logid}\n> - Date: {datetime.datetime.now().strftime('%B %d, %Y')}\n> - Logging started at {self._start_time.strftime('%m/%d/%Y %H:%M:%S')}\n")
+        else:
+            print(f"---- Start of log ID: {logid} ----")
+            print(f"Date: {datetime.datetime.now().strftime('%B %d, %Y')}")
+            print(f"Logging started at {self._start_time.strftime('%m/%d/%Y %H:%M:%S')}\n\n")
+
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ## fx: Disable logging ----
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    def disable(self):
+        self._end_time = datetime.datetime.now()
+        if self._filetype == "markdown":
+            print(f"\n> [!NOTE]\n> - Logging ended at {self._end_time.strftime('%m/%d/%Y %H:%M:%S')}")
+        else:
+            print(f"\n\nLogging ended at {self._end_time.strftime('%m/%d/%Y %H:%M:%S')}")
+        self._duration = self._end_time - self._start_time
+        if self._duration.total_seconds() < 60:
+            if self._filetype == "markdown":
+                print(f"> - Elapsed Time: {self._duration.total_seconds():.0f} seconds\n")
+                print("----\n")
+            else:
+                print(f"Elapsed Time: {self._duration.total_seconds():.0f} seconds")
+                print("---- End of log ----\n")
+        else:
+            # Display time in days, hours, minutes and seconds
+            days, remainder = divmod(self._duration.total_seconds(), 86400)
+            hours, remainder = divmod(remainder, 3600)
+            minutes, seconds = divmod(remainder, 60)
+            # Only show non-zero values
+            if days > 0:
+                if self._filetype == "markdown":
+                    print(f"> - Elapsed Time: {int(days)} days, {int(hours)} hours, {int(minutes)} minutes and {int(seconds)} seconds\n")
+                    print("----\n")
+                else:
+                    print(f"Elapsed Time: {int(days)} days, {int(hours)} hours, {int(minutes)} minutes and {int(seconds)} seconds")
+                    print("---- End of log ----\n")
+            elif hours > 0:
+                if self._filetype == "markdown":
+                    print(f"> - Elapsed Time: {int(hours)} hours, {int(minutes)} minutes and {int(seconds)} seconds\n")
+                    print("----\n")
+                else:
+                    print(f"Elapsed Time: {int(hours)} hours, {int(minutes)} minutes and {int(seconds)} seconds")
+                    print("---- End of log ----\n")
+            elif minutes > 0:
+                if self._filetype == "markdown":
+                    print(f"> - Elapsed Time: {int(minutes)} minutes and {int(seconds)} seconds\n")
+                    print("----\n")
+                else:
+                    print(f"Elapsed Time: {int(minutes)} minutes and {int(seconds)} seconds")
+                    print("---- End of log ----\n")
+            else:
+                if self._filetype == "markdown":
+                    print(f"> - Elapsed Time: {int(seconds)} seconds\n")
+                    print("----\n")
+                else:
+                    print(f"Elapsed Time: {int(seconds)} seconds")
+                    print("---- End of log ----\n")
+        
+        if self._orig is None:
+            return
+        sys.stdout = self._orig
+        try:
+            if self._log:
+                self._log.close()
+        finally:
+            self._orig = None
+            self._log = None
+
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ## fx: Context manager enter ----
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    def __enter__(self):
+        # Use stored metadata when entering context if available
+        self.enable(meta=self.meta, filename=self._filename)
+        return self
+
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ## fx: Context manager exit ----
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    def __exit__(self, exc_type, exc, tb):
+        self.disable()
+
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ## fx: Write output ----
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    def write(self, message):
+        if self._orig:
+            self._orig.write(message)
+        if self._log:
+            try:
+                self._log.write(message)
+            except (OSError, UnicodeEncodeError):
+                # Ignore known I/O/encoding errors when writing to the log; allow other exceptions to propagate
+                pass
+
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ## fx: Flush output ----
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    def flush(self):
+        if self._orig:
+            self._orig.flush()
+        if self._log:
+            try:
+                self._log.flush()
+            except OSError:
+                # Ignore known I/O errors when flushing the log; allow other exceptions to propagate
+                pass
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Class containing OCTraffic data processing functions ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-class OCT:
+class OCTraffic:
     """
     Class containing OCTraffic data processing functions.
     Attributes:
@@ -80,15 +289,33 @@ class OCT:
     ## 0. Class initialization ----
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def __init__(self, part: int, version: float):
+
+        # Create a DualOutput instance for logging
+        self.logger = DualOutput()
+
+        # Set the part and version
         self.part = part
         self.version = version
+
+        # Set the base path and data date
         self.base_path = os.getcwd()
+        self.data_date = datetime.datetime.now().strftime("%B %Y")
 
         # Create an prj_meta variable calling the function using the part and version variables from the initialization
         self.prj_meta = self.project_metadata(silent = False)
 
-        # Create an prj_dir variable calling the function using the part and version variables from the initialization
+        # Create a prj_dirs variable calling the project_directories function
         self.prj_dirs = self.project_directories(silent = False)
+
+        # Attach project directories to logger so it's available to all logger methods
+        try:
+            self.logger.meta = self.prj_dirs
+        except AttributeError:
+            # Logger does not support 'meta' attribute; ignore safely
+            pass
+
+        # Set the Spatia Reference to Web Mercator
+        self.sr = arcpy.SpatialReference(4269)  # NAD83
 
         # Load the codebook
         self.cb_path = os.path.join(self.prj_dirs["codebook"], "cb.json")
@@ -558,15 +785,15 @@ class OCT:
                 # Get the timezone
                 tz = pytz.timezone(tz_name)
                 # Localize the datetime (assume it's in UTC if not timezone-aware)
-                if dt.tzinfo is None:
+                if datetime.tzinfo is None:
                     dt = pytz.utc.localize(dt).astimezone(tz)
                 else:
-                    dt = dt.astimezone(tz)
+                    dt = datetime.astimezone(tz)
                 # Check if it's in DST
                 dst_result = None
-                if bool(dt.dst()) is False:
+                if bool(datetime.dst()) is False:
                     dst_result = 0
-                elif bool(dt.dst()) is True:
+                elif bool(datetime.dst()) is True:
                     dst_result = 1
                 else:
                     dst_result = -1
@@ -1286,7 +1513,7 @@ class OCT:
         Notes:
             This function returns the number of valid rows in the specified year.
         """
-        return len(df[df['date_datetime'].dt.year == year].copy())
+        return len(df[df['date_datetime'].datetime.year == year].copy())
     
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1503,7 +1730,7 @@ class OCT:
         fig3_data = df[
             ["date_year", "count_car_killed_sum", "count_ped_killed_sum", "count_bic_killed_sum", "count_mc_killed_sum"]
         ].copy()
-        fig3_data["date_year"] = fig3_data["date_year"].dt.year
+        fig3_data["date_year"] = fig3_data["date_year"].datetime.year
         fig3_data = fig3_data.rename(
             columns = {
                 "date_year": "Year",

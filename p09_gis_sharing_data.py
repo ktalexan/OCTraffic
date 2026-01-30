@@ -21,17 +21,17 @@ print("\n1.1. Referencing Libraries and Initialization")
 
 # Import Python libraries
 import os
-import datetime as dt
+import datetime
 import pytz
 import arcpy
 import pandas as pd
 from arcgis.gis import GIS
 from dotenv import load_dotenv
 
-from octraffic import OCT
+from octraffic import OCTraffic
 
 # Initialize the OCTraffic object
-octr = OCT(part = 9, version = 2025.3)
+octr = OCTraffic(part = 9, version = 2025.3)
 
 # Load environment variables from .env file
 load_dotenv()
@@ -94,7 +94,7 @@ date_end = prj_meta["date_end"]
 # Define time and date variables
 time_zone = pytz.timezone("US/Pacific")
 # Add today's day
-today = dt.datetime.now(time_zone)
+today = datetime.datetime.now(time_zone)
 date_updated = today.strftime("%B %d, %Y")
 time_updated = today.strftime("%I:%M %p")
 
@@ -222,7 +222,7 @@ portal_meta["desc"] = arcpy.GetPortalDescription()
 
 
 # Print Basic Portal Information
-print(f"Info: \n- Token: {portal_meta['info']['token']}\n- Referer: {portal_meta['info']['referer']}\n- Expires: {dt.datetime.fromtimestamp(portal_meta['info']['expires']).strftime('%Y-%m-%d %H:%M:%S')}")
+print(f"Info: \n- Token: {portal_meta['info']['token']}\n- Referer: {portal_meta['info']['referer']}\n- Expires: {datetime.datetime.fromtimestamp(portal_meta['info']['expires']).strftime('%Y-%m-%d %H:%M:%S')}")
 print(f"Portal: {portal_meta['desc']['name']}")
 print(f"User: {portal_meta['desc']['user']['fullName']} ({portal_meta['desc']['user']['username']})")
 
@@ -711,6 +711,6 @@ print(arcpy.GetMessages())
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # End of Script ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-print("\nLast Executed:", dt.datetime.now().strftime("%Y-%m-%d"))
+print("\nLast Executed:", datetime.datetime.now().strftime("%Y-%m-%d"))
 print("\nEnd of Script")
 # Last Executed: 2026-01-03

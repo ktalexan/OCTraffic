@@ -22,7 +22,7 @@ print("\n1.1. Referencing Libraries and Initialization")
 
 # Import Python libraries
 import os, math
-import datetime as dt
+import datetime
 import pickle
 import pandas as pd
 import pytz
@@ -30,10 +30,10 @@ from dotenv import load_dotenv
 import arcpy
 from arcpy import metadata as md
 
-from octraffic import OCT
+from octraffic import OCTraffic
 
 # Initialize the OCTraffic object
-octr = OCT(part = 8, version = 2025.3)
+octr = OCTraffic(part = 8, version = 2025.3)
 
 # Load environment variables from .env file
 load_dotenv()
@@ -92,7 +92,7 @@ date_end = prj_meta["date_end"]
 # Define time and date variables
 time_zone = pytz.timezone("US/Pacific")
 # Add today's day
-today = dt.datetime.now(time_zone)
+today = datetime.datetime.now(time_zone)
 date_updated = today.strftime("%B %d, %Y")
 time_updated = today.strftime("%I:%M %p")
 
@@ -5810,6 +5810,6 @@ aprx.save()
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # End of Script ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-print("\nLast Executed:", dt.datetime.now().strftime("%Y-%m-%d"))
+print("\nLast Executed:", datetime.datetime.now().strftime("%Y-%m-%d"))
 print("\nEnd of script")
 # Last Executed: 2026-01-02

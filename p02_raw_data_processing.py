@@ -20,7 +20,9 @@ print("\n1. Preliminaries")
 print("\n1.1. Libraries and Initialization")
 
 # Import necessary libraries
-import os, sys, datetime
+import os
+import sys
+import datetime
 import json
 import pandas as pd
 import numpy as np
@@ -28,10 +30,10 @@ from dotenv import load_dotenv
 
 # important as it "enhances" Pandas by importing these classes (from ArcGIS API for Python)
 from arcgis.features import GeoAccessor
-from octraffic import OCT
+from octraffic import OCTraffic
 
 # Initialize the OCTraffic object
-octr = OCT(part = 2, version = 2025.3)
+octr = OCTraffic(part = 2, version = 2025.3)
 
 # Load environment variables from .env file
 load_dotenv()
@@ -821,10 +823,10 @@ print("\n5.3. Create Date and Time Individual Columns")
 print("- Creating year column")
 
 # Create a year column from the date_year column
-crashes["dt_year"] = crashes["date_datetime"].dt.year
+crashes["dt_year"] = crashes["date_datetime"].datetime.year
 
 # Create a year datetime column from the date_datetime column as a datetime object
-crashes["date_year"] = pd.to_datetime(crashes["date_datetime"].dt.year, format = "%Y", errors = "coerce")
+crashes["date_year"] = pd.to_datetime(crashes["date_datetime"].datetime.year, format = "%Y", errors = "coerce")
 
 
 ### Quarter (Date) ----
@@ -832,7 +834,7 @@ crashes["date_year"] = pd.to_datetime(crashes["date_datetime"].dt.year, format =
 print("- Creating quarter column")
 
 # Create a quarter column from the date_quarter column
-crashes["dt_quarter"] = crashes["date_datetime"].dt.quarter
+crashes["dt_quarter"] = crashes["date_datetime"].datetime.quarter
 
 # Apply the function to create date_quarter column
 crashes["date_quarter"] = crashes.apply(octr.quarter_to_date, axis = 1)
@@ -846,10 +848,10 @@ crashes["dt_quarter"] = octr.categorical_series(var_series=crashes["dt_quarter"]
 print("- Creating month column")
 
 # Create a month column from the date_month column
-crashes["dt_month"] = crashes["date_datetime"].dt.month
+crashes["dt_month"] = crashes["date_datetime"].datetime.month
 
 # Create a month datetime column from the date_datetime column as a datetime object that includes the year
-crashes["date_month"] = pd.to_datetime(crashes["date_datetime"].dt.strftime("%Y-%m"), format = "%Y-%m", errors = "coerce")
+crashes["date_month"] = pd.to_datetime(crashes["date_datetime"].datetime.strftime("%Y-%m"), format = "%Y-%m", errors = "coerce")
 
 # Convert the dt_month column to categorical
 crashes["dt_month"] = octr.categorical_series(var_series = crashes["dt_month"], var_name = "dt_month", cb_dict = cb)
@@ -860,13 +862,13 @@ crashes["dt_month"] = octr.categorical_series(var_series = crashes["dt_month"], 
 print("- Creating week of the year column")
 
 # Create a week of the year column from the date_week column
-crashes["dt_year_week"] = crashes["date_datetime"].dt.isocalendar().week
+crashes["dt_year_week"] = crashes["date_datetime"].datetime.isocalendar().week
 
 # Create a week of the year datetime column from the date_datetime column as a datetime object
 crashes["date_week"] = pd.to_datetime(
-    crashes["date_datetime"].dt.year.astype(str)
+    crashes["date_datetime"].datetime.year.astype(str)
     + "-W"
-    + crashes["date_datetime"].dt.isocalendar().week.astype(str)
+    + crashes["date_datetime"].datetime.isocalendar().week.astype(str)
     + "-1",
     format = "%Y-W%W-%w",
     errors = "coerce",
@@ -879,7 +881,7 @@ print("- Creating day column")
 
 # Create a day datetime column from the date_datetime column as a datetime object
 crashes["date_day"] = pd.to_datetime(
-    crashes["date_datetime"].dt.strftime("%Y-%m-%d"), format = "%Y-%m-%d", errors = "coerce"
+    crashes["date_datetime"].datetime.strftime("%Y-%m-%d"), format = "%Y-%m-%d", errors = "coerce"
 )
 
 
@@ -888,7 +890,7 @@ crashes["date_day"] = pd.to_datetime(
 print("- Creating week day column")
 
 # Create a week day column from the date_week_day column
-crashes["dt_week_day"] = crashes["date_datetime"].dt.isocalendar().day
+crashes["dt_week_day"] = crashes["date_datetime"].datetime.isocalendar().day
 
 # Convert the dt_week_day column to categorical
 crashes["dt_week_day"] = octr.categorical_series(var_series = crashes["dt_week_day"], var_name = "dt_week_day", cb_dict = cb)
@@ -899,7 +901,7 @@ crashes["dt_week_day"] = octr.categorical_series(var_series = crashes["dt_week_d
 print("- Creating day of the month column")
 
 # Create a day of the month column from the date_dayOfMonth column
-crashes["dt_month_day"] = crashes["date_datetime"].dt.day
+crashes["dt_month_day"] = crashes["date_datetime"].datetime.day
 
 
 ### Day of the Year (Date) ----
@@ -907,7 +909,7 @@ crashes["dt_month_day"] = crashes["date_datetime"].dt.day
 print("- Creating day of the year column")
 
 # Create a day of the year column from the date_dayOfYear column
-crashes["dt_year_day"] = crashes["date_datetime"].dt.dayofyear
+crashes["dt_year_day"] = crashes["date_datetime"].datetime.dayofyear
 
 
 # region Hour and Minute (Time)
@@ -915,10 +917,10 @@ crashes["dt_year_day"] = crashes["date_datetime"].dt.dayofyear
 print("- Creating hour and minute columns")
 
 # Create a hour column from the dateHour column
-crashes["dt_hour"] = crashes["date_datetime"].dt.hour
+crashes["dt_hour"] = crashes["date_datetime"].datetime.hour
 
 # Create a minute column from the dateMinute column
-crashes["dt_minute"] = crashes["date_datetime"].dt.minute
+crashes["dt_minute"] = crashes["date_datetime"].datetime.minute
 
 
 ### Daylight Savings Time and Time Zone (Time) ----

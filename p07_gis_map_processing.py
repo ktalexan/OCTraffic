@@ -23,17 +23,17 @@ print("\n1.1. Referencing Libraries and Initialization")
 # Import Python libraries
 import os
 import math
-import datetime as dt
+import datetime
 from dateutil.parser import parse
 import pytz
 from dotenv import load_dotenv
 import arcpy
 from arcpy import metadata as md
 
-from octraffic import OCT
+from octraffic import OCTraffic
 
 # Initialize the OCTraffic object
-octr = OCT(part = 7, version = 2025.3)
+octr = OCTraffic(part = 7, version = 2025.3)
 
 # Load environment variables from .env file
 load_dotenv()
@@ -92,7 +92,7 @@ date_end = prj_meta["date_end"]
 # Define time and date variables
 time_zone = pytz.timezone("US/Pacific")
 # Add today's day
-today = dt.datetime.now(time_zone)
+today = datetime.datetime.now(time_zone)
 date_updated = today.strftime("%B %d, %Y")
 time_updated = today.strftime("%I:%M %p")
 
@@ -800,8 +800,8 @@ print("\nMap Layers Processing")
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 print("\n3.1 Time Settings Configuration")
 
-dt_start = dt.datetime.combine(prj_meta["date_start"], dt.time(0, 0, 0))
-dt_end = dt.datetime.combine(prj_meta["date_end"], dt.time(23, 59, 59))
+dt_start = datetime.datetime.combine(prj_meta["date_start"], datetime.time(0, 0, 0))
+dt_end = datetime.datetime.combine(prj_meta["date_end"], datetime.time(23, 59, 59))
 dt_diff = dt_end - dt_start
 
 # Define time settings configuration for the map layers
@@ -4428,6 +4428,6 @@ aprx.save()
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # End of Script ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-print("\nLast Executed:", dt.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+print("\nLast Executed:", datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 print("\nEnd of Script")
 # Last Executed: 2026-01-01

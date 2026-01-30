@@ -21,16 +21,18 @@ print("\n1. Preliminaries")
 print("\n1.1. Libraries and Initialization")
 
 # Import necessary libraries
-import os, datetime
-import json, pickle
+import os
+import datetime
+import json
+import pickle
 import pandas as pd
 import matplotlib.pyplot as plt
 from dotenv import load_dotenv
 
-from octraffic import OCT
+from octraffic import OCTraffic
 
 # Initialize the OCTraffic object
-octr = OCT(part = 4, version = 2025.3)
+octr = OCTraffic(part = 4, version = 2025.3)
 
 # Set default fonts for matplotlib and seaborn
 plt.rcParams["font.family"] = "serif"
@@ -1560,7 +1562,7 @@ tbl5_data = ts_year["collisions"][
 ].copy()
 
 # Extract years from dateYear column and set them as the DataFrame index
-tbl5_data.index = ts_year["collisions"]["date_year"].dt.year
+tbl5_data.index = ts_year["collisions"]["date_year"].datetime.year
 
 # Rename the columns of the tbl5_data data frame
 tbl5_data.columns = [

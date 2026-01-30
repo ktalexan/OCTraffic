@@ -22,15 +22,15 @@ print("\n1.1. Libraries and Initialization")
 
 # Import necessary libraries
 import os
-import datetime as dt
+import datetime
 import pandas as pd
 import matplotlib.pyplot as plt
 from dotenv import load_dotenv
 
-from octraffic import OCT
+from octraffic import OCTraffic
 
 # Initialize the OCTraffic object
-octr = OCT(part = 5, version = 2025.3)
+octr = OCTraffic(part = 5, version = 2025.3)
 
 # Set default fonts for matplotlib and seaborn
 plt.rcParams["font.family"] = "serif"
@@ -831,6 +831,6 @@ octr.save_to_disk(
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # End of Script ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-print("\nLast Execution:", dt.datetime.now().strftime("%Y-%m-%d"))
+print("\nLast Execution:", datetime.datetime.now().strftime("%Y-%m-%d"))
 print("\nEnd of Script")
 # Last Executed: 2026-01-01

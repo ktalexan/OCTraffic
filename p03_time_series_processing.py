@@ -20,15 +20,16 @@ print("\n1. Preliminaries")
 print("\n1.1. Libraries and Initialization")
 
 # Import necessary libraries
-import os, datetime
+import os
+import datetime
 import pandas as pd
 from dotenv import load_dotenv
 
 # important as it "enhances" Pandas by importing these classes (from ArcGIS API for Python)
-from octraffic import OCT
+from octraffic import OCTraffic
 
 # Initialize the OCTraffic object
-octr = OCT(part = 3, version = 2025.3)
+octr = OCTraffic(part = 3, version = 2025.3)
 
 # Load environment variables from .env file
 load_dotenv()
