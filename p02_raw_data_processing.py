@@ -3,7 +3,7 @@
 # Project: OCTraffic Data Processing
 # Title: Part 2 - Raw Data Processing ----
 # Author: Dr. Kostas Alexandridis, GISP
-# Version: 2025.3, Date: January 2026
+# Version: 2025.4, Date: April 2026
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 print("\nOCTraffic Data Processing - Part 2 - Raw Data Processing\n")
@@ -33,7 +33,7 @@ from arcgis.features import GeoAccessor
 from octraffic import OCTraffic
 
 # Initialize the OCTraffic object
-octr = OCTraffic(part = 2, version = 2025.3)
+octr = OCTraffic(part = 2, version = 2025.4)
 
 # Load environment variables from .env file
 load_dotenv()
@@ -378,11 +378,10 @@ print("- Crashes Data Frame")
 # get the row names of the df_cb where the "fc" column has a subdictionary with a "crashes" key equal to 1 and the "raw" column is 1
 list_sel = df_cb[df_cb["fc"].apply(lambda x: x["crashes"] == 1) & (df_cb["raw"] == 1)].index.tolist()
 
-old_name = None  # Initialize with a default value
-new_name = None  # Initialize with a default value
-
 # Loop through the list of selected names and rename the columns in the crashes data frame
-for new_name in list_sel:
+for item in list_sel:
+    # get the new name from the codebook
+    new_name = item
     # get the old name from the codebook
     old_name = df_cb.loc[new_name, "var_raw"]
     if old_name in crashes.columns:
@@ -405,18 +404,17 @@ print("- Parties Data Frame")
 # get the row names of the df_cb where the "fc" column has a subdictionary with a "parties" key equal to 1 and the "raw" column is 1
 list_sel = df_cb[df_cb["fc"].apply(lambda x: x["parties"] == 1) & (df_cb["raw"] == 1)].index.tolist()
 
-old_name = None  # Initialize with a default value
-new_name = None  # Initialize with a default value
-
 # Loop through the list of selected names and rename the columns in the crashes data frame
-for new_name in list_sel:
+for item in list_sel:
+    # get the new name from the codebook
+    new_name = item
     # get the old name from the codebook
     old_name = df_cb.loc[new_name, "var_raw"]
     if old_name in parties.columns:
-        # rename the column in the crashes data frame
+        # rename the column in the parties data frame
         parties.rename(columns = {old_name: new_name}, inplace = True)
 
-# Remove all the columns in the crashes data frame that are not in list_sel
+# Remove all the columns in the parties data frame that are not in list_sel
 for col in parties.columns:
     if col not in list_sel:
         parties.drop(columns = col, inplace = True)
@@ -432,18 +430,17 @@ print("- Victims Data Frame")
 # get the row names of the df_cb where the "fc" column has a subdictionary with a "victims" key equal to 1 and the "raw" column is 1
 list_sel = df_cb[df_cb["fc"].apply(lambda x: x["victims"] == 1) & (df_cb["raw"] == 1)].index.tolist()
 
-old_name = None  # Initialize with a default value
-new_name = None  # Initialize with a default value
-
 # Loop through the list of selected names and rename the columns in the crashes data frame
-for new_name in list_sel:
+for item in list_sel:
+    # get the new name from the codebook
+    new_name = item
     # get the old name from the codebook
     old_name = df_cb.loc[new_name, "var_raw"]
     if old_name in victims.columns:
-        # rename the column in the crashes data frame
+        # rename the column in the victims data frame
         victims.rename(columns = {old_name: new_name}, inplace = True)
 
-# Remove all the columns in the crashes data frame that are not in list_sel
+# Remove all the columns in the victims data frame that are not in list_sel
 for col in victims.columns:
     if col not in list_sel:
         victims.drop(columns = col, inplace = True)
@@ -458,7 +455,6 @@ del list_sel, old_name, new_name
 print("\n3.2. Remove Leading and Trailing Whitespace")
 
 # Remove leading and trailing whitespace from the columns of the datasets
-df = None  # Initialize with a default value
 for df in [crashes, parties, victims]:
     print(f"- Removing leading and trailing whitespace from {df.attrs['name']} data frame")
     # Loop through the columns of the data frame
@@ -466,9 +462,6 @@ for df in [crashes, parties, victims]:
         print(f"  - Processing {col}")
         # Remove leading and trailing whitespace from the column values
         df[col] = df[col].astype(str).str.strip()
-
-# Remove the temporary variable
-del df
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -823,10 +816,10 @@ print("\n5.3. Create Date and Time Individual Columns")
 print("- Creating year column")
 
 # Create a year column from the date_year column
-crashes["dt_year"] = crashes["date_datetime"].datetime.year
+crashes["dt_year"] = crashes["date_datetime"].dt.year
 
 # Create a year datetime column from the date_datetime column as a datetime object
-crashes["date_year"] = pd.to_datetime(crashes["date_datetime"].datetime.year, format = "%Y", errors = "coerce")
+crashes["date_year"] = pd.to_datetime(crashes["date_datetime"].dt.year, format = "%Y", errors = "coerce")
 
 
 ### Quarter (Date) ----
@@ -834,7 +827,7 @@ crashes["date_year"] = pd.to_datetime(crashes["date_datetime"].datetime.year, fo
 print("- Creating quarter column")
 
 # Create a quarter column from the date_quarter column
-crashes["dt_quarter"] = crashes["date_datetime"].datetime.quarter
+crashes["dt_quarter"] = crashes["date_datetime"].dt.quarter
 
 # Apply the function to create date_quarter column
 crashes["date_quarter"] = crashes.apply(octr.quarter_to_date, axis = 1)
@@ -848,10 +841,10 @@ crashes["dt_quarter"] = octr.categorical_series(var_series=crashes["dt_quarter"]
 print("- Creating month column")
 
 # Create a month column from the date_month column
-crashes["dt_month"] = crashes["date_datetime"].datetime.month
+crashes["dt_month"] = crashes["date_datetime"].dt.month
 
 # Create a month datetime column from the date_datetime column as a datetime object that includes the year
-crashes["date_month"] = pd.to_datetime(crashes["date_datetime"].datetime.strftime("%Y-%m"), format = "%Y-%m", errors = "coerce")
+crashes["date_month"] = pd.to_datetime(crashes["date_datetime"].dt.strftime("%Y-%m"), format = "%Y-%m", errors = "coerce")
 
 # Convert the dt_month column to categorical
 crashes["dt_month"] = octr.categorical_series(var_series = crashes["dt_month"], var_name = "dt_month", cb_dict = cb)
@@ -862,13 +855,13 @@ crashes["dt_month"] = octr.categorical_series(var_series = crashes["dt_month"], 
 print("- Creating week of the year column")
 
 # Create a week of the year column from the date_week column
-crashes["dt_year_week"] = crashes["date_datetime"].datetime.isocalendar().week
+crashes["dt_year_week"] = crashes["date_datetime"].dt.isocalendar().week
 
 # Create a week of the year datetime column from the date_datetime column as a datetime object
 crashes["date_week"] = pd.to_datetime(
-    crashes["date_datetime"].datetime.year.astype(str)
+    crashes["date_datetime"].dt.isocalendar().year.astype(str)
     + "-W"
-    + crashes["date_datetime"].datetime.isocalendar().week.astype(str)
+    + crashes["date_datetime"].dt.isocalendar().week.astype(str)
     + "-1",
     format = "%Y-W%W-%w",
     errors = "coerce",
@@ -881,7 +874,7 @@ print("- Creating day column")
 
 # Create a day datetime column from the date_datetime column as a datetime object
 crashes["date_day"] = pd.to_datetime(
-    crashes["date_datetime"].datetime.strftime("%Y-%m-%d"), format = "%Y-%m-%d", errors = "coerce"
+    crashes["date_datetime"].dt.strftime("%Y-%m-%d"), format = "%Y-%m-%d", errors = "coerce"
 )
 
 
@@ -890,7 +883,7 @@ crashes["date_day"] = pd.to_datetime(
 print("- Creating week day column")
 
 # Create a week day column from the date_week_day column
-crashes["dt_week_day"] = crashes["date_datetime"].datetime.isocalendar().day
+crashes["dt_week_day"] = crashes["date_datetime"].dt.isocalendar().day
 
 # Convert the dt_week_day column to categorical
 crashes["dt_week_day"] = octr.categorical_series(var_series = crashes["dt_week_day"], var_name = "dt_week_day", cb_dict = cb)
@@ -901,7 +894,7 @@ crashes["dt_week_day"] = octr.categorical_series(var_series = crashes["dt_week_d
 print("- Creating day of the month column")
 
 # Create a day of the month column from the date_dayOfMonth column
-crashes["dt_month_day"] = crashes["date_datetime"].datetime.day
+crashes["dt_month_day"] = crashes["date_datetime"].dt.day
 
 
 ### Day of the Year (Date) ----
@@ -909,7 +902,7 @@ crashes["dt_month_day"] = crashes["date_datetime"].datetime.day
 print("- Creating day of the year column")
 
 # Create a day of the year column from the date_dayOfYear column
-crashes["dt_year_day"] = crashes["date_datetime"].datetime.dayofyear
+crashes["dt_year_day"] = crashes["date_datetime"].dt.dayofyear
 
 
 # region Hour and Minute (Time)
@@ -917,10 +910,10 @@ crashes["dt_year_day"] = crashes["date_datetime"].datetime.dayofyear
 print("- Creating hour and minute columns")
 
 # Create a hour column from the dateHour column
-crashes["dt_hour"] = crashes["date_datetime"].datetime.hour
+crashes["dt_hour"] = crashes["date_datetime"].dt.hour
 
 # Create a minute column from the dateMinute column
-crashes["dt_minute"] = crashes["date_datetime"].datetime.minute
+crashes["dt_minute"] = crashes["date_datetime"].dt.minute
 
 
 ### Daylight Savings Time and Time Zone (Time) ----

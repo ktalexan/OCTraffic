@@ -22,7 +22,7 @@
       "expanded" : true,
       "layerType" : "Operational",
       "showLegends" : true,
-      "visibility" : true,
+      "visibility" : false,
       "displayCacheType" : "Permanent",
       "maxDisplayCacheAge" : 5,
       "popupInfo" : {
@@ -346,7 +346,7 @@
         "dataConnection" : {
           "type" : "CIMFeatureDatasetDataConnection",
           "featureDataset" : "raw",
-          "workspaceConnectionString" : "DATABASE=C:\\Users\\ktale\\OneDrive - County of Orange\\Documents\\GitHub\\OCTraffic\\octagp\\octagp.gdb",
+          "workspaceConnectionString" : "DATABASE=d:\\OneDrive - County of Orange\\Documents\\GitHub\\OCTraffic\\gis\\octagp\\octagp.gdb",
           "workspaceFactory" : "FileGDB",
           "dataset" : "victims",
           "datasetType" : "esriDTFeatureClass"

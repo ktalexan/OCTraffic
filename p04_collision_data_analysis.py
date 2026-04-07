@@ -3,7 +3,7 @@
 # Project: OCTraffic Data Processing
 # Title: Part 4 - Collision Data Analysis ----
 # Author: Dr. Kostas Alexandridis, GISP
-# Version: 2025.3, Date: January 2026
+# Version: 2025.4, Date: April 2026
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 print("\nOCTraffic Data Processing - Part 4 - Collision Data Analysis\n")
@@ -32,7 +32,7 @@ from dotenv import load_dotenv
 from octraffic import OCTraffic
 
 # Initialize the OCTraffic object
-octr = OCTraffic(part = 4, version = 2025.3)
+octr = OCTraffic(part = 4, version = 2025.4)
 
 # Set default fonts for matplotlib and seaborn
 plt.rcParams["font.family"] = "serif"
@@ -514,10 +514,11 @@ tbl1_latex = tbl1_latex.replace("Victim Count", "Victim Count\\footnotemark[1]")
 tbl1_latex_lines = tbl1_latex.splitlines()
 
 # Find the line to insert the midrule
-midrule_idx = None
+#midrule_idx = None
 for i, line in enumerate(tbl1_latex_lines):
     # If line begins with "9":
     if line.startswith("Overall"):
+        # set the midrule index else set it to none
         midrule_idx = i
         break
 # Add the midrule
@@ -1562,7 +1563,7 @@ tbl5_data = ts_year["collisions"][
 ].copy()
 
 # Extract years from dateYear column and set them as the DataFrame index
-tbl5_data.index = ts_year["collisions"]["date_year"].datetime.year
+tbl5_data.index = ts_year["collisions"]["date_year"].dt.year
 
 # Rename the columns of the tbl5_data data frame
 tbl5_data.columns = [

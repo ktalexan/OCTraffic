@@ -4,7 +4,7 @@
         "date_start": "2012-01-01",
         "date_end": "2012-12-31",
         "date_updated": "2025-01-30",
-        "date_gp": "2026-01-01",
+        "date_gp": "2026-04-07",
         "status": "final",
         "files": {
             "crashes": "Crashes_2012.csv",
@@ -26,14 +26,14 @@
             "parties": 367,
             "victims": 305
         },
-        "notes": "Data Removed from TIMS (updated on January 2026)"
+        "notes": "Data Removed from TIMS (updated on April 2026)"
     },
     "2013": {
         "year": 2013,
         "date_start": "2013-01-01",
         "date_end": "2013-12-31",
         "date_updated": "2025-06-12",
-        "date_gp": "2026-01-01",
+        "date_gp": "2026-04-07",
         "status": "final",
         "files": {
             "crashes": "Crashes_2013.csv",
@@ -55,14 +55,14 @@
             "parties": 377,
             "victims": 327
         },
-        "notes": "Final Data in TIMS (updated on January 2026)"
+        "notes": "Final Data in TIMS (updated on April 2026)"
     },
     "2014": {
         "year": 2014,
         "date_start": "2014-01-01",
         "date_end": "2014-12-31",
         "date_updated": "2025-06-12",
-        "date_gp": "2026-01-01",
+        "date_gp": "2026-04-07",
         "status": "final",
         "files": {
             "crashes": "Crashes_2014.csv",
@@ -84,14 +84,14 @@
             "parties": 301,
             "victims": 258
         },
-        "notes": "Final Data in TIMS (updated on January 2026)"
+        "notes": "Final Data in TIMS (updated on April 2026)"
     },
     "2015": {
         "year": 2015,
         "date_start": "2015-01-01",
         "date_end": "2015-12-31",
         "date_updated": "2025-06-12",
-        "date_gp": "2026-01-01",
+        "date_gp": "2026-04-07",
         "status": "final",
         "files": {
             "crashes": "Crashes_2015.csv",
@@ -113,14 +113,14 @@
             "parties": 338,
             "victims": 308
         },
-        "notes": "Final Data in TIMS (updated on January 2026)"
+        "notes": "Final Data in TIMS (updated on April 2026)"
     },
     "2016": {
         "year": 2016,
         "date_start": "2016-01-01",
         "date_end": "2016-12-31",
         "date_updated": "2025-06-12",
-        "date_gp": "2026-01-01",
+        "date_gp": "2026-04-07",
         "status": "final",
         "files": {
             "crashes": "Crashes_2016.csv",
@@ -142,14 +142,14 @@
             "parties": 723,
             "victims": 652
         },
-        "notes": "Final Data in TIMS (updated on January 2026)"
+        "notes": "Final Data in TIMS (updated on April 2026)"
     },
     "2017": {
         "year": 2017,
         "date_start": "2017-01-01",
         "date_end": "2017-12-31",
         "date_updated": "2025-06-12",
-        "date_gp": "2026-01-01",
+        "date_gp": "2026-04-07",
         "status": "final",
         "files": {
             "crashes": "Crashes_2017.csv",
@@ -171,14 +171,14 @@
             "parties": 625,
             "victims": 418
         },
-        "notes": "Final Data in TIMS (updated on January 2026)"
+        "notes": "Final Data in TIMS (updated on April 2026)"
     },
     "2018": {
         "year": 2018,
         "date_start": "2018-01-01",
         "date_end": "2018-12-31",
         "date_updated": "2025-06-12",
-        "date_gp": "2026-01-01",
+        "date_gp": "2026-04-07",
         "status": "final",
         "files": {
             "crashes": "Crashes_2018.csv",
@@ -200,14 +200,14 @@
             "parties": 629,
             "victims": 415
         },
-        "notes": "Final Data in TIMS (updated on January 2026)"
+        "notes": "Final Data in TIMS (updated on April 2026)"
     },
     "2019": {
         "year": 2019,
         "date_start": "2019-01-01",
         "date_end": "2019-12-31",
         "date_updated": "2025-06-12",
-        "date_gp": "2026-01-01",
+        "date_gp": "2026-04-07",
         "status": "final",
         "files": {
             "crashes": "Crashes_2019.csv",
@@ -229,14 +229,14 @@
             "parties": 690,
             "victims": 490
         },
-        "notes": "Final Data in TIMS (updated on January 2026)"
+        "notes": "Final Data in TIMS (updated on April 2026)"
     },
     "2020": {
         "year": 2020,
         "date_start": "2020-01-01",
         "date_end": "2020-12-31",
         "date_updated": "2025-06-12",
-        "date_gp": "2026-01-01",
+        "date_gp": "2026-04-07",
         "status": "final",
         "files": {
             "crashes": "Crashes_2020.csv",
@@ -258,14 +258,14 @@
             "parties": 620,
             "victims": 463
         },
-        "notes": "Final Data in TIMS (updated on January 2026)"
+        "notes": "Final Data in TIMS (updated on April 2026)"
     },
     "2021": {
         "year": 2021,
         "date_start": "2021-01-01",
         "date_end": "2021-12-31",
         "date_updated": "2025-06-12",
-        "date_gp": "2026-01-01",
+        "date_gp": "2026-04-07",
         "status": "final",
         "files": {
             "crashes": "Crashes_2021.csv",
@@ -287,14 +287,14 @@
             "parties": 505,
             "victims": 369
         },
-        "notes": "Final Data in TIMS (updated on January 2026)"
+        "notes": "Final Data in TIMS (updated on April 2026)"
     },
     "2022": {
         "year": 2022,
         "date_start": "2022-01-01",
         "date_end": "2022-12-31",
         "date_updated": "2025-06-12",
-        "date_gp": "2026-01-01",
+        "date_gp": "2026-04-07",
         "status": "final",
         "files": {
             "crashes": "Crashes_2022.csv",
@@ -316,14 +316,14 @@
             "parties": 600,
             "victims": 457
         },
-        "notes": "Final Data in TIMS (updated on January 2026)"
+        "notes": "Final Data in TIMS (updated on April 2026)"
     },
     "2023": {
         "year": 2023,
         "date_start": "2023-01-01",
         "date_end": "2023-12-31",
         "date_updated": "2025-09-30",
-        "date_gp": "2026-01-01",
+        "date_gp": "2026-04-07",
         "status": "final",
         "files": {
             "crashes": "Crashes_2023.csv",
@@ -336,23 +336,23 @@
             "victims": 18763
         },
         "geocoded": {
-            "crashes": 12350,
-            "parties": 26182,
-            "victims": 18279
+            "crashes": 12358,
+            "parties": 26198,
+            "victims": 18288
         },
         "excluded": {
-            "crashes": 329,
-            "parties": 673,
-            "victims": 484
+            "crashes": 321,
+            "parties": 657,
+            "victims": 475
         },
-        "notes": "Final Data in TIMS (updated on January 2026)"
+        "notes": "Final Data in TIMS (updated on April 2026)"
     },
     "2024": {
         "year": 2024,
         "date_start": "2024-01-01",
         "date_end": "2024-12-31",
         "date_updated": "2025-09-30",
-        "date_gp": "2026-01-01",
+        "date_gp": "2026-04-07",
         "status": "provisional",
         "files": {
             "crashes": "Crashes_2024.csv",
@@ -360,28 +360,28 @@
             "victims": "Victims_2024.csv"
         },
         "reported": {
-            "crashes": 12703,
-            "parties": 26901,
-            "victims": 18708
+            "crashes": 12708,
+            "parties": 26913,
+            "victims": 18723
         },
         "geocoded": {
-            "crashes": 12384,
-            "parties": 26289,
-            "victims": 18231
+            "crashes": 12393,
+            "parties": 26307,
+            "victims": 18252
         },
         "excluded": {
-            "crashes": 319,
-            "parties": 612,
-            "victims": 477
+            "crashes": 315,
+            "parties": 606,
+            "victims": 471
         },
-        "notes": "Provisional Data in TIMS (updated on January 2026)"
+        "notes": "Provisional Data in TIMS (updated on April 2026)"
     },
     "2025": {
         "year": 2025,
         "date_start": "2025-01-01",
         "date_end": "2025-09-30",
         "date_updated": "2025-12-26",
-        "date_gp": "2026-01-01",
+        "date_gp": "2026-04-07",
         "status": "provisional",
         "files": {
             "crashes": "Crashes_2025.csv",
@@ -389,20 +389,20 @@
             "victims": "Victims_2025.csv"
         },
         "reported": {
-            "crashes": 8503,
-            "parties": 17917,
-            "victims": 12413
+            "crashes": 11609,
+            "parties": 24468,
+            "victims": 17100
         },
         "geocoded": {
-            "crashes": 8247,
-            "parties": 17407,
-            "victims": 12048
+            "crashes": 11260,
+            "parties": 23786,
+            "victims": 16611
         },
         "excluded": {
-            "crashes": 256,
-            "parties": 510,
-            "victims": 365
+            "crashes": 349,
+            "parties": 682,
+            "victims": 489
         },
-        "notes": "Provisional Data in TIMS (updated on January 2026)"
+        "notes": "Provisional Data in TIMS (updated on April 2026)"
     }
 }

@@ -3,7 +3,7 @@
 # Project: OCTraffic Data Processing
 # Title: Part 3 - Time Series Processing ----
 # Author: Dr. Kostas Alexandridis, GISP
-# Version: 2025.3, Date: January 2026
+# Version: 2025.4, Date: April 2026
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 print("\nOCTraffic Data Processing - Part 3 - Time Series Processing\n")
@@ -29,7 +29,7 @@ from dotenv import load_dotenv
 from octraffic import OCTraffic
 
 # Initialize the OCTraffic object
-octr = OCTraffic(part = 3, version = 2025.3)
+octr = OCTraffic(part = 3, version = 2025.4)
 
 # Load environment variables from .env file
 load_dotenv()

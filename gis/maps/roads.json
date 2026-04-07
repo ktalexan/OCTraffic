@@ -9,7 +9,7 @@
     "sourceModifiedTime" : {
       "type" : "TimeInstant"
     },
-    "metadataURI" : "CIMPATH=Metadata/85958ad3dcac65329bbf2a1c090ea6d8.xml",
+    "metadataURI" : "CIMPATH=Metadata/f415d7b2dd0370c70300d04ee0b65648.xml",
     "useSourceMetadata" : true,
     "illumination" : {
       "type" : "CIMIlluminationProperties",
@@ -25,19 +25,19 @@
       "enableEyeDomeLighting" : true
     },
     "layers" : [
-      "CIMPATH=6c4e4ea7bee0411cbed98ebca560f077.json",
+      "CIMPATH=59e5f6263d2643cd9af5108ada21102c.json",
       "CIMPATH=roads/OCTraffic_Major_Roads_Split.json",
       "CIMPATH=roads/OCTraffic_Major_Roads.json",
       "CIMPATH=roads/OCTraffic_Major_Roads_Points_Along_Lines.json",
       "CIMPATH=roads/OCTraffic_Major_Roads_Split_Buffer_Summary.json",
-      "CIMPATH=roads/acaed756aaf24cfb88bdb0e271348a0b.json",
+      "CIMPATH=roads/843974388c804a5985867a2003e8df51.json",
       "CIMPATH=roads/OCTraffic_Major_Roads_Buffers_Summary.json",
-      "CIMPATH=roads/796e1e767968424bb6d22cfcd9dd3ec7.json",
-      "CIMPATH=3deaa4a675e643ed9997af1f6b5a411f.json"
+      "CIMPATH=roads/6d6a34f6ae714acfaa48671f64fb71f7.json",
+      "CIMPATH=7202e1d955f44639b4bad118f68406cb.json"
     ],
     "defaultViewingMode" : "Map",
     "mapType" : "Map",
-    "groundElevationSurfaceLayer" : "CIMPATH=roads/4beb4ebb19244288a570b36a7ece0fe7.json",
+    "groundElevationSurfaceLayer" : "CIMPATH=roads/1f5838de92f5440a932079e677618103.json",
     "defaultColorVisionDeficiencyMode" : "None",
     "defaultExtent" : {
       "xmin" : -13150321.7231599987,
@@ -123,15 +123,15 @@
     {
       "type" : "CIMVectorTileLayer",
       "name" : "Light Gray Reference",
-      "uRI" : "CIMPATH=6c4e4ea7bee0411cbed98ebca560f077.json",
+      "uRI" : "CIMPATH=59e5f6263d2643cd9af5108ada21102c.json",
       "sourceModifiedTime" : {
         "type" : "TimeInstant"
       },
-      "metadataURI" : "CIMPATH=Metadata/07ed094514f7fc1b6b3ea8cb7e9233e6.xml",
+      "metadataURI" : "CIMPATH=Metadata/66ccc7cf20475e078d4a9b4dd572d21b.xml",
       "useSourceMetadata" : true,
       "layerElevation" : {
         "type" : "CIMLayerElevationSurface",
-        "elevationSurfaceLayerURI" : "CIMPATH=roads/4beb4ebb19244288a570b36a7ece0fe7.json"
+        "elevationSurfaceLayerURI" : "CIMPATH=roads/1f5838de92f5440a932079e677618103.json"
       },
       "layerType" : "BasemapTopReference",
       "showLegends" : true,
@@ -183,7 +183,7 @@
         "dataConnection" : {
           "type" : "CIMFeatureDatasetDataConnection",
           "featureDataset" : "analysis",
-          "workspaceConnectionString" : "DATABASE=..\\..\\octagp\\octagp.gdb",
+          "workspaceConnectionString" : "DATABASE=..\\octagp\\octagp.gdb",
           "workspaceFactory" : "FileGDB",
           "dataset" : "roads_major_split",
           "datasetType" : "esriDTFeatureClass"
@@ -741,7 +741,7 @@
         "dataConnection" : {
           "type" : "CIMFeatureDatasetDataConnection",
           "featureDataset" : "analysis",
-          "workspaceConnectionString" : "DATABASE=..\\..\\octagp\\octagp.gdb",
+          "workspaceConnectionString" : "DATABASE=..\\octagp\\octagp.gdb",
           "workspaceFactory" : "FileGDB",
           "dataset" : "roads_major",
           "datasetType" : "esriDTFeatureClass"
@@ -1276,7 +1276,7 @@
       "description" : "OCTraffic Major Roads Points Along Lines",
       "layerElevation" : {
         "type" : "CIMLayerElevationSurface",
-        "elevationSurfaceLayerURI" : "CIMPATH=roads/4beb4ebb19244288a570b36a7ece0fe7.json"
+        "elevationSurfaceLayerURI" : "CIMPATH=roads/1f5838de92f5440a932079e677618103.json"
       },
       "expanded" : true,
       "layerType" : "Operational",
@@ -1299,7 +1299,7 @@
         "dataConnection" : {
           "type" : "CIMFeatureDatasetDataConnection",
           "featureDataset" : "analysis",
-          "workspaceConnectionString" : "DATABASE=..\\..\\octagp\\octagp.gdb",
+          "workspaceConnectionString" : "DATABASE=..\\octagp\\octagp.gdb",
           "workspaceFactory" : "FileGDB",
           "dataset" : "roads_major_points_along_lines",
           "datasetType" : "esriDTFeatureClass"
@@ -1489,7 +1489,7 @@
               "extrapolateBaselines" : true,
               "fontEffects" : "Normal",
               "fontEncoding" : "Unicode",
-              "fontFamilyName" : "Inter",
+              "fontFamilyName" : "Tahoma",
               "fontStyleName" : "Regular",
               "fontType" : "Unspecified",
               "haloSize" : 1,
@@ -1610,9 +1610,9 @@
                           "color" : {
                             "type" : "CIMRGBColor",
                             "values" : [
-                              68.579999999999998,
-                              168.30000000000001,
-                              35.340000000000003,
+                              60.18,
+                              150.44999999999999,
+                              124.88,
                               100
                             ]
                           }
@@ -1646,7 +1646,7 @@
       "description" : "OCTraffic Major Roads Split Buffer Summary",
       "layerElevation" : {
         "type" : "CIMLayerElevationSurface",
-        "elevationSurfaceLayerURI" : "CIMPATH=roads/4beb4ebb19244288a570b36a7ece0fe7.json"
+        "elevationSurfaceLayerURI" : "CIMPATH=roads/1f5838de92f5440a932079e677618103.json"
       },
       "expanded" : true,
       "layerType" : "Operational",
@@ -1669,7 +1669,7 @@
         "dataConnection" : {
           "type" : "CIMFeatureDatasetDataConnection",
           "featureDataset" : "analysis",
-          "workspaceConnectionString" : "DATABASE=..\\..\\octagp\\octagp.gdb",
+          "workspaceConnectionString" : "DATABASE=..\\octagp\\octagp.gdb",
           "workspaceFactory" : "FileGDB",
           "dataset" : "roads_major_split_buffer_sum",
           "datasetType" : "esriDTFeatureClass"
@@ -1859,7 +1859,7 @@
               "extrapolateBaselines" : true,
               "fontEffects" : "Normal",
               "fontEncoding" : "Unicode",
-              "fontFamilyName" : "Inter",
+              "fontFamilyName" : "Tahoma",
               "fontStyleName" : "Regular",
               "fontType" : "Unspecified",
               "haloSize" : 1,
@@ -1937,9 +1937,9 @@
                 "color" : {
                   "type" : "CIMRGBColor",
                   "values" : [
-                    199.44,
+                    186.81,
+                    206.50999999999999,
                     252.44999999999999,
-                    216.22999999999999,
                     100
                   ]
                 }
@@ -1955,7 +1955,7 @@
     {
       "type" : "CIMFeatureLayer",
       "name" : "OCTraffic Major Roads Split Buffer",
-      "uRI" : "CIMPATH=roads/acaed756aaf24cfb88bdb0e271348a0b.json",
+      "uRI" : "CIMPATH=roads/843974388c804a5985867a2003e8df51.json",
       "sourceModifiedTime" : {
         "type" : "TimeInstant"
       },
@@ -1963,7 +1963,7 @@
       "description" : "roads_major_split_buffer",
       "layerElevation" : {
         "type" : "CIMLayerElevationSurface",
-        "elevationSurfaceLayerURI" : "CIMPATH=roads/4beb4ebb19244288a570b36a7ece0fe7.json"
+        "elevationSurfaceLayerURI" : "CIMPATH=roads/1f5838de92f5440a932079e677618103.json"
       },
       "expanded" : true,
       "layerType" : "Operational",
@@ -1986,7 +1986,7 @@
         "dataConnection" : {
           "type" : "CIMFeatureDatasetDataConnection",
           "featureDataset" : "analysis",
-          "workspaceConnectionString" : "DATABASE=..\\..\\octagp\\octagp.gdb",
+          "workspaceConnectionString" : "DATABASE=..\\octagp\\octagp.gdb",
           "workspaceFactory" : "FileGDB",
           "dataset" : "roads_major_split_buffer",
           "datasetType" : "esriDTFeatureClass"
@@ -2278,7 +2278,7 @@
       "description" : "OCTraffic Major Roads Buffers Summary",
       "layerElevation" : {
         "type" : "CIMLayerElevationSurface",
-        "elevationSurfaceLayerURI" : "CIMPATH=roads/4beb4ebb19244288a570b36a7ece0fe7.json"
+        "elevationSurfaceLayerURI" : "CIMPATH=roads/1f5838de92f5440a932079e677618103.json"
       },
       "expanded" : true,
       "layerType" : "Operational",
@@ -2301,7 +2301,7 @@
         "dataConnection" : {
           "type" : "CIMFeatureDatasetDataConnection",
           "featureDataset" : "analysis",
-          "workspaceConnectionString" : "DATABASE=..\\..\\octagp\\octagp.gdb",
+          "workspaceConnectionString" : "DATABASE=..\\octagp\\octagp.gdb",
           "workspaceFactory" : "FileGDB",
           "dataset" : "roads_major_buffers_sum",
           "datasetType" : "esriDTFeatureClass"
@@ -2491,7 +2491,7 @@
               "extrapolateBaselines" : true,
               "fontEffects" : "Normal",
               "fontEncoding" : "Unicode",
-              "fontFamilyName" : "Inter",
+              "fontFamilyName" : "Tahoma",
               "fontStyleName" : "Regular",
               "fontType" : "Unspecified",
               "haloSize" : 1,
@@ -2569,9 +2569,9 @@
                 "color" : {
                   "type" : "CIMRGBColor",
                   "values" : [
+                    207.59999999999999,
                     252.44999999999999,
-                    238.06,
-                    207.00999999999999,
+                    186.81,
                     100
                   ]
                 }
@@ -2587,7 +2587,7 @@
     {
       "type" : "CIMFeatureLayer",
       "name" : "OCTraffic Major Roads Buffers",
-      "uRI" : "CIMPATH=roads/796e1e767968424bb6d22cfcd9dd3ec7.json",
+      "uRI" : "CIMPATH=roads/6d6a34f6ae714acfaa48671f64fb71f7.json",
       "sourceModifiedTime" : {
         "type" : "TimeInstant"
       },
@@ -2595,7 +2595,7 @@
       "description" : "roads_major_buffers",
       "layerElevation" : {
         "type" : "CIMLayerElevationSurface",
-        "elevationSurfaceLayerURI" : "CIMPATH=roads/4beb4ebb19244288a570b36a7ece0fe7.json"
+        "elevationSurfaceLayerURI" : "CIMPATH=roads/1f5838de92f5440a932079e677618103.json"
       },
       "expanded" : true,
       "layerType" : "Operational",
@@ -2618,7 +2618,7 @@
         "dataConnection" : {
           "type" : "CIMFeatureDatasetDataConnection",
           "featureDataset" : "analysis",
-          "workspaceConnectionString" : "DATABASE=..\\..\\octagp\\octagp.gdb",
+          "workspaceConnectionString" : "DATABASE=..\\octagp\\octagp.gdb",
           "workspaceFactory" : "FileGDB",
           "dataset" : "roads_major_buffers",
           "datasetType" : "esriDTFeatureClass"
@@ -2902,15 +2902,15 @@
     {
       "type" : "CIMVectorTileLayer",
       "name" : "Light Gray Base",
-      "uRI" : "CIMPATH=3deaa4a675e643ed9997af1f6b5a411f.json",
+      "uRI" : "CIMPATH=7202e1d955f44639b4bad118f68406cb.json",
       "sourceModifiedTime" : {
         "type" : "TimeInstant"
       },
-      "metadataURI" : "CIMPATH=Metadata/0c987e6fa5f6bd9cac9c38b741125195.xml",
+      "metadataURI" : "CIMPATH=Metadata/4257396761a2207fd135b75431aa9d5e.xml",
       "useSourceMetadata" : true,
       "layerElevation" : {
         "type" : "CIMLayerElevationSurface",
-        "elevationSurfaceLayerURI" : "CIMPATH=roads/4beb4ebb19244288a570b36a7ece0fe7.json"
+        "elevationSurfaceLayerURI" : "CIMPATH=roads/1f5838de92f5440a932079e677618103.json"
       },
       "layerType" : "BasemapBackground",
       "showLegends" : true,
@@ -2932,25 +2932,25 @@
   "binaryReferences" : [
     {
       "type" : "CIMBinaryReference",
-      "uRI" : "CIMPATH=Metadata/07ed094514f7fc1b6b3ea8cb7e9233e6.xml",
-      "data" : "<?xml version=\"1.0\"?>\r\n<metadata xml:lang=\"en\"><Esri><CreaDate>20260101</CreaDate><CreaTime>17511300</CreaTime><ArcGISFormat>1.0</ArcGISFormat><SyncOnce>TRUE</SyncOnce></Esri><dataIdInfo><idCitation><resTitle>Light Gray Reference</resTitle></idCitation><idAbs></idAbs><idCredit></idCredit><idPurp></idPurp><resConst><Consts><useLimit></useLimit></Consts></resConst></dataIdInfo></metadata>\r\n"
+      "uRI" : "CIMPATH=Metadata/4257396761a2207fd135b75431aa9d5e.xml",
+      "data" : "<?xml version=\"1.0\"?>\r\n<metadata xml:lang=\"en\"><Esri><CreaDate>20260407</CreaDate><CreaTime>11511600</CreaTime><ArcGISFormat>1.0</ArcGISFormat><SyncOnce>TRUE</SyncOnce></Esri><dataIdInfo><idCitation><resTitle>Light Gray Base</resTitle></idCitation><idAbs></idAbs><idCredit></idCredit><idPurp></idPurp><resConst><Consts><useLimit></useLimit></Consts></resConst></dataIdInfo></metadata>\r\n"
     },
     {
       "type" : "CIMBinaryReference",
-      "uRI" : "CIMPATH=Metadata/0c987e6fa5f6bd9cac9c38b741125195.xml",
-      "data" : "<?xml version=\"1.0\"?>\r\n<metadata xml:lang=\"en\"><Esri><CreaDate>20260101</CreaDate><CreaTime>17511300</CreaTime><ArcGISFormat>1.0</ArcGISFormat><SyncOnce>TRUE</SyncOnce></Esri><dataIdInfo><idCitation><resTitle>Light Gray Base</resTitle></idCitation><idAbs></idAbs><idCredit></idCredit><idPurp></idPurp><resConst><Consts><useLimit></useLimit></Consts></resConst></dataIdInfo></metadata>\r\n"
+      "uRI" : "CIMPATH=Metadata/66ccc7cf20475e078d4a9b4dd572d21b.xml",
+      "data" : "<?xml version=\"1.0\"?>\r\n<metadata xml:lang=\"en\"><Esri><CreaDate>20260407</CreaDate><CreaTime>11511600</CreaTime><ArcGISFormat>1.0</ArcGISFormat><SyncOnce>TRUE</SyncOnce></Esri><dataIdInfo><idCitation><resTitle>Light Gray Reference</resTitle></idCitation><idAbs></idAbs><idCredit></idCredit><idPurp></idPurp><resConst><Consts><useLimit></useLimit></Consts></resConst></dataIdInfo></metadata>\r\n"
     },
     {
       "type" : "CIMBinaryReference",
-      "uRI" : "CIMPATH=Metadata/85958ad3dcac65329bbf2a1c090ea6d8.xml",
-      "data" : "<?xml version=\"1.0\"?>\r\n<metadata xml:lang=\"en\"><Esri><CreaDate>20260101</CreaDate><CreaTime>17523600</CreaTime><ArcGISFormat>1.0</ArcGISFormat><SyncOnce>TRUE</SyncOnce></Esri><dataIdInfo><idCitation><resTitle>OCTraffic Roads Processing Map</resTitle></idCitation><searchKeys><keyword>Orange County</keyword><keyword>California</keyword><keyword>Roads</keyword><keyword>Traffic</keyword><keyword>Road Safety</keyword><keyword>Transportation</keyword><keyword>Collisions</keyword><keyword>Crashes</keyword><keyword>SWITRS</keyword><keyword>OCTraffic</keyword></searchKeys><idPurp>Roads Processing Map for the OCTraffic Project</idPurp><idAbs>&lt;div style = \"text-align:Left;\"&gt;&lt;div&gt;&lt;div&gt;&lt;p&gt;&lt;span&gt;The Orange County Roads Network is a comprehensive representation of all roads in the area, including primary roads and highways, secondary roads, and local roads. The data are sourced from the Orange County Department of Public Works and are updated regularly to reflect the most current road network configuration.&lt;/span&gt;&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;</idAbs><idCredit>Dr. Kostas Alexandridis, GISP, Data Scientist, OC Public Works, OC Survey Geospatial Services</idCredit><resConst><Consts><useLimit>&lt;div style = \"text-align:Left;\"&gt;&lt;p&gt;&lt;span&gt;The SWITRS data displayed are provided by the California Highway Patrol (CHP) reports through the Transportation Injury Mapping System (TIMS) of the University of California, Berkeley. Issues of report accuracy should be addressed to CHP.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;The displayed mapped data can be used under a\u00A0&lt;a href = \"https://creativecommons.org/licenses/by-sa/3.0/\" target = \"_blank\"&gt;Creative Commons CC-SA-BY&lt;/a&gt;\u00A0License, providing attribution to TIMS, CHP, and OC Public Works, OC Survey Geospatial Services.\u00A0&lt;/p&gt;&lt;div&gt;We make every effort to provide the most accurate and up-to-date data and information. Nevertheless, the data feed is provided, 'as is' and OC Public Work's standard\u00A0&lt;a href = \"https://www.ocgov.com/contact-county/disclaimer\" target = \"_blank\"&gt;Disclaimer&lt;/a&gt;\u00A0applies.&lt;br /&gt;&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;For any inquiries, suggestions or questions, please contact:&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div style = \"text-align:center;\"&gt;&lt;a href = \"https://www.linkedin.com/in/ktalexan/\" target = \"_blank\"&gt;&lt;b&gt;Dr. Kostas Alexandridis, GISP&lt;/b&gt;&lt;/a&gt;&lt;br /&gt;&lt;/div&gt;&lt;div style = \"text-align:center;\"&gt;GIS Analyst | Spatial Complex Systems Scientist&lt;/div&gt;&lt;div style = \"text-align:center;\"&gt;OC Public Works/OC Survey Geospatial Applications&lt;/div&gt;&lt;div style = \"text-align:center;\"&gt;&lt;div&gt;601 N. Ross Street, P.O. Box 4048, Santa Ana, CA 92701&lt;/div&gt;&lt;div&gt;Email:\u00A0&lt;a href = \"mailto:kostas.alexandridis@ocpw.ocgov.com\" target = \"_blank\"&gt;kostas.alexandridis@ocpw.ocgov.com&lt;/a&gt;\u00A0| Phone: (714) 967-0826&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;</useLimit></Consts></resConst></dataIdInfo><Binary><Thumbnail><Data EsriPropertyType=\"PictureX\">/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0a\r\nHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIy\r\nMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCADIASwDAREA\r\nAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQA\r\nAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3\r\nODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWm\r\np6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEA\r\nAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSEx\r\nBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElK\r\nU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3\r\nuLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD3+gAo\r\nAKACgAoAKACgAoAKACgAoAKACgAoAKACgCrfajaabbtPdzpDGoySxxQB494v+OEccr6f4bt2ubgn\r\naJACRmgDmNK+Hfivx7dDUvEl01vbE52v1xQB2M2oeBPhZaFLVUuL4DHynLE/WgDyfxf8X9d8SNJB\r\nBIbWzPARepHvQB527tIxZySx6k0ANoA19J8L6zrjbdPsJZvcDA/M0AP1fw1qnh2RDqEKxsTwu8E/\r\noaANG3+IniGzsBZWl2YIcYwnpQBzV1dz3kzTXEhkkY5JNAENAGz4e8Naj4kv0trGFmyfmfHCj1Jo\r\nA9UsrGz8JOmkeHYv7Q8QyjDzrysRoA9R8E/DuPSH/tXVn+1arL8zO38P0oA9BoAKACgAoAKACgAo\r\n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</Data></Thumbnail></Binary></metadata>\r\n"
+      "uRI" : "CIMPATH=Metadata/f415d7b2dd0370c70300d04ee0b65648.xml",
+      "data" : "<?xml version=\"1.0\"?>\r\n<metadata xml:lang=\"en\"><Esri><CreaDate>20260407</CreaDate><CreaTime>11512200</CreaTime><ArcGISFormat>1.0</ArcGISFormat><SyncOnce>TRUE</SyncOnce></Esri><dataIdInfo><idCitation><resTitle>OCTraffic Roads Processing Map</resTitle></idCitation><searchKeys><keyword>Orange County</keyword><keyword>California</keyword><keyword>Roads</keyword><keyword>Traffic</keyword><keyword>Road Safety</keyword><keyword>Transportation</keyword><keyword>Collisions</keyword><keyword>Crashes</keyword><keyword>SWITRS</keyword><keyword>OCTraffic</keyword></searchKeys><idPurp>Roads Processing Map for the OCTraffic Project</idPurp><idAbs>&lt;div style = \"text-align:Left;\"&gt;&lt;div&gt;&lt;div&gt;&lt;p&gt;&lt;span&gt;The Orange County Roads Network is a comprehensive representation of all roads in the area, including primary roads and highways, secondary roads, and local roads. The data are sourced from the Orange County Department of Public Works and are updated regularly to reflect the most current road network configuration.&lt;/span&gt;&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;</idAbs><idCredit>Dr. Kostas Alexandridis, GISP, Data Scientist, OC Public Works, OC Survey Geospatial Services</idCredit><resConst><Consts><useLimit>&lt;div style = \"text-align:Left;\"&gt;&lt;p&gt;&lt;span&gt;The SWITRS data displayed are provided by the California Highway Patrol (CHP) reports through the Transportation Injury Mapping System (TIMS) of the University of California, Berkeley. Issues of report accuracy should be addressed to CHP.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;The displayed mapped data can be used under a\u00A0&lt;a href = \"https://creativecommons.org/licenses/by-sa/3.0/\" target = \"_blank\"&gt;Creative Commons CC-SA-BY&lt;/a&gt;\u00A0License, providing attribution to TIMS, CHP, and OC Public Works, OC Survey Geospatial Services.\u00A0&lt;/p&gt;&lt;div&gt;We make every effort to provide the most accurate and up-to-date data and information. Nevertheless, the data feed is provided, 'as is' and OC Public Work's standard\u00A0&lt;a href = \"https://www.ocgov.com/contact-county/disclaimer\" target = \"_blank\"&gt;Disclaimer&lt;/a&gt;\u00A0applies.&lt;br /&gt;&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div&gt;For any inquiries, suggestions or questions, please contact:&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;div style = \"text-align:center;\"&gt;&lt;a href = \"https://www.linkedin.com/in/ktalexan/\" target = \"_blank\"&gt;&lt;b&gt;Dr. Kostas Alexandridis, GISP&lt;/b&gt;&lt;/a&gt;&lt;br /&gt;&lt;/div&gt;&lt;div style = \"text-align:center;\"&gt;GIS Analyst | Spatial Complex Systems Scientist&lt;/div&gt;&lt;div style = \"text-align:center;\"&gt;OC Public Works/OC Survey Geospatial Applications&lt;/div&gt;&lt;div style = \"text-align:center;\"&gt;&lt;div&gt;601 N. Ross Street, P.O. Box 4048, Santa Ana, CA 92701&lt;/div&gt;&lt;div&gt;Email:\u00A0&lt;a href = \"mailto:kostas.alexandridis@ocpw.ocgov.com\" target = \"_blank\"&gt;kostas.alexandridis@ocpw.ocgov.com&lt;/a&gt;\u00A0| Phone: (714) 967-0826&lt;/div&gt;&lt;div&gt;&lt;br /&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;</useLimit></Consts></resConst></dataIdInfo><Binary><Thumbnail><Data EsriPropertyType=\"PictureX\">/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0a\r\nHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIy\r\nMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCADIASwDAREA\r\nAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQA\r\nAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3\r\nODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWm\r\np6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEA\r\nAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSEx\r\nBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElK\r\nU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3\r\nuLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD3+gAo\r\nAKACgAoAKACgAoAKACgAoAKACgAoAKACgCrfajaabbtPdzpDGoySxxQB494v+OEccr6f4bt2ubgn\r\naJACRmgDmNK+Hfivx7dDUvEl01vbE52v1xQB2M2oeBPhZaFLVUuL4DHynLE/WgDyfxf8X9d8SNJB\r\nBIbWzPARepHvQB527tIxZySx6k0ANoA19J8L6zrjbdPsJZvcDA/M0AP1fw1qnh2RDqEKxsTwu8E/\r\noaANG3+IniGzsBZWl2YIcYwnpQBzV1dz3kzTXEhkkY5JNAENAGz4e8Naj4kv0trGFmyfmfHCj1Jo\r\nA9UsrGz8JOmkeHYv7Q8QyjDzrysRoA9R8E/DuPSH/tXVn+1arL8zO38P0oA9BoAKACgAoAKACgAo\r\n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</Data></Thumbnail></Binary></metadata>\r\n"
     }
   ],
   "elevationSurfaceLayerDefinitions" : [
     {
       "type" : "CIMElevationSurfaceLayer",
       "name" : "Ground",
-      "uRI" : "CIMPATH=roads/4beb4ebb19244288a570b36a7ece0fe7.json",
+      "uRI" : "CIMPATH=roads/1f5838de92f5440a932079e677618103.json",
       "useSourceMetadata" : true,
       "description" : "Ground",
       "expanded" : true,

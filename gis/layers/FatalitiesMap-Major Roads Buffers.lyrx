@@ -3,13 +3,13 @@
   "version" : "3.6.0",
   "build" : 59527,
   "layers" : [
-    "CIMPATH=fatalities/ecbe369034f94b0bbd5e39d871c6d198.json"
+    "CIMPATH=fatalities/5c26008e8efb4ff6bb8e81b184ed95d8.json"
   ],
   "layerDefinitions" : [
     {
       "type" : "CIMFeatureLayer",
       "name" : "OCTraffic Major Roads Buffers",
-      "uRI" : "CIMPATH=fatalities/ecbe369034f94b0bbd5e39d871c6d198.json",
+      "uRI" : "CIMPATH=fatalities/5c26008e8efb4ff6bb8e81b184ed95d8.json",
       "sourceModifiedTime" : {
         "type" : "TimeInstant"
       },
@@ -41,7 +41,7 @@
         "dataConnection" : {
           "type" : "CIMFeatureDatasetDataConnection",
           "featureDataset" : "analysis",
-          "workspaceConnectionString" : "DATABASE=C:\\Users\\ktale\\OneDrive - County of Orange\\Documents\\GitHub\\OCTraffic\\octagp\\octagp.gdb",
+          "workspaceConnectionString" : "DATABASE=d:\\OneDrive - County of Orange\\Documents\\GitHub\\OCTraffic\\gis\\octagp\\octagp.gdb",
           "workspaceFactory" : "FileGDB",
           "dataset" : "roads_major_buffers",
           "datasetType" : "esriDTFeatureClass"

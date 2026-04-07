@@ -3,7 +3,7 @@
 # Project: OCTraffic Data Processing
 # Title: Part 0 - Update Metadata for OCTraffic Datasets ----
 # Author: Dr. Kostas Alexandridis, GISP
-# Version: 2025.3, Date: January 2026
+# Version: 2025.4, Date: April 2026
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 print("\nOCTraffic Data Processing - Part 0: Update Metadata for OCTraffic Datasets\n")
@@ -184,7 +184,7 @@ with open(metadata_path, "w", encoding = "utf-8") as f:
     json.dump(prj_meta["tims"], f, indent = 4)
 
 # Update the metadata info
-octr = OCTraffic(part = 0, version = 2025.3)
+octr = OCTraffic(part = 0, version = 2025.4)
 prj_meta = octr.prj_meta
 
 

@@ -394,7 +394,7 @@
         "dataConnection" : {
           "type" : "CIMFeatureDatasetDataConnection",
           "featureDataset" : "analysis",
-          "workspaceConnectionString" : "DATABASE=C:\\Users\\ktale\\OneDrive - County of Orange\\Documents\\GitHub\\OCTraffic\\octagp\\octagp.gdb",
+          "workspaceConnectionString" : "DATABASE=d:\\OneDrive - County of Orange\\Documents\\GitHub\\OCTraffic\\gis\\octagp\\octagp.gdb",
           "workspaceFactory" : "FileGDB",
           "dataset" : "crashes_500ft_from_major_roads",
           "datasetType" : "esriDTFeatureClass"

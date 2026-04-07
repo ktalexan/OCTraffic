@@ -22,7 +22,7 @@ import logging
 import unicodedata
 from typing import Union, List, Optional, Dict, Any
 #from fontTools.misc.plistlib import Data
-import wmi
+#import wmi
 import pytz
 import pandas as pd
 from pandas.api.types import CategoricalDtype
@@ -554,7 +554,7 @@ class OCTraffic:
         prj_dirs = {
             "root": self.base_path,
             "admin": os.path.join(self.base_path, "admin"),
-            "agp": os.path.join(self.base_path, "octagp"),
+            "agp": os.path.join(self.base_path, "gis", "octagp"),
             "agp_aprx": os.path.join(self.base_path, "gis", "octagp", "octagp.aprx"),
             "agp_gdb": os.path.join(self.base_path, "gis", "octagp", "octagp.gdb"),
             "agp_gdb_raw": os.path.join(self.base_path, "gis", "octagp", "octagp.gdb", "raw"),
@@ -785,18 +785,21 @@ class OCTraffic:
                 # Get the timezone
                 tz = pytz.timezone(tz_name)
                 # Localize the datetime (assume it's in UTC if not timezone-aware)
-                if datetime.tzinfo is None:
+                if dt.tzinfo is None:
                     dt = pytz.utc.localize(dt).astimezone(tz)
                 else:
-                    dt = datetime.astimezone(tz)
+                    dt = dt.astimezone(tz)
+
                 # Check if it's in DST
-                dst_result = None
-                if bool(datetime.dst()) is False:
-                    dst_result = 0
-                elif bool(datetime.dst()) is True:
-                    dst_result = 1
-                else:
+                try:
+                    dst = dt.dst()
+                    if dst is None:
+                        dst_result = -1
+                    else:
+                        dst_result = 1 if dst.total_seconds() != 0 else 0
+                except Exception:
                     dst_result = -1
+
                 # Return the result
                 return dst_result
 
@@ -1513,7 +1516,7 @@ class OCTraffic:
         Notes:
             This function returns the number of valid rows in the specified year.
         """
-        return len(df[df['date_datetime'].datetime.year == year].copy())
+        return len(df[df['date_datetime'].dt.year == year].copy())
     
 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1730,7 +1733,7 @@ class OCTraffic:
         fig3_data = df[
             ["date_year", "count_car_killed_sum", "count_ped_killed_sum", "count_bic_killed_sum", "count_mc_killed_sum"]
         ].copy()
-        fig3_data["date_year"] = fig3_data["date_year"].datetime.year
+        fig3_data["date_year"] = fig3_data["date_year"].dt.year
         fig3_data = fig3_data.rename(
             columns = {
                 "date_year": "Year",

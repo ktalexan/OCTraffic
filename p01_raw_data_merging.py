@@ -3,7 +3,7 @@
 # Project: OCTraffic Data Processing
 # Title: Part 1 - Merging Raw Data ----
 # Author: Dr. Kostas Alexandridis, GISP
-# Version: 2025.3, Date: January 2026
+# Version: 2025.4, Date: April 2026
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 print("\nOCTraffic Data Processing - Part 1 - Merging Raw Data\n")
@@ -28,7 +28,7 @@ from dotenv import load_dotenv
 from octraffic import OCTraffic
 
 # Initialize the OCTraffic class
-octr = OCTraffic(part = 1, version = 2025.3)
+octr = OCTraffic(part = 1, version = 2025.4)
 
 # Load environment variables from .env file
 load_dotenv()
@@ -73,12 +73,8 @@ data_dict = pd.DataFrame(columns = ["year", "date_start", "date_end", "count_cra
 # Set a mew index for the dataframe
 i = 1
 # Initialize variables
-data = None
 date_start = prj_meta["date_start"]
 date_end = prj_meta["date_end"]
-count_crashes = 0
-count_parties = 0
-count_victims = 0
 
 # Loop through the years in the project metadata
 for year in list(prj_meta["years"]):
@@ -132,7 +128,7 @@ for year in list(prj_meta["years"]):
     # Increment the index
     i += 1
 # Remove the temporary variables
-del data, date_start, date_end, count_crashes, count_parties, count_victims
+del date_start, date_end
 
 # Add data dictionary attributes
 data_dict.attrs = {

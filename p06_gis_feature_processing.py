@@ -3,7 +3,7 @@
 # Project: OCTraffic Data Processing
 # Title: Part 6 - GIS Feature Processing ----
 # Author: Dr. Kostas Alexandridis, GISP
-# Version: 2025.3, Date: January 2026
+# Version: 2025.4, Date: April 2026
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 print("\nOCTraffic GIS Data Processing - Part 6 - GIS Feature Processing\n")
@@ -30,7 +30,7 @@ from arcpy import metadata as md
 from octraffic import OCTraffic
 
 # Initialize the OCTraffic object
-octr = OCTraffic(part = 6, version = 2025.3)
+octr = OCTraffic(part = 6, version = 2025.4)
 
 # Load environment variables from .env file
 load_dotenv()

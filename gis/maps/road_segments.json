@@ -24,16 +24,16 @@
       "enableEyeDomeLighting" : true
     },
     "layers" : [
-      "CIMPATH=61e7f67f937a4da2a69042337dad791d.json",
+      "CIMPATH=222f19bc07574706ba1e3293fff4e9c3.json",
       "CIMPATH=road_segments/OCTraffic_Major_Roads.json",
       "CIMPATH=road_segments/OCTraffic_Major_Roads_Split_Buffer_Summary.json",
       "CIMPATH=road_segments/OCTraffic_Census_Blocks.json",
       "CIMPATH=road_segments/OCTraffic_Boundaries.json",
-      "CIMPATH=88c6c9582f8b4a89a6e1d945fdc111c8.json"
+      "CIMPATH=e23befeda46c4a229639df24a8e4a1fd.json"
     ],
     "defaultViewingMode" : "Map",
     "mapType" : "Map",
-    "groundElevationSurfaceLayer" : "CIMPATH=road_segments/639165f314f14a2e8761ad1853a82f6a.json",
+    "groundElevationSurfaceLayer" : "CIMPATH=road_segments/e2ec2edf68944a93a674578edc22d39a.json",
     "defaultColorVisionDeficiencyMode" : "None",
     "defaultExtent" : {
       "xmin" : -13152969.14177,
@@ -119,15 +119,15 @@
     {
       "type" : "CIMVectorTileLayer",
       "name" : "Light Gray Reference",
-      "uRI" : "CIMPATH=61e7f67f937a4da2a69042337dad791d.json",
+      "uRI" : "CIMPATH=222f19bc07574706ba1e3293fff4e9c3.json",
       "sourceModifiedTime" : {
         "type" : "TimeInstant"
       },
-      "metadataURI" : "CIMPATH=Metadata/1b0c78d814b907c45a86a8d40262bb52.xml",
+      "metadataURI" : "CIMPATH=Metadata/4e5fe02c15621a43079334347cbd8766.xml",
       "useSourceMetadata" : true,
       "layerElevation" : {
         "type" : "CIMLayerElevationSurface",
-        "elevationSurfaceLayerURI" : "CIMPATH=road_segments/639165f314f14a2e8761ad1853a82f6a.json"
+        "elevationSurfaceLayerURI" : "CIMPATH=road_segments/e2ec2edf68944a93a674578edc22d39a.json"
       },
       "layerType" : "BasemapTopReference",
       "showLegends" : true,
@@ -179,7 +179,7 @@
         "dataConnection" : {
           "type" : "CIMFeatureDatasetDataConnection",
           "featureDataset" : "analysis",
-          "workspaceConnectionString" : "DATABASE=..\\..\\octagp\\octagp.gdb",
+          "workspaceConnectionString" : "DATABASE=..\\octagp\\octagp.gdb",
           "workspaceFactory" : "FileGDB",
           "dataset" : "roads_major",
           "datasetType" : "esriDTFeatureClass"
@@ -737,7 +737,7 @@
         "dataConnection" : {
           "type" : "CIMFeatureDatasetDataConnection",
           "featureDataset" : "analysis",
-          "workspaceConnectionString" : "DATABASE=..\\..\\octagp\\octagp.gdb",
+          "workspaceConnectionString" : "DATABASE=..\\octagp\\octagp.gdb",
           "workspaceFactory" : "FileGDB",
           "dataset" : "roads_major_split_buffer_sum",
           "datasetType" : "esriDTFeatureClass"
@@ -1424,7 +1424,7 @@
         "dataConnection" : {
           "type" : "CIMFeatureDatasetDataConnection",
           "featureDataset" : "supporting",
-          "workspaceConnectionString" : "DATABASE=..\\..\\octagp\\octagp.gdb",
+          "workspaceConnectionString" : "DATABASE=..\\octagp\\octagp.gdb",
           "workspaceFactory" : "FileGDB",
           "dataset" : "blocks",
           "datasetType" : "esriDTFeatureClass"
@@ -2183,7 +2183,7 @@
         "dataConnection" : {
           "type" : "CIMFeatureDatasetDataConnection",
           "featureDataset" : "supporting",
-          "workspaceConnectionString" : "DATABASE=..\\..\\octagp\\octagp.gdb",
+          "workspaceConnectionString" : "DATABASE=..\\octagp\\octagp.gdb",
           "workspaceFactory" : "FileGDB",
           "dataset" : "boundaries",
           "datasetType" : "esriDTFeatureClass"
@@ -2469,15 +2469,15 @@
     {
       "type" : "CIMVectorTileLayer",
       "name" : "Light Gray Base",
-      "uRI" : "CIMPATH=88c6c9582f8b4a89a6e1d945fdc111c8.json",
+      "uRI" : "CIMPATH=e23befeda46c4a229639df24a8e4a1fd.json",
       "sourceModifiedTime" : {
         "type" : "TimeInstant"
       },
-      "metadataURI" : "CIMPATH=Metadata/61b5410fc5977e14658e85d5f721dfef.xml",
+      "metadataURI" : "CIMPATH=Metadata/005f879b22b2822c8c9694cb4b9833fe.xml",
       "useSourceMetadata" : true,
       "layerElevation" : {
         "type" : "CIMLayerElevationSurface",
-        "elevationSurfaceLayerURI" : "CIMPATH=road_segments/639165f314f14a2e8761ad1853a82f6a.json"
+        "elevationSurfaceLayerURI" : "CIMPATH=road_segments/e2ec2edf68944a93a674578edc22d39a.json"
       },
       "layerType" : "BasemapBackground",
       "showLegends" : true,
@@ -2499,20 +2499,20 @@
   "binaryReferences" : [
     {
       "type" : "CIMBinaryReference",
-      "uRI" : "CIMPATH=Metadata/1b0c78d814b907c45a86a8d40262bb52.xml",
-      "data" : "<?xml version=\"1.0\"?>\r\n<metadata xml:lang=\"en\"><Esri><CreaDate>20260101</CreaDate><CreaTime>17511100</CreaTime><ArcGISFormat>1.0</ArcGISFormat><SyncOnce>TRUE</SyncOnce></Esri><dataIdInfo><idCitation><resTitle>Light Gray Reference</resTitle></idCitation><idAbs></idAbs><idCredit></idCredit><idPurp></idPurp><resConst><Consts><useLimit></useLimit></Consts></resConst></dataIdInfo></metadata>\r\n"
+      "uRI" : "CIMPATH=Metadata/005f879b22b2822c8c9694cb4b9833fe.xml",
+      "data" : "<?xml version=\"1.0\"?>\r\n<metadata xml:lang=\"en\"><Esri><CreaDate>20260407</CreaDate><CreaTime>11511500</CreaTime><ArcGISFormat>1.0</ArcGISFormat><SyncOnce>TRUE</SyncOnce></Esri><dataIdInfo><idCitation><resTitle>Light Gray Base</resTitle></idCitation><idAbs></idAbs><idCredit></idCredit><idPurp></idPurp><resConst><Consts><useLimit></useLimit></Consts></resConst></dataIdInfo></metadata>\r\n"
     },
     {
       "type" : "CIMBinaryReference",
-      "uRI" : "CIMPATH=Metadata/61b5410fc5977e14658e85d5f721dfef.xml",
-      "data" : "<?xml version=\"1.0\"?>\r\n<metadata xml:lang=\"en\"><Esri><CreaDate>20260101</CreaDate><CreaTime>17511100</CreaTime><ArcGISFormat>1.0</ArcGISFormat><SyncOnce>TRUE</SyncOnce></Esri><dataIdInfo><idCitation><resTitle>Light Gray Base</resTitle></idCitation><idAbs></idAbs><idCredit></idCredit><idPurp></idPurp><resConst><Consts><useLimit></useLimit></Consts></resConst></dataIdInfo></metadata>\r\n"
+      "uRI" : "CIMPATH=Metadata/4e5fe02c15621a43079334347cbd8766.xml",
+      "data" : "<?xml version=\"1.0\"?>\r\n<metadata xml:lang=\"en\"><Esri><CreaDate>20260407</CreaDate><CreaTime>11511500</CreaTime><ArcGISFormat>1.0</ArcGISFormat><SyncOnce>TRUE</SyncOnce></Esri><dataIdInfo><idCitation><resTitle>Light Gray Reference</resTitle></idCitation><idAbs></idAbs><idCredit></idCredit><idPurp></idPurp><resConst><Consts><useLimit></useLimit></Consts></resConst></dataIdInfo></metadata>\r\n"
     }
   ],
   "elevationSurfaceLayerDefinitions" : [
     {
       "type" : "CIMElevationSurfaceLayer",
       "name" : "Ground",
-      "uRI" : "CIMPATH=road_segments/639165f314f14a2e8761ad1853a82f6a.json",
+      "uRI" : "CIMPATH=road_segments/e2ec2edf68944a93a674578edc22d39a.json",
       "useSourceMetadata" : true,
       "description" : "Ground",
       "expanded" : true,
