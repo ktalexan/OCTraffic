@@ -231,7 +231,6 @@ parties = os.path.join(prj_dirs.get("agp_gdb_raw", ""), "parties")
 crashes = os.path.join(prj_dirs.get("agp_gdb_raw", ""), "crashes")
 collisions = os.path.join(prj_dirs.get("agp_gdb_raw", ""), "collisions")
 
-
 ### Feature Class Fields ----
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 print("\n- Feature Class Fields")
